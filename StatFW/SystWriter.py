@@ -9,15 +9,16 @@ class SystWriter(object):
                 if systematic.systType == "shape":
                     outputStr += self.makeShapeLine(systematic,processList,analysisBin)
                 elif systematic.systType == "lnN":
-                    outputStr += self.makelnNLine(systematic,processList,analysisBin)
+                    outputStr += self.makelnNLine(systematic,processList,analysisBin,lineExist=systematic.name in outputStr)
         outputStr +="\n"
         return outputStr
 
     @staticmethod
-    def makelnNLine(systematic,processList,analysisBin):
+    def makelnNLine(systematic,processList,analysisBin,lineExist=False):
         outputStr = ""
-        systName = systematic.getSystName() if not systematic.correlation else systematic.correlation(systematic.systNamePrefix,systematic,analysisBin,"",whichType="card")
-        outputStr += systName+"\tlnN\t"
+        if not lineExist:
+            systName = systematic.getSystName() if not systematic.correlation else systematic.correlation(systematic.systNamePrefix,systematic,analysisBin,"",whichType="card")
+            outputStr += systName+"\tlnN\t"
         correlationStr = ""
         for eachProcess in processList:
             if eachProcess.name not in systematic.process:

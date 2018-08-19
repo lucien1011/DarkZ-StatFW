@@ -1,10 +1,9 @@
-from DarkZ.StatTools.SystWriter import *
+from StatFW.SystWriter import *
 
 class DataCard(object):
     def __init__(self,window):
         self.sep = "---------------------------------------------------------------------------------"
         self.window = window
-        self.makeStandardCardDetails()
 
     def getBinName(self):
         return self.window.getBinName()
@@ -30,14 +29,14 @@ class DataCard(object):
         self.processNum = "process\t"
         self.binNameObservation = "bin\t"
         for bin in binList:
-            self.binName += bin.name+"\t"
             self.binNameObservation += bin.name+"\t"
             for iprocess,process in enumerate(bin.processList):
+                self.binName += bin.name+"\t"
                 self.processName += process.name+"\t"
                 if bin.isSignal(process.name):
-                    self.processNum += str(iprocess+1)+"\t"
-                else:
                     self.processNum += "0\t"
+                else:
+                    self.processNum += str(iprocess+1)+"\t"
         self.observation = "observation"
         self.rates = "rate\t"
         self.sep = "---------------------------------------------------------------------------------"
@@ -45,18 +44,23 @@ class DataCard(object):
         return  
 
     def makeObservationLine(self,binList):
-        outputStr += self.observation+"\t"
+        line = ""
+        line += self.observation+"\t"
         for bin in binList:
-            outputStr += +str(bin.data.count)+"\n"
+            line += str(bin.data.count)+"\t"
+        line += "\n"
+        return line
 
     def makeCard(self,outputDir,binList,appendToPath=""):
         outputStr = ""
+
+        self.makeStandardCardDetails(binList)
         
         binName = self.getBinName()
         
         outputStr = self.makeHeader()
         outputStr += self.binNameObservation+"\n"
-        self.makeObservationLine(binList)
+        outputStr += self.makeObservationLine(binList)
         outputStr += self.sep+"\n"
         outputStr += self.binName+"\n"
         outputStr += "\n"
@@ -68,13 +72,13 @@ class DataCard(object):
         outputStr += self.rates+"\t"
         for bin in binList:
             for process in bin.processList:
-                outputStr += str(process.count)+"\t"
+                outputStr += "%4.2f"%process.count+"\t"
         outputStr += "\n"
         outputStr += self.sep+"\n"
         outputStr += "\n"
 
         systWriter = SystWriter()
-        outputStr += systWriter.makeMCSystLine(self.window)
+        outputStr += systWriter.makeMCSystLine(binList)
         #outputStr += systWriter.writeRateParams(self.analysisBin)
         #outputStr += systWriter.writeParameters(self.analysisBin)
 

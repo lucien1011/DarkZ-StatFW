@@ -1,4 +1,4 @@
-from DarkZ.StatTools.Systematic import *
+from StatFW.Systematic import *
 from copy import deepcopy
 
 class LogNormalSystReader(object):

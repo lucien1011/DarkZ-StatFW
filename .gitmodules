@@ -1,1 +1,4 @@
 
+[submodule "Core"]
+	path = Core
+	url = git@github.com:lucien1011/NTuple-Runner.git
