@@ -19,7 +19,12 @@ import math
 # ____________________________________________________________________________________________________________________________________________ ||
 # Configurable
 inputDir = "/raid/raid7/lucien/Higgs/DarkZ/StatInput/test/2018-08-13/"
-lnSystFilePath = "/home/lucien/UF-PyNTupleRunner/DarkZ/StatTools/Syst.txt"
+commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst.txt"
+lnSystFilePathDict = {
+        "FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
+        "FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
+        "TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
+        }
 outputDir = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/DataCard/2018-08-17/"
 
 outputInfo              = OutputInfo("OutputInfo")
@@ -38,15 +43,15 @@ mass_window_list = [
 # ____________________________________________________________________________________________________________________________________________ ||
 # bin list
 binList = [
-        Bin("FourEl",sysFile=lnSystFilePath,inputBinName="4e",),
-        Bin("FourMu",sysFile=lnSystFilePath,inputBinName="4mu",),
-        Bin("TwoElTwoMu",sysFile=lnSystFilePath,inputBinName="2e2mu"),
+        Bin("FourEl",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",),
+        Bin("FourMu",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",),
+        Bin("TwoElTwoMu",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu"),
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # syst
 lnSystReader = LogNormalSystReader()
-lnSystematics = lnSystReader.makeLnSyst(lnSystFilePath)
+commonLnSystematics = lnSystReader.makeLnSyst(commonLnSystFilePath)
 
 # ____________________________________________________________________________________________________________________________________________ ||
 collector = Collector()
@@ -58,7 +63,8 @@ if not os.path.exists(os.path.abspath(outputDir)):
     os.makedirs(os.path.abspath(outputDir))
 
 for window in mass_window_list:
-    for bin in binList:
+    binListCopy = copy.deepcopy(binList)
+    for bin in binListCopy:
         # Get background count
         #for bkgName in collector.bkgSamples:
         for bkgName in collector.mergeSamples:
@@ -80,15 +86,16 @@ for window in mass_window_list:
             error = hist.GetBinError(1)
         bin.data = Process("data_obs",int(dataCount),math.sqrt(int(dataCount)))
         for sigSample in collector.signalSamples:
-            if bin.isSignal(sigSample) and window.matchSample: break
+            if bin.isSignal(sigSample) and window.matchSample(sigSample): break
         #histName = "_".join([window.makeHistName(),sigSample,bin.name,])
         histName = "_".join([window.makeHistName(),bin.inputBinName,])
         sigHist = collector.getObj(sigSample,histName)
         bin.processList.append(Process(sigSample,sigHist.GetBinContent(1),sigHist.GetBinError(1)))
         bin.systList = []
-        for syst in lnSystematics:
+        for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
+        bin.systList += lnSystReader.makeLnSyst(bin.sysFile)
     dataCard = DataCard(window) 
-    dataCard.makeCard(outputDir,binList)
+    dataCard.makeCard(outputDir,binListCopy)
 
 collector.closeFiles()

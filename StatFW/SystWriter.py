@@ -1,31 +1,44 @@
+from collections import OrderedDict
+
 class SystWriter(object):
     def makeMCSystLine(self,binList):
         outputStr = ""
+        systDict = OrderedDict()
         for analysisBin in binList:
-            systematics = analysisBin.systList
-            processList = analysisBin.processList
-            for systematic in systematics:
+            for syst in analysisBin.systList:
+                if syst.name not in systDict:
+                    systDict[syst.name] = syst
+        for systName in systDict:
+            for analysisBin in binList:    
+                systematics = analysisBin.systList
+                foundSyst = False
+                for systematic in systematics:
+                    if systematic.name == systName:
+                        foundSyst = True
+                        break
+                processList = analysisBin.processList
                 if systematic.skipDC: continue
-                if systematic.systType == "shape":
-                    outputStr += self.makeShapeLine(systematic,processList,analysisBin)
-                elif systematic.systType == "lnN":
-                    outputStr += self.makelnNLine(systematic,processList,analysisBin,lineExist=systematic.name in outputStr)
-        outputStr +="\n"
+                if foundSyst:
+                    outputStr += self.makelnNLine(systematic,processList,analysisBin,lineExist=systName in outputStr,forceDash=False)
+                else:
+                    outputStr += self.makelnNLine(systDict[systName],processList,analysisBin,lineExist=systName in outputStr,forceDash=True)
+            outputStr +="\n"
         return outputStr
 
     @staticmethod
-    def makelnNLine(systematic,processList,analysisBin,lineExist=False):
+    def makelnNLine(systematic,processList,analysisBin,lineExist=False,forceDash=False,writeNameOnly=False):
         outputStr = ""
         if not lineExist:
             systName = systematic.getSystName() if not systematic.correlation else systematic.correlation(systematic.systNamePrefix,systematic,analysisBin,"",whichType="card")
             outputStr += systName+"\tlnN\t"
         correlationStr = ""
-        for eachProcess in processList:
-            if eachProcess.name not in systematic.process:
-                correlationStr += "-\t"
-            else:
-                correlationStr += "%s\t"%systematic.magnitudeFunc(systematic,eachProcess.name,analysisBin)
-        outputStr += correlationStr
+        if not writeNameOnly:
+            for eachProcess in processList:
+                if eachProcess.name not in systematic.process or forceDash:
+                    correlationStr += "-\t"
+                else:
+                    correlationStr += "%s\t"%systematic.magnitudeFunc(systematic,eachProcess.name,analysisBin)
+            outputStr += correlationStr
         #outputStr +="\n"
         return outputStr
 
