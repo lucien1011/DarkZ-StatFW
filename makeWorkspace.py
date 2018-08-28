@@ -1,6 +1,11 @@
-import glob,os
+import glob,os,argparse
 
-inputDir = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/DataCard/2018-08-17/"
+parser = argparse.ArgumentParser()
+parser.add_argument("--inputDir",action="store")
+
+option = parser.parse_args()
+
+inputDir = option.inputDir
 pattern = "window_*.txt"
 
 for textFileName in glob.glob(inputDir+pattern):
