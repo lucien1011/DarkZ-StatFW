@@ -19,6 +19,7 @@ import math,argparse
 # ____________________________________________________________________________________________________________________________________________ ||
 parser = argparse.ArgumentParser()
 parser.add_argument("--inputDir",action="store")
+parser.add_argument("--outputDir",action="store")
 parser.add_argument("--verbose",action="store_true")
 
 option = parser.parse_args()
@@ -31,21 +32,27 @@ lnSystFilePathDict = {
         "FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
         "FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
         "TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
+        "TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
         }
-outputDir = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/DataCard/2018-08-24/"
+#outputDir = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/DataCard/2018-08-24/"
+outputDir = option.outputDir
 
 outputInfo              = OutputInfo("OutputInfo")
 outputInfo.outputDir    = inputDir
 outputInfo.TFileName    = "StatInput.root"
 setDataToMC             = True
+lumiFactor              = 35.9/77.3
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 mass_window_list = [
-        MassWindow(15,0.02),
-        MassWindow(20,0.02),
-        MassWindow(25,0.02),
-        MassWindow(30,0.02),
+        MassWindow("MZd4",4,0.02),
+        MassWindow("MZd7",7,0.02),
+        MassWindow("MZd10",10,0.02),
+        MassWindow("MZd15",15,0.02),
+        MassWindow("MZd20",20,0.02),
+        MassWindow("MZd25",25,0.02),
+        MassWindow("MZd30",30,0.02),
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
@@ -54,6 +61,7 @@ binList = [
         Bin("FourEl",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",),
         Bin("FourMu",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",),
         Bin("TwoElTwoMu",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu"),
+        Bin("TwoMuTwoEl",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e"),
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
@@ -84,8 +92,8 @@ for window in mass_window_list:
             #histName = "_".join([window.makeHistName(),bkgName,bin.name,])
             histName = "_".join([window.makeHistName(),bin.inputBinName,])
             hist = collector.getObj(bkgName,histName)
-            count = hist.GetBinContent(1) if bkgName != "ZPlusX" else hist.GetBinContent(1)*77.30/35.9
-            error = hist.GetBinError(1)
+            count = hist.GetBinContent(1)*lumiFactor if bkgName != "ZPlusX" else hist.GetBinContent(1)*77.30/35.9*lumiFactor
+            error = hist.GetBinError(1)*lumiFactor
             process = Process(bkgName,count if count >= 0. else 0.,error)
             totalBkgCount += count if count >= 0. else 0.
             bin.processList.append(process)
@@ -106,13 +114,27 @@ for window in mass_window_list:
         #histName = "_".join([window.makeHistName(),sigSample,bin.name,])
         histName = "_".join([window.makeHistName(),bin.inputBinName,])
         sigHist = collector.getObj(sigSample,histName)
-        bin.processList.append(Process(sigSample,sigHist.GetBinContent(1),sigHist.GetBinError(1)))
+        bin.processList.append(Process(sigSample,sigHist.GetBinContent(1)*lumiFactor,sigHist.GetBinError(1)*lumiFactor))
+        if option.verbose: print "Signal hist: ", sigHist.GetName()
+        if option.verbose: print "Signal file: ", sigSample
         if option.verbose: print "Total signal count: ", sigHist.GetBinContent(1)
         bin.systList = []
+        if sigHist.GetBinContent(1):
+            bin.systList.append(
+                    lnNSystematic(
+                            "MCStatUnc_HZZd",
+                            [ sigSample, ],
+                            lambda syst,procName,anaBin: 1+sigHist.GetBinError(1)/sigHist.GetBinContent(1),
+                            )
+                    )
+
         for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
         bin.systList += lnSystReader.makeLnSyst(bin.sysFile)
     dataCard = DataCard(window) 
-    dataCard.makeCard(outputDir,binListCopy)
+    cardDir = outputDir+"/"+dataCard.makeOutFileName("/","")
+    if not os.path.exists(os.path.abspath(cardDir)):
+        os.makedirs(os.path.abspath(cardDir))
+    dataCard.makeCard(cardDir,binListCopy)
 
 collector.closeFiles()

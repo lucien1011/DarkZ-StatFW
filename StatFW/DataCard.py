@@ -72,7 +72,7 @@ class DataCard(object):
         outputStr += self.rates+"\t"
         for bin in binList:
             for process in bin.processList:
-                outputStr += "%4.2f"%process.count+"\t"
+                outputStr += "%4.4f"%process.count+"\t"
         outputStr += "\n"
         outputStr += self.sep+"\n"
         outputStr += "\n"

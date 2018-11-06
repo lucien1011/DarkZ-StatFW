@@ -2,11 +2,12 @@ import glob,os,argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--inputDir",action="store")
+parser.add_argument("--pattern",action="store",default="window_*.txt")
 
 option = parser.parse_args()
 
 inputDir = option.inputDir
-pattern = "window_*.txt"
+pattern = option.pattern
 
 for textFileName in glob.glob(inputDir+pattern):
     print "*"*20
