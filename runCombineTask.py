@@ -5,11 +5,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--inputDir",action="store")
 parser.add_argument("--selectStr",action="store")
 parser.add_argument("--option",action="store")
+parser.add_argument("--pattern",action="store")
 
 option = parser.parse_args()
 
 inputDir = option.inputDir
-pattern = "window*.root"
+pattern = "window*.root" if not option.pattern else option.pattern
 method = "AsymptoticLimits"
 
 api = CombineAPI()

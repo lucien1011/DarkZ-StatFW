@@ -1,0 +1,17 @@
+logN             Higgs      VBF     WHminus     WHplus      WH      ZH      ggH     ggZZ    qqZZ    ZPlusX      HZZd_M15        HZZd_M20        HZZd_M25        HZZd_M30    HZZd_M4     HZZd_M7     HZZd_M10
+lumi             0.025      0.025   0.025       0.025       0.025   0.025   0.025   0.025   0.025   -           0.025           0.025           0.025           0.025       0.025       0.025       0.025
+#HZZBr           0.020      0.020   0.020       0.020       0.020   0.020   0.020   0.020   0.020   -           -               -               -               -           -           -           -
+BkgUnc           -          -       -           -           -       -       -       -       -       0.300       -               -               -               -           -           -           -
+#QCDScale_ggH    -          -       -           -           -       -       0.039   -       -       -           -               -               -               -           -           -           -
+#PDFScale_ggH    -          -       -           -           -       -       0.032   -       -       -           -               -               -               -           -           -           -
+#BkgKFactor_ggZZ -          -       -           -           -       -       -       0.10    -       -           -               -               -               -           -           -           -
+#QCDScale_VBF    -          0.004   -           -           -       -       -       -       -       -           -               -               -               -           -           -           -
+#PDFScale_VBF    -          0.021   -           -           -       -       -       -       -       -           -               -               -               -           -           -           -
+#QCDScale_WH     -          -       0.007       0.007       0.007   -       -       -       -       -           -               -               -               -           -           -           -
+#PDFScale_WH     -          -       0.019       0.019       0.019   -       -       -       -       -           -               -               -               -           -           -           -
+#QCDScale_ZH     -          -       -           -           -       0.038   -       -       -       -           -               -               -               -           -           -           -
+#PDFScale_ZH     -          -       -           -           -       0.016   -       -       -       -           -               -               -               -           -           -           -
+QCDScale_qqZZ    -          -       -           -           -       -       -       -       0.042   -           -               -               -               -           -           -           -
+PDFScale_qqZZ    -          -       -           -           -       -       -       -       0.034   -           -               -               -               -           -           -           -
+EwkCorr_qqZZ     -          -       -           -           -       -       -       -       0.001   -           -               -               -               -           -           -           -
+Interference     -          -       -           -           -       -       -       -       -       -           0.05            0.05            0.05            0.05        0.05        0.05        0.05

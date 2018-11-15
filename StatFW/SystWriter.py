@@ -58,14 +58,15 @@ class SystWriter(object):
         return outputStr
 
     @staticmethod
-    def makeRateParamLine(rateParamName,process,formulaStr,parameterStr):
+    def makeRateParamLine(rateParamName,binName,process,formulaStr,parameterStr):
         outputStr = ""
-        outputStr += rateParamName+"Rate\trateParam\tSignal\t{process}\t{formulaStr}\t{parameterStr}\n".format(
+        outputStr += rateParamName+"\trateParam\t{binName}\t{process}\t{formulaStr}\t{parameterStr}\n".format(
                 process=process,
+                binName=binName,
                 formulaStr=formulaStr,
                 parameterStr=parameterStr,
                 )
-        return outputStr+"\n"
+        return outputStr
 
     @staticmethod
     def makeParamLine(paramName,meanStr,widthStr,paramRangeStr):
@@ -78,18 +79,21 @@ class SystWriter(object):
             )
         return outputStr+'\n'
 
-    def writeRateParams(self,analysisBin):
+    def writeRateParams(self,binList):
         outputStr = ""
-        analysisBin.parameterList = []
-        for rateParam in analysisBin.rateParams:
-            outputStr += self.makeRateParamLine(rateParam.name,rateParam.process,rateParam.formulaStr,rateParam.parameterStr)
-            for paramStr in rateParam.parameterStr.split(","):
-                if paramStr not in analysisBin.parameterList:
-                    analysisBin.parameterList.append(paramStr)
+        for analysisBin in binList:
+            analysisBin.parameterList = []
+            for rateParam in analysisBin.rateParams:
+                outputStr += self.makeRateParamLine(rateParam.name,analysisBin.name,rateParam.process,rateParam.formulaStr,rateParam.parameterStr)
+                for paramStr in rateParam.parameterStr.split(","):
+                    if paramStr not in analysisBin.parameterList:
+                        analysisBin.parameterList.append(paramStr)
         return outputStr
 
-    def writeParameters(self,analysisBin):
+    def writeParameters(self,binList):
         outputStr = ""
-        for paramStr in analysisBin.parameterList:
-            outputStr += self.makeParamLine(*analysisBin.paramDict[paramStr])
+        for analysisBin in binList:
+            for paramStr in analysisBin.parameterList:
+                if analysisBin.paramDict:
+                    outputStr += self.makeParamLine(*analysisBin.paramDict[paramStr])
         return outputStr

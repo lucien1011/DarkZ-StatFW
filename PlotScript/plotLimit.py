@@ -24,7 +24,8 @@ CMS_lumi.extraText = "Preliminary"
 CMS_lumi.cmsTextSize = 0.65
 CMS_lumi.outOfFrame = True
 #CMS_lumi.lumi_13TeV = "77.3 fb^{-1}"
-CMS_lumi.lumi_13TeV = "35.9 fb^{-1}"
+#CMS_lumi.lumi_13TeV = "35.9 fb^{-1}"
+CMS_lumi.lumi_13TeV = "150 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 expOnly         = True 

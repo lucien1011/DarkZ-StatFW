@@ -1,12 +1,17 @@
 from StatFW.SystWriter import *
 
+class CardConfig(object):
+    def __init__(self,name):
+        self.name = name
+
 class DataCard(object):
-    def __init__(self,window):
+    def __init__(self,config):
         self.sep = "---------------------------------------------------------------------------------"
-        self.window = window
+        self.tagStr = "\t"
+        self.config = config
 
     def getBinName(self):
-        return self.window.getBinName()
+        return self.config.name
 
     #def makeHeader(self,rootFilePath):
     def makeHeader(self):
@@ -16,7 +21,7 @@ class DataCard(object):
 *     number of nuisance parameters
 -----------------------------------------------------------------------
 '''
-        #header += "shapes * * {0} $CHANNEL/$PROCESS $CHANNEL/$PROCESS_$SYSTEMATIC\n".format(rootFilePath.split("/")[-1])
+        #header += "shapes * {} $CHANNEL/$PROCESS $CHANNEL/$PROCESS_$SYSTEMATIC\n".format(rootFilePath.split("/")[-1])
         header += "shapes * * FAKE\n"
         header += self.sep+"\n"
         header += "\n"
@@ -24,21 +29,22 @@ class DataCard(object):
 
     def makeStandardCardDetails(self,binList):
         self.rateParamLines = ""
-        self.binName = "bin\t"
-        self.processName = "process\t"
-        self.processNum = "process\t"
-        self.binNameObservation = "bin\t"
+        tagStr = self.tagStr
+        self.binName = "bin"+tagStr
+        self.processName = "process"+tagStr
+        self.processNum = "process"+tagStr
+        self.binNameObservation = "bin"+tagStr
         for bin in binList:
-            self.binNameObservation += bin.name+"\t"
+            self.binNameObservation += bin.name+tagStr
             for iprocess,process in enumerate(bin.processList):
-                self.binName += bin.name+"\t"
-                self.processName += process.name+"\t"
+                self.binName += bin.name+tagStr
+                self.processName += process.name+tagStr
                 if bin.isSignal(process.name):
-                    self.processNum += "0\t"
+                    self.processNum += "0"+tagStr
                 else:
-                    self.processNum += str(iprocess+1)+"\t"
+                    self.processNum += str(iprocess+1)+tagStr
         self.observation = "observation"
-        self.rates = "rate\t"
+        self.rates = "rate"+self.tagStr
         self.sep = "---------------------------------------------------------------------------------"
         self.systLines = ""
         return  
@@ -72,15 +78,16 @@ class DataCard(object):
         outputStr += self.rates+"\t"
         for bin in binList:
             for process in bin.processList:
-                outputStr += "%4.4f"%process.count+"\t"
+                outputStr += "%4.4f"%process.count+self.tagStr*2
         outputStr += "\n"
         outputStr += self.sep+"\n"
         outputStr += "\n"
 
         systWriter = SystWriter()
         outputStr += systWriter.makeMCSystLine(binList)
-        #outputStr += systWriter.writeRateParams(self.analysisBin)
-        #outputStr += systWriter.writeParameters(self.analysisBin)
+        outputStr += "\n"
+        outputStr += systWriter.writeRateParams(binList)
+        outputStr += systWriter.writeParameters(binList)
 
         outputPath = outputDir+self.makeOutFileName(".txt",appendToPath)
 
