@@ -3,6 +3,7 @@ from StatFW.SystWriter import *
 class CardConfig(object):
     def __init__(self,name):
         self.name = name
+        self.shapeStr = None
 
 class DataCard(object):
     def __init__(self,config):
@@ -22,7 +23,10 @@ class DataCard(object):
 -----------------------------------------------------------------------
 '''
         #header += "shapes * {} $CHANNEL/$PROCESS $CHANNEL/$PROCESS_$SYSTEMATIC\n".format(rootFilePath.split("/")[-1])
-        header += "shapes * * FAKE\n"
+        if not self.config.shapeStr:
+            header += "shapes * * FAKE\n"
+        else:
+            header += self.config.shapeStr
         header += self.sep+"\n"
         header += "\n"
         return header
