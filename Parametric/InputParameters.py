@@ -143,7 +143,7 @@ parameterDict = {
                             histFunc=changeHist_ZX,
                             ),
         "Data2016": ShapeFitConfig(
-                            rebinFactor=5,
+                            rebinFactor=60,
                             pdfType="Data",
                             pdfInput=None,
                             histFunc=None,

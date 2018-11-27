@@ -83,12 +83,12 @@ TFileName = "StatInput.root"
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 signal_model_names = [
-        #"HZZd_M10",  
-        #"HZZd_M15",  
-        #"HZZd_M20",  
-        #"HZZd_M25",  
-        #"HZZd_M30",  
-        #"HZZd_M4", 
+        "HZZd_M10",  
+        "HZZd_M15",  
+        "HZZd_M20",  
+        "HZZd_M25",  
+        "HZZd_M30",  
+        "HZZd_M4", 
         "HZZd_M7",
         ]
 
@@ -185,6 +185,7 @@ for signal_model_name in signal_model_names:
             wsName = "parametric_pdf_"+bin.name
             w = ROOT.RooWorkspace(wsName,wsName)
             for sample,config in parameterDict.iteritems():
+                if (sample not in bkg_names and sample not in data_names) and sample != signal_model_name: continue
                 inputShapeFile = ROOT.TFile(os.path.join(inputDir,sample,TFileName),"READ")
                 hist = inputShapeFile.Get(bin.inputBinName)
                 hist.Rebin(config.rebinFactor)

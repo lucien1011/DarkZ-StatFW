@@ -12,5 +12,7 @@ do
     #python makeWorkspace.py --inputDir DataCard/2018-11-22_150p0_ParametricShape/HZZd_M${m}/ --pattern "HZZd_*.txt"
     #python makeWorkspace.py --inputDir DataCard/2018-11-22_150p0_ParametricShape_v2/HZZd_M${m}/ --pattern "HZZd_*.txt"
     #python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_v2/HZZd_M${m}/ --pattern "HZZd_*.txt"
-    python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v2/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    #python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v2/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    #python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v4/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v5/HZZd_M${m}/ --pattern "HZZd_*.txt"
 done
