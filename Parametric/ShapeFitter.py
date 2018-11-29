@@ -63,6 +63,23 @@ class ShapeFitter(object):
         pdf = ROOT.RooBifurGauss(pdfName,pdfName,self.obsVar,meanVar,widthLeftVar,widthRightVar)
         return pdf,meanVar,widthLeftVar,widthRightVar
 
+    def makeDoubleCBPdf(self,pdfName,
+            meanVarName,mean_low,mean_high,
+            widthVarName,width_low,width_high,
+            alphaLVarName,alphaL_low,alphaL_high,
+            alphaRVarName,alphaR_low,alphaR_high,
+            nLVarName,nL_low,nL_high,
+            nRVarName,nR_low,nR_high,
+            ):
+        meanVar = ROOT.RooRealVar(meanVarName,meanVarName,mean_low,mean_high)
+        widthVar = ROOT.RooRealVar(widthVarName,widthVarName,width_low,width_high)
+        alphaLVar = ROOT.RooRealVar(alphaLVarName,alphaLVarName,alphaL_low,alphaL_high)
+        alphaRVar = ROOT.RooRealVar(alphaRVarName,alphaRVarName,alphaR_low,alphaR_high)
+        nLVar = ROOT.RooRealVar(nLVarName,nLVarName,nL_low,nL_high)
+        nRVar = ROOT.RooRealVar(nRVarName,nRVarName,nR_low,nR_high)
+        pdf = ROOT.RooDoubleCB(pdfName,pdfName,self.obsVar,meanVar,widthVar,alphaLVar,alphaRVar,nLVar,nRVar)
+        return pdf,meanVar,widthVar,alphaLVar,alphaRVar,nLVar,nRVar
+
     def makeCBPdf(self,pdfName,
             meanVarName,mean_low,mean_high,
             widthVarName,width_low,width_high,

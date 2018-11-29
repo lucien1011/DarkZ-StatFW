@@ -10,8 +10,9 @@ from StatFW.RateParameter import RateParameter
 
 from Dataset.MergeSampleDict import mergeSampleDict
 
-from Parametric.InputParameters import parameterDict
-from Parametric.ShapeFitConfig import pdfType_hist,pdfType_BW,pdfType_poly,pdfType_landau,pdfType_data
+from Parametric.InputParameters_Mu import parameterDict_Mu
+from Parametric.InputParameters_El import parameterDict_El
+from Parametric.ShapeFitConfig import pdfType_hist,pdfType_BW,pdfType_poly,pdfType_landau,pdfType_data,pdfType_dcb
 from Parametric.ShapeFitter import ShapeFitter
 
 shapeStr = "shapes * TwoEl_SR shape_TwoEl_SR.root parametric_pdf_TwoEl_SR:$PROCESS\n"
@@ -111,8 +112,8 @@ binList = [
         #Bin("FourMu",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",),
         #Bin("TwoElTwoMu",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu"),
         #Bin("TwoMuTwoEl",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e"),
-        Bin("TwoEl_SR",sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e-Norm",width=0.05),
-        Bin("TwoMu_SR",sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu-Norm",width=0.02),
+        Bin("TwoEl_SR",sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e-Norm",width=0.01,parameterDict=parameterDict_El),
+        Bin("TwoMu_SR",sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu-Norm",width=0.02/5.,parameterDict=parameterDict_Mu),
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
@@ -184,35 +185,42 @@ for signal_model_name in signal_model_names:
             outputFile = ROOT.TFile(shapeFilePath,"RECREATE")
             wsName = "parametric_pdf_"+bin.name
             w = ROOT.RooWorkspace(wsName,wsName)
-            for sample,config in parameterDict.iteritems():
+            for sample,config in bin.parameterDict.iteritems():
                 if (sample not in bkg_names and sample not in data_names) and sample != signal_model_name: continue
                 inputShapeFile = ROOT.TFile(os.path.join(inputDir,sample,TFileName),"READ")
                 hist = inputShapeFile.Get(bin.inputBinName)
                 hist.Rebin(config.rebinFactor)
                 if config.histFunc: config.histFunc(hist)
                 if config.pdfType == pdfType_hist:
-                    #pdf,dataHist,argSet = fitter.makeRooHistPdf("Pdf_"+sample,hist)
                     pdf,dataHist,argSet = fitter.makeRooHistPdf(sample,hist)
                 elif config.pdfType == pdfType_data:
+                    #hist.Rebin(int(1./parameterDict[signal_model_name].widthDict[bin.name]))
+                    hist.Rebin(int(bin.parameterDict[signal_model_name].widthDict[bin.name]*hist.GetNbinsX()))
                     pdf = ROOT.RooDataHist("data_obs","",ROOT.RooArgList(fitter.obsVar),hist)
-                elif config.pdfType in [pdfType_BW,pdfType_poly,pdfType_landau]:
+                elif config.pdfType in [pdfType_BW,pdfType_poly,pdfType_landau,pdfType_dcb]:
                     if config.pdfType == pdfType_BW:
+                        hist.Rebin(int(1./parameterDict[signal_model_name].widthDict[bin.name]))
                         pdf,meanVar,widthVar = fitter.makeBreitWignerPdf(*config.pdfInput)
                     elif config.pdfType == pdfType_poly:
                         pdf = fitter.makePolyPdf(*config.pdfInput)
                     elif config.pdfType == pdfType_landau:
                         pdf,meanVar,widthVar = fitter.makeLandauPdf(*config.pdfInput)
-                    config.evtYield = ROOT.RooRealVar("Yield","Yield", 0, 10000)
+                    elif config.pdfType == pdfType_dcb:
+                        pdf,meanVar,widthVar,alphaLVar,alphaRVar,nLVar,nRVar = fitter.makeDoubleCBPdf(*config.pdfInput)
+                    config.evtYield = ROOT.RooRealVar("Yield","Yield", 0.01, 10000)
                     config.data = ROOT.RooDataHist("MCData_"+sample,"",ROOT.RooArgList(fitter.obsVar,config.evtYield),hist)
                     result = pdf.fitTo(config.data)
                     if option.drawDir:
                         if not os.path.exists(os.path.abspath(option.drawDir)):
                             os.makedirs(os.path.abspath(option.drawDir))
                         c = ROOT.TCanvas("c1","c1",800,800)
+                        c.SetLogy()
                         c.cd()
                         plot = fitter.obsVar.frame()
                         config.data.plotOn(plot,ROOT.RooFit.Name("data"))
                         pdf.plotOn(plot,ROOT.RooFit.Name("Parametric"))
+                        plot.SetMinimum(1E-5)
+                        plot.SetMaximum(1E-1)
                         plot.Draw()
                         c.SaveAs(option.drawDir+bin.name+"_"+sample+".pdf")
                 getattr(w,'import')(pdf)

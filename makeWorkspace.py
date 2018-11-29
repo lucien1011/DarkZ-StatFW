@@ -12,6 +12,6 @@ pattern = option.pattern
 for textFileName in glob.glob(inputDir+pattern):
     print "*"*20
     print "Making workspace from", textFileName
-    cmd = "text2workspace.py "+textFileName
+    cmd = "text2workspace.py "+textFileName+" -v 1 --no-b-only"
     os.system(cmd)
 

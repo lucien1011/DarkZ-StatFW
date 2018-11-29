@@ -14,5 +14,10 @@ do
     #python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_v2/HZZd_M${m}/ --pattern "HZZd_*.txt"
     #python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v2/HZZd_M${m}/ --pattern "HZZd_*.txt"
     #python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v4/HZZd_M${m}/ --pattern "HZZd_*.txt"
-    python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v5/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    #python makeWorkspace.py --inputDir DataCard/2018-11-26_150p0_ParametricShape_rebin_v5/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    #python makeWorkspace.py --inputDir DataCard/2018-11-27_150p0_Unblinding_NoSB/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    #python makeWorkspace.py --inputDir DataCard/2018-11-27_150p0_Unblinding_NoSB_ParametricNumber/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    #python makeWorkspace.py --inputDir DataCard/2018-11-28_150p0_ParametricShape_rebin_v7/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    python makeWorkspace.py --inputDir DataCard/2018-11-28_150p0_ParametricShape_rebin_v10/HZZd_M${m}/ --pattern "HZZd_*.txt"
+    #python makeWorkspace.py --inputDir DataCard/2018-11-28_150p0_Unblinding_NoSB/HZZd_M${m}/ --pattern "HZZd_*.txt"
 done

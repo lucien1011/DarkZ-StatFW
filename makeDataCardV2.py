@@ -11,8 +11,8 @@ from StatFW.RateParameter import RateParameter
 from Dataset.MergeSampleDict import mergeSampleDict
 
 def getCountAndError(hist,central,width,isSR=True):
-    lower_value = central-width
-    upper_value = central+width
+    lower_value = central*(1.-width)
+    upper_value = central*(1.+width)
 
     if isSR:
         error = ROOT.Double(0.)
