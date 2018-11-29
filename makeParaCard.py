@@ -194,12 +194,12 @@ for signal_model_name in signal_model_names:
                 if config.pdfType == pdfType_hist:
                     pdf,dataHist,argSet = fitter.makeRooHistPdf(sample,hist)
                 elif config.pdfType == pdfType_data:
-                    #hist.Rebin(int(1./parameterDict[signal_model_name].widthDict[bin.name]))
-                    hist.Rebin(int(bin.parameterDict[signal_model_name].widthDict[bin.name]*hist.GetNbinsX()))
+                    #hist.Rebin(int(1./bin.parameterDict[signal_model_name].widthDict[bin.name]))
+                    #hist.Rebin(int(1./bin.parameterDict[signal_model_name].widthDict[bin.name]*hist.GetNbinsX()))
                     pdf = ROOT.RooDataHist("data_obs","",ROOT.RooArgList(fitter.obsVar),hist)
                 elif config.pdfType in [pdfType_BW,pdfType_poly,pdfType_landau,pdfType_dcb]:
                     if config.pdfType == pdfType_BW:
-                        hist.Rebin(int(1./parameterDict[signal_model_name].widthDict[bin.name]))
+                        #hist.Rebin(int(1./bin.parameterDict[signal_model_name].widthDict[bin.name]))
                         pdf,meanVar,widthVar = fitter.makeBreitWignerPdf(*config.pdfInput)
                     elif config.pdfType == pdfType_poly:
                         pdf = fitter.makePolyPdf(*config.pdfInput)
@@ -220,7 +220,7 @@ for signal_model_name in signal_model_names:
                         config.data.plotOn(plot,ROOT.RooFit.Name("data"))
                         pdf.plotOn(plot,ROOT.RooFit.Name("Parametric"))
                         plot.SetMinimum(1E-5)
-                        plot.SetMaximum(1E-1)
+                        plot.SetMaximum(1E2)
                         plot.Draw()
                         c.SaveAs(option.drawDir+bin.name+"_"+sample+".pdf")
                 getattr(w,'import')(pdf)
