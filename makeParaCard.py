@@ -62,6 +62,7 @@ parser.add_argument("--inputDir",action="store")
 parser.add_argument("--outputDir",action="store")
 parser.add_argument("--verbose",action="store_true")
 parser.add_argument("--parametric",action="store_true")
+parser.add_argument("--rateParamOnHiggs",action="store_true")
 parser.add_argument("--drawDir",action="store")
 
 option = parser.parse_args()
@@ -69,7 +70,10 @@ option = parser.parse_args()
 # ____________________________________________________________________________________________________________________________________________ ||
 # Configurable
 inputDir = option.inputDir
-commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e.txt"
+if option.rateParamOnHiggs:
+    commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e.txt"
+else:
+    commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e_HiggsSyst.txt"
 lnSystFilePathDict = {
         #"FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
         #"FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
@@ -180,6 +184,15 @@ for signal_model_name in signal_model_names:
         for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
         bin.systList += lnSystReader.makeLnSyst(bin.sysFile)
+
+        if option.rateParamOnHiggs:
+            if not ibin:
+                rate_param_name = "HiggsRate"
+                sm_higgs_rate_param = RateParameter(rate_param_name,"Higgs","1.","[0,20]")
+            else:
+                sm_higgs_rate_param = RateParameter(rate_param_name+"_"+bin.name,"Higgs","(@0)",rate_param_name)
+            bin.rateParams.append(sm_higgs_rate_param)
+        
         if option.parametric:
             shapeFilePath = os.path.join(cardDir,"shape_"+bin.name+".root")
             outputFile = ROOT.TFile(shapeFilePath,"RECREATE")
