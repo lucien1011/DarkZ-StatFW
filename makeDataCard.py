@@ -92,7 +92,7 @@ for window in mass_window_list:
             #histName = "_".join([window.makeHistName(),bkgName,bin.name,])
             histName = "_".join([window.makeHistName(),bin.inputBinName,])
             hist = collector.getObj(bkgName,histName)
-            count = hist.GetBinContent(1)*lumiFactor if bkgName != "ZPlusX" else hist.GetBinContent(1)*77.30/35.9*lumiFactor
+            count = hist.GetBinContent(1)*lumiFactor if bkgName != "ZPlusX" else hist.GetBinContent(1)*150.0/35.9*lumiFactor
             error = hist.GetBinError(1)*lumiFactor
             process = Process(bkgName,count if count >= 0. else 0.,error)
             totalBkgCount += count if count >= 0. else 0.

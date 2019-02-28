@@ -29,7 +29,8 @@ CMS_lumi.lumi_13TeV = "150 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 expOnly         = True 
-quantiles       = ["down2","down1","central","up1","up2","obs"]
+#quantiles       = ["down2","down1","central","up1","up2","obs"]
+quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
 plots           = ["epsilon","BrHZZd"]
 maxFactor       = 1.5
@@ -57,7 +58,8 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
     tree = inputFile.Get("limit")
     window_name = cardDir.split("/")[-2]
-    window_value = int(window_name.split("_")[1])
+    #window_value = int(window_name.split("_")[1])
+    window_value = int(window_name.split("_")[1].replace("M",""))
     if expOnly:
         for i,entry in enumerate(tree):
             outDict[quantiles[i]][window_value] = getattr(entry,varName)

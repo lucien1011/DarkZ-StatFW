@@ -10,12 +10,13 @@ class Systematic(object):
         self.forceNormalization = False
 
 class lnNSystematic(Systematic):
-    def __init__(self,name,process,magnitudeFunc=None,correlation=None,factor=1.,systNamePrefix=""):
+    def __init__(self,name,process,magnitudeFunc=None,correlation=None,factor=1.,systNamePrefix="",magnitude=None):
         super(lnNSystematic,self).__init__(name,process,correlation=correlation,factor=factor,systNamePrefix=systNamePrefix)
         self.systType = "lnN"
         self.name = name
         self.process = process
         self.magnitudeFunc = magnitudeFunc
+        self.magnitude = magnitude
         self.correlation = correlation
     
     def getSystName(self):

@@ -15,8 +15,7 @@ from Parametric.InputParameters_El import parameterDict_El
 from Parametric.ShapeFitConfig import pdfType_hist,pdfType_BW,pdfType_poly,pdfType_landau,pdfType_data,pdfType_dcb
 from Parametric.ShapeFitter import ShapeFitter
 
-shapeStr = "shapes * TwoEl_SR shape_TwoEl_SR.root parametric_pdf_TwoEl_SR:$PROCESS\n"
-shapeStr += "shapes * TwoMu_SR shape_TwoMu_SR.root parametric_pdf_TwoMu_SR:$PROCESS\n"
+shapeStr = "shapes * * FAKE\n"
 
 def getCountAndError(hist,central,width,isSR=True):
     lower_value = central-width
@@ -49,10 +48,10 @@ def getCountAndError(hist,central,width,isSR=True):
 def getIntegral(hist):
     error = ROOT.Double(0.)
     integral = hist.IntegralAndError(
-            #0,
-            #hist.GetNbinsX()+1,
-            1,
-            hist.GetNbinsX(),
+            0,
+            hist.GetNbinsX()+1,
+            #1,
+            #hist.GetNbinsX(),
             error,
             )
     return integral,error
@@ -76,12 +75,10 @@ if option.rateParamOnHiggs:
 else:
     commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e_HiggsSyst.txt"
 lnSystFilePathDict = {
-        #"FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
-        #"FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
-        #"TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
-        #"TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
-        "TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
-        "TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
+        "FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
+        "FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
+        "TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
+        "TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
         }
 outputDir = option.outputDir
 TFileName = "StatInput.root"
@@ -89,13 +86,10 @@ TFileName = "StatInput.root"
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 signal_model_names = [
-        "HZZd_M10",  
-        "HZZd_M15",  
-        "HZZd_M20",  
-        "HZZd_M25",  
-        "HZZd_M30",  
-        "HZZd_M4", 
-        "HZZd_M7",
+        #"HToZdZd_MZD15",
+        "HToZdZd_MZD30",
+        "HToZdZd_MZD50",
+        "HToZdZd_MZD60",
         ]
 
 data_names = [
@@ -113,12 +107,14 @@ bkg_names = [
 # ____________________________________________________________________________________________________________________________________________ ||
 # bin list
 binList = [
-        #Bin("FourEl",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",),
-        #Bin("FourMu",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",),
-        #Bin("TwoElTwoMu",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu"),
-        #Bin("TwoMuTwoEl",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e"),
-        Bin("TwoEl_SR",sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e-Norm",width=0.01,parameterDict=parameterDict_El),
-        Bin("TwoMu_SR",sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu-Norm",width=0.02/5.,parameterDict=parameterDict_Mu),
+        Bin("FourEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=0.05),
+        Bin("FourMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",width=0.02),
+        Bin("TwoElTwoMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=0.02),
+        Bin("TwoMuTwoEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=0.05), 
+        #Bin("FourEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=0.02),
+        #Bin("FourMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",width=0.01),
+        #Bin("TwoElTwoMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=0.01),
+        #Bin("TwoMuTwoEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=0.02),
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
@@ -147,41 +143,49 @@ for signal_model_name in signal_model_names:
     if not os.path.exists(os.path.abspath(cardDir)):
         os.makedirs(os.path.abspath(cardDir))
 
-    central_value = float(signal_model_name.replace("HZZd_M",""))
+    central_value = float(signal_model_name.replace("HToZdZd_MZD",""))
     binListCopy = copy.deepcopy(binList)
     for ibin,bin in enumerate(binListCopy):
         if option.verbose: print "-"*20
         if option.verbose: print bin.name
         histName = bin.inputBinName
 
+        bin.systList = []
+
         # bkg
         for bkgName in bkg_names:
             reader.openFile(inputDir,bkgName,TFileName)
             hist = reader.getObj(bkgName,histName)
-            count,error = getIntegral(hist) 
+            #count,error = getIntegral(hist) 
+            count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
             process = Process(bkgName,count if count >= 0. else 1e-12,error)
             bin.processList.append(process)
+            if count and "ZPlusX" not in bkgName and "ggZZ" not in bkgName:
+                #mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],lambda syst,procName,anaBin: float(1.+error/count))
+                mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],magnitude=float(1.+error/count))
+                bin.systList.append(copy.deepcopy(mcSyst))
 
         # data
         dataCount = 0.
         for sample in data_names:
             reader.openFile(inputDir,sample,TFileName)
             hist = reader.getObj(sample,histName)
-            count,error = getIntegral(hist)
+            #count,error = getIntegral(hist)
+            count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
             dataCount += count
         error = math.sqrt(dataCount)
         bin.data = Process("data_obs",int(dataCount),error)
         
         # signal
         hist = reader.getObj(signal_model_name,histName)
-        count,error = getIntegral(hist)
+        #count,error = getIntegral(hist)
+        count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
         bin.processList.append(Process(signal_model_name,count if count >= 0. else 1e-12,error))
         
         # systematics
-        bin.systList = []
         if count:
-            mcSyst = lnNSystematic("SigStat_"+bin.name,[ signal_model_name, ],lambda syst,procName,anaBin: float(1.+error/count))
-            #bin.systList.append(copy.deepcopy(mcSyst))
+            mcSyst = lnNSystematic("SigStat_"+bin.name,[ signal_model_name, ],magnitude=float(1.+error/count))
+            bin.systList.append(copy.deepcopy(mcSyst))
         for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
         bin.systList += lnSystReader.makeLnSyst(bin.sysFile)

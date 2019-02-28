@@ -51,11 +51,11 @@ parameterDict_El = {
                             pdfInput=[
                                 "HZZd_M4",
                                 "mean"+postfix,-1.,1.,
-                                "width"+postfix,0.,300.,
-                                "alphaL"+postfix,0.1,50.,
-                                "alphaR"+postfix,0.1,50.,
-                                "nL"+postfix,0.1,50.,
-                                "nR"+postfix,0.1,50.,
+                                "width"+postfix,0.00001,1.,
+                                "alphaL"+postfix,0.1,3.,
+                                "alphaR"+postfix,0.1,3.,
+                                "nL"+postfix,0.1,5.,
+                                "nR"+postfix,0.1,5.,
                                 ],
                             histFunc=None,
                             widthDict={
@@ -65,7 +65,7 @@ parameterDict_El = {
                             ),
 
         "HZZd_M7":  ShapeFitConfig(
-                            rebinFactor=5,
+                            rebinFactor=1,
                             #pdfType="BreitWigner",
                             #pdfInput=[
                             #    "HZZd_M7",
@@ -90,7 +90,7 @@ parameterDict_El = {
                                 },
                             ), 
         "HZZd_M10":  ShapeFitConfig(
-                            rebinFactor=5,
+                            rebinFactor=1,
                             #pdfType="BreitWigner",
                             #pdfInput=[
                             #    "HZZd_M10",
@@ -115,7 +115,7 @@ parameterDict_El = {
                                 },                            
                             ), 
         "HZZd_M15":  ShapeFitConfig(
-                            rebinFactor=5,
+                            rebinFactor=1,
                             #pdfType="BreitWigner",
                             #pdfInput=[
                             #    "HZZd_M15",
