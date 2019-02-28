@@ -47,4 +47,5 @@
 #python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-14_35p9_RatioCut0p05/ --verbose --outputDir HToZdZd_DataCard/2019-02-15_35p9_RatioCut0p05_MCStatUnc_Width0p05/
 #python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-18_35p9_RatioCut0p05/ --verbose --outputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p05_MCStatUnc_Width0p05/
 #python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-18_35p9_RatioCut0p05/ --verbose --outputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p05_MCStatUnc_Width0p01And0p02/
-python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-18_35p9_RatioCut0p02/ --verbose --outputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p02And0p01_MCStatUnc/
+#python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-18_35p9_RatioCut0p02/ --verbose --outputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p02And0p01_MCStatUnc/
+python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-28_35p9_RatioCut0p02/ --verbose --outputDir HToZdZd_DataCard/2019-02-28_35p9_RatioCut0p05_MCStatUnc_Width0p02And0p05/

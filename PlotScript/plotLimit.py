@@ -3,7 +3,7 @@ from collections import OrderedDict
 import Utils.CMS_lumi as CMS_lumi
 import Utils.tdrstyle as tdrstyle
 
-from Physics.HZZd_XS import *
+from Physics.Zd_XS import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
@@ -24,24 +24,31 @@ CMS_lumi.extraText = "Preliminary"
 CMS_lumi.cmsTextSize = 0.65
 CMS_lumi.outOfFrame = True
 #CMS_lumi.lumi_13TeV = "77.3 fb^{-1}"
-#CMS_lumi.lumi_13TeV = "35.9 fb^{-1}"
-CMS_lumi.lumi_13TeV = "150 fb^{-1}"
+CMS_lumi.lumi_13TeV = "35.9 fb^{-1}"
+#CMS_lumi.lumi_13TeV = "150 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 expOnly         = True 
 #quantiles       = ["down2","down1","central","up1","up2","obs"]
 quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
-plots           = ["epsilon","BrHZZd"]
+#plots           = ["epsilon","BrHZZd"]
+plots           = ["kappa","BrHZdZd"]
 maxFactor       = 1.5
 y_label_dict    = {
                     "epsilon": "#varepsilon",
+                    "kappa": "#kappa",
                     "BrHZZd": "Br(h #rightarrow Z Z_{d})",
+                    "BrHZdZd": "Br(h #rightarrow Z_{d} Z_{d})",
                   }
 
 def calculate(r_value,window_value,what):
     if what == "epsilon":
         return epsilon*math.sqrt(r_value)
+    elif what == "kappa":
+        return kappa*math.sqrt(r_value)
+    elif what == "BrHZdZd":
+        return r_value*xs_HZdZd_dict[window_value]/xs_brHZdZd_dict[window_value]
     elif what == "BrHZZd":
         return r_value*xs_dict[window_value]/xs_brHZZd_dict[window_value]
     else:
@@ -59,7 +66,8 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     tree = inputFile.Get("limit")
     window_name = cardDir.split("/")[-2]
     #window_value = int(window_name.split("_")[1])
-    window_value = int(window_name.split("_")[1].replace("M",""))
+    #window_value = int(window_name.split("_")[1].replace("M",""))
+    window_value = int(window_name.split("_")[1].replace("MZD",""))
     if expOnly:
         for i,entry in enumerate(tree):
             outDict[quantiles[i]][window_value] = getattr(entry,varName)

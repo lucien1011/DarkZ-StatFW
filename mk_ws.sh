@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #for m in 4 7 10 15 20 25 30 ; 
-for m in 30 50 60 ; 
+for m in 4 5 6 7 8 9 10 15 20 25 30 35 40 45 50 55 60; 
 do 
     #python makeWorkspace.py --inputDir DataCard/2018-10-23_Unblinding/window_${m}_0p02/
     #python makeWorkspace.py --inputDir DataCard/2018-10-24_Unblinding/window_${m}_0p02/
@@ -33,5 +33,6 @@ do
     #python makeWorkspace.py --inputDir HToZdZd_DataCard/2019-02-15_35p9_RatioCut0p05_MCStatUnc_Width0p05/HToZdZd_MZD${m}/ --pattern "HToZdZd_*.txt"
     #python makeWorkspace.py --inputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p05_MCStatUnc_Width0p05/HToZdZd_MZD${m}/ --pattern "HToZdZd_*.txt"
     #python makeWorkspace.py --inputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p05_MCStatUnc_Width0p01And0p02/HToZdZd_MZD${m}/ --pattern "HToZdZd_*.txt"
-    python makeWorkspace.py --inputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p02And0p01_MCStatUnc/HToZdZd_MZD${m}/ --pattern "HToZdZd_*.txt"
+    #python makeWorkspace.py --inputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p02And0p01_MCStatUnc/HToZdZd_MZD${m}/ --pattern "HToZdZd_*.txt"
+    python makeWorkspace.py --inputDir HToZdZd_DataCard/2019-02-28_35p9_RatioCut0p05_MCStatUnc_Width0p02And0p05/HToZdZd_MZD${m}/ --pattern "HToZdZd_*.txt"
 done

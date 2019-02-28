@@ -86,9 +86,22 @@ TFileName = "StatInput.root"
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 signal_model_names = [
-        #"HToZdZd_MZD15",
+        "HToZdZd_MZD4",
+        "HToZdZd_MZD5",
+        "HToZdZd_MZD6",
+        "HToZdZd_MZD7",
+        "HToZdZd_MZD8",
+        "HToZdZd_MZD9",
+        "HToZdZd_MZD10",
+        "HToZdZd_MZD15",
+        "HToZdZd_MZD20",
+        "HToZdZd_MZD25",
         "HToZdZd_MZD30",
+        "HToZdZd_MZD35",
+        "HToZdZd_MZD40",
+        "HToZdZd_MZD45",
         "HToZdZd_MZD50",
+        "HToZdZd_MZD55",
         "HToZdZd_MZD60",
         ]
 
@@ -158,7 +171,7 @@ for signal_model_name in signal_model_names:
             hist = reader.getObj(bkgName,histName)
             #count,error = getIntegral(hist) 
             count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
-            process = Process(bkgName,count if count >= 0. else 1e-12,error)
+            process = Process(bkgName,count if count > 0. else 1e-6,error)
             bin.processList.append(process)
             if count and "ZPlusX" not in bkgName and "ggZZ" not in bkgName:
                 #mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],lambda syst,procName,anaBin: float(1.+error/count))
@@ -180,7 +193,7 @@ for signal_model_name in signal_model_names:
         hist = reader.getObj(signal_model_name,histName)
         #count,error = getIntegral(hist)
         count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
-        bin.processList.append(Process(signal_model_name,count if count >= 0. else 1e-12,error))
+        bin.processList.append(Process(signal_model_name,count if count > 0. else 1e-6,error))
         
         # systematics
         if count:

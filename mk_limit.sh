@@ -38,4 +38,5 @@
 #python runCombineTask.py --inputDir HToZdZd_DataCard/2019-02-14_35p9_RatioCut0p05/ --selectStr "HToZdZd_MZD" --option "-t -1 --run=blind"
 #python runCombineTask.py --inputDir HToZdZd_DataCard/2019-02-15_35p9_RatioCut0p05_MCStatUnc_Width0p05/ --selectStr "HToZdZd_MZD" --option "-t -1 --run=blind"
 #python runCombineTask.py --inputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p05_MCStatUnc_Width0p01And0p02/ --selectStr "HToZdZd_MZD" --option "-t -1 --run=blind"
-python runCombineTask.py --inputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p02And0p01_MCStatUnc/ --selectStr "HToZdZd_MZD" --option "-t -1 --run=blind"
+#python runCombineTask.py --inputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p02And0p01_MCStatUnc/ --selectStr "HToZdZd_MZD" --option "-t -1 --run=blind"
+python runCombineTask.py --inputDir HToZdZd_DataCard/2019-02-28_35p9_RatioCut0p05_MCStatUnc_Width0p02And0p05/ --selectStr "HToZdZd_MZD" --option "-t -1 --run=blind"
