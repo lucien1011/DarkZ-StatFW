@@ -35,6 +35,7 @@
 #python makeParaCard.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l118To130_Nominal/2018-11-21_DarkPhotonSR_mZ2-35_Norm/ --verbose --outputDir DataCard/2018-11-30_150p0_ParametricShape_SignalDCB_HiggsRateParam/ --parametric --drawDir ~/public_html/Higgs/DarkZ/StatFW/2018-11-30_150p0_ParametricShape_SignalDCB_HiggsRateParam/ --rateParamOnHiggs
 #python makeParaCard.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l118To130_Nominal/2018-11-21_DarkPhotonSR_mZ2-35_Norm/ --verbose --outputDir DataCard/2018-12-07_150p0_ParametricShape_SignalDCB_HiggsRateParam/ --parametric --drawDir ~/public_html/Higgs/DarkZ/StatFW/2018-12-07_150p0_ParametricShape_SignalDCB_HiggsRateParam/ --rateParamOnHiggs
 #python makeParaCard.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l118To130_Nominal/2018-12-07_DarkPhotonSR_mZ2-35_Norm/ --verbose --outputDir DataCard/2018-12-07_150p0_ParametricShape_SignalDCB_HiggsRateParam/ --parametric --drawDir ~/public_html/Higgs/DarkZ/StatFW/2018-12-07_150p0_ParametricShape_SignalDCB_HiggsRateParam/ --rateParamOnHiggs
+python makeParaCard.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l118To130_Nominal/2019-03-29_DarkPhotonSR_mZ2-35_Norm/ --verbose --outputDir DataCard/2019-03-29_136p1_ParametricShape_SignalDCB_HiggsRateParam/ --parametric --drawDir ~/public_html/Higgs/DarkZ/StatFW/2019-03-29_136p1_ParametricShape_SignalDCB_HiggsRateParam/ --rateParamOnHiggs
 
 # ===============================================================
 # Cards for HToZdZd
@@ -48,4 +49,5 @@
 #python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-18_35p9_RatioCut0p05/ --verbose --outputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p05_MCStatUnc_Width0p05/
 #python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-18_35p9_RatioCut0p05/ --verbose --outputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p05_MCStatUnc_Width0p01And0p02/
 #python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-18_35p9_RatioCut0p02/ --verbose --outputDir HToZdZd_DataCard/2019-02-18_35p9_RatioCut0p02And0p01_MCStatUnc/
-python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-28_35p9_RatioCut0p02/ --verbose --outputDir HToZdZd_DataCard/2019-02-28_35p9_RatioCut0p05_MCStatUnc_Width0p02And0p05/
+#python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-02-28_35p9_RatioCut0p02/ --verbose --outputDir HToZdZd_DataCard/2019-02-28_35p9_RatioCut0p05_MCStatUnc_Width0p02And0p05/
+#python makeHToZdZdCard.py --inputDir /raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-03-29_136p1_RatioCut0p05/ --verbose --outputDir HToZdZd_DataCard/2019-03-29_136p1_RatioCut0p05/
