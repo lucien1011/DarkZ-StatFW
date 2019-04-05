@@ -44,7 +44,7 @@ class DataCard(object):
                 self.binName += bin.name+tagStr
                 self.processName += process.name+tagStr
                 if bin.isSignal(process.name):
-                    self.processNum += "0"+tagStr
+                    self.processNum += str(-iprocess)+tagStr
                 else:
                     self.processNum += str(iprocess+1)+tagStr
         self.observation = "observation"

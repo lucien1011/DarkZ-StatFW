@@ -84,12 +84,8 @@ class SystWriter(object):
     def writeRateParams(self,binList):
         outputStr = ""
         for analysisBin in binList:
-            analysisBin.parameterList = []
             for rateParam in analysisBin.rateParams:
                 outputStr += self.makeRateParamLine(rateParam.name,analysisBin.name,rateParam.process,rateParam.formulaStr,rateParam.parameterStr)
-                for paramStr in rateParam.parameterStr.split(","):
-                    if paramStr not in analysisBin.parameterList:
-                        analysisBin.parameterList.append(paramStr)
         return outputStr
 
     def writeParameters(self,binList):

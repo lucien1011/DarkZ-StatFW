@@ -10,6 +10,12 @@ from StatFW.RateParameter import RateParameter
 
 from Dataset.MergeSampleDict import mergeSampleDict
 
+class SignalModel(object):
+    def __init__(self,name,signal_list,central_value):
+        self.name = name
+        self.signal_list = signal_list
+        self.central_value = central_value
+
 def getCountAndError(hist,central,width,isSR=True):
     lower_value = central*(1.-width)
     upper_value = central*(1.+width)
@@ -44,6 +50,7 @@ parser.add_argument("--inputDir",action="store")
 parser.add_argument("--outputDir",action="store")
 parser.add_argument("--verbose",action="store_true")
 parser.add_argument("--sideband",action="store_true")
+parser.add_argument("--epsilon",action="store_true")
 
 option = parser.parse_args()
 
@@ -64,17 +71,21 @@ lnSystFilePathDict = {
         }
 outputDir = option.outputDir
 TFileName = "StatInput.root"
+epsilon_name = "epsilon"
+init_epsilon = 0.05
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
-signal_model_names = [
-        "HZZd_M10",  
-        "HZZd_M15",  
-        "HZZd_M20",  
-        "HZZd_M25",  
-        "HZZd_M30",  
-        "HZZd_M4", 
-        "HZZd_M7",
+signal_models = [
+        #SignalModel("Zd_MZD10",["HZZd_M10"],10.),  
+        SignalModel("Zd_MZD15",["HZZd_M15","ppZZd4l_M15"],15.),  
+        #SignalModel("Zd_MZD15",["HZZd_M15",],15.),  
+        #SignalModel("Zd_MZD20",["HZZd_M20"],20.),  
+        #SignalModel("Zd_MZD25",["HZZd_M25"],25.),  
+        #SignalModel("Zd_MZD30",["HZZd_M30",],30.),  
+        SignalModel("Zd_MZD30",["HZZd_M30","ppZZd4l_M30"],30.),  
+        #SignalModel("Zd_MZD4",["HZZd_M4"],4.), 
+        #SignalModel("Zd_MZD7",["HZZd_M7"],7.),
         ]
 
 data_names = [
@@ -92,14 +103,19 @@ bkg_names = [
 # ____________________________________________________________________________________________________________________________________________ ||
 # bin list
 binList = [
-        #Bin("FourEl",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",),
-        #Bin("FourMu",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",),
-        #Bin("TwoElTwoMu",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu"),
-        #Bin("TwoMuTwoEl",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e"),
-        Bin("TwoEl_SR",sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e",width=0.05),
-        Bin("TwoMu_SR",sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu",width=0.02),
-        Bin("TwoEl_SB",sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e",width=0.05),
-        Bin("TwoMu_SB",sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu",width=0.02),
+        #Bin("TwoEl_SR",sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e",width=0.05),
+        #Bin("TwoMu_SR",sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu",width=0.02),
+        #Bin("TwoEl_SB",sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e",width=0.05),
+        #Bin("TwoMu_SB",sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu",width=0.02),
+
+        Bin("TwoEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsSR",width=0.05),
+        Bin("TwoMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsSR",width=0.02),
+        Bin("TwoEl_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsSR",width=0.05),
+        Bin("TwoMu_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsSR",width=0.02),
+        Bin("TwoEl_HiggsSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsSB",width=0.05),
+        Bin("TwoMu_HiggsSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsSB",width=0.02),
+        Bin("TwoEl_HiggsSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsSB",width=0.05),
+        Bin("TwoMu_HiggsSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsSB",width=0.02),
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
@@ -113,11 +129,12 @@ reader = FileReader()
 if not os.path.exists(os.path.abspath(outputDir)):
     os.makedirs(os.path.abspath(outputDir))
 
-for signal_model_name in signal_model_names:
-    reader.openFile(inputDir,signal_model_name,TFileName)
+for signal_model in signal_models:
+    signal_model_name = signal_model.name
     if option.verbose: print "*"*100
     if option.verbose: print "Making data card for ",signal_model_name
-    central_value = float(signal_model_name.replace("HZZd_M",""))
+    #central_value = float(signal_model_name.replace("HZZd_M",""))
+    central_value = signal_model.central_value
     binListCopy = [b for b in copy.deepcopy(binList) if option.sideband or (not option.sideband and "SR" in b.name)]
     for ibin,bin in enumerate(binListCopy):
         if option.verbose: print "-"*20
@@ -128,7 +145,7 @@ for signal_model_name in signal_model_names:
         for bkgName in bkg_names:
             reader.openFile(inputDir,bkgName,TFileName)
             hist = reader.getObj(bkgName,histName)
-            count,error = getCountAndError(hist,central_value,bin.width,isSR="SR" in bin.name)
+            count,error = getCountAndError(hist,central_value,bin.width,isSR=bin.name.endswith("_SR"))
             process = Process(bkgName,count if count >= 0. else 1e-12,error)
             bin.processList.append(process)
 
@@ -137,21 +154,25 @@ for signal_model_name in signal_model_names:
         for sample in data_names:
             reader.openFile(inputDir,sample,TFileName)
             hist = reader.getObj(sample,histName)
-            count,error = getCountAndError(hist,central_value,bin.width,isSR="SR" in bin.name)
+            count,error = getCountAndError(hist,central_value,bin.width,isSR=bin.name.endswith("_SR"))
             dataCount += count
         error = math.sqrt(dataCount)
         bin.data = Process("data_obs",int(dataCount),error)
         
-        # signal
-        hist = reader.getObj(signal_model_name,histName)
-        count,error = copy.deepcopy(getCountAndError(hist,central_value,bin.width,isSR="SR" in bin.name))
-        bin.processList.append(Process(signal_model_name,count if count >= 0. else 1e-12,error))
-        
-        # systematics
         bin.systList = []
-        if count:
-            mcSyst = lnNSystematic("SigStat_"+bin.name,[ signal_model_name, ],lambda syst,procName,anaBin: float(1.+error/count))
-            #bin.systList.append(copy.deepcopy(mcSyst))
+        
+        # signal
+        for each_signal_model_name in signal_model.signal_list:
+            reader.openFile(inputDir,each_signal_model_name,TFileName)
+            hist = reader.getObj(each_signal_model_name,histName)
+            count,error = copy.deepcopy(getCountAndError(hist,central_value,bin.width,isSR=bin.name.endswith("_SR")))
+            bin.processList.append(Process(each_signal_model_name,count if count >= 0. else 1e-12,error))
+            
+            # systematics
+            if count:
+                mcSyst = lnNSystematic("SigStat_"+bin.name,[ each_signal_model_name, ],lambda syst,procName,anaBin: float(1.+error/count))
+                #bin.systList.append(copy.deepcopy(mcSyst))
+        
         for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
         bin.systList += lnSystReader.makeLnSyst(bin.sysFile)
@@ -163,6 +184,21 @@ for signal_model_name in signal_model_names:
             else:
                 sm_higgs_rate_param = RateParameter(rate_param_name+"_"+bin.name,"Higgs","(@0)",rate_param_name)
             bin.rateParams.append(sm_higgs_rate_param)
+
+        if option.epsilon:
+            eps_rate_param_name = "EpsilonRate_"+bin.name
+            for each_signal_model_name in signal_model.signal_list:
+                if "ppZZd" in each_signal_model_name:
+                    eps_power = 4
+                else:
+                    eps_power = 2
+                bin.rateParams.append(RateParameter(eps_rate_param_name,each_signal_model_name,"(@0)^"+str(eps_power)+"/"+str(init_epsilon)+"^"+str(eps_power),epsilon_name))
+
+    if option.epsilon:
+        bin.parameterList = [epsilon_name,]
+        bin.paramDict = {
+                epsilon_name: [epsilon_name,"0.02","0.002.","[-5,5]"],
+                }
 
     config = CardConfig(signal_model_name)
     dataCard = DataCard(config) 
