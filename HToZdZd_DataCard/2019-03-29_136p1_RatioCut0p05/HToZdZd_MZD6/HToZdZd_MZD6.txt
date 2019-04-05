@@ -1,0 +1,40 @@
+
+*     number of categories
+*     number of samples minus one
+*     number of nuisance parameters
+-----------------------------------------------------------------------
+shapes * * FAKE
+---------------------------------------------------------------------------------
+
+bin	FourEl	FourMu	TwoElTwoMu	TwoMuTwoEl	
+observation	0	0	0	0	
+---------------------------------------------------------------------------------
+bin	FourEl	FourEl	FourEl	FourEl	FourEl	FourMu	FourMu	FourMu	FourMu	FourMu	TwoElTwoMu	TwoElTwoMu	TwoElTwoMu	TwoElTwoMu	TwoElTwoMu	TwoMuTwoEl	TwoMuTwoEl	TwoMuTwoEl	TwoMuTwoEl	TwoMuTwoEl	
+
+
+process	Higgs	qqZZ	ggZZ	ZPlusX	HToZdZd_MZD6	Higgs	qqZZ	ggZZ	ZPlusX	HToZdZd_MZD6	Higgs	qqZZ	ggZZ	ZPlusX	HToZdZd_MZD6	Higgs	qqZZ	ggZZ	ZPlusX	HToZdZd_MZD6	
+process	1	2	3	4	0	1	2	3	4	0	1	2	3	4	0	1	2	3	4	0	
+rate		1e-06		1e-06		0.00109011446702		1e-06		28.8299970619		1e-06		1e-06		0.0021873518265		1e-06		60.3551841398		1e-06		1e-06		0.000685846162669		1e-06		40.3354243455		1e-06		0.0338330046893		0.00119037293889		1e-06		52.6415040527		
+---------------------------------------------------------------------------------
+
+SigStat_FourEl	lnN	-	-	-	-	1.01444408151	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	
+lumi	lnN	1.025	1.025	1.025	-	-	1.025	1.025	1.025	-	-	1.025	1.025	1.025	-	-	1.025	1.025	1.025	-	-	
+HZZBr	lnN	1.02	1.02	1.02	-	-	1.02	1.02	1.02	-	-	1.02	1.02	1.02	-	-	1.02	1.02	1.02	-	-	
+BkgUnc	lnN	-	-	-	1.3	-	-	-	-	1.3	-	-	-	-	1.3	-	-	-	-	1.3	-	
+QCDScale_Higgs	lnN	1.039	-	-	-	-	1.039	-	-	-	-	1.039	-	-	-	-	1.039	-	-	-	-	
+PDFScale_Higgs	lnN	1.039	-	-	-	-	1.039	-	-	-	-	1.039	-	-	-	-	1.039	-	-	-	-	
+QCDScale_qqZZ	lnN	-	1.042	-	-	-	-	1.042	-	-	-	-	1.042	-	-	-	-	1.042	-	-	-	
+PDFScale_qqZZ	lnN	-	1.034	-	-	-	-	1.034	-	-	-	-	1.034	-	-	-	-	1.034	-	-	-	
+EwkCorr_qqZZ	lnN	-	1.001	-	-	-	-	1.001	-	-	-	-	1.001	-	-	-	-	1.001	-	-	-	
+Interference	lnN	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	
+ElSF	lnN	-	1.09	1.09	1.09	-	-	-	-	-	-	-	1.04	1.04	1.04	-	-	1.04	1.04	1.04	-	
+ElSca	lnN	-	1.005	1.005	1.005	-	-	-	-	-	-	-	1.005	1.005	1.005	-	-	1.005	1.005	1.005	-	
+ElRes	lnN	-	1.02	1.02	1.02	-	-	-	-	-	-	-	1.02	1.02	1.02	-	-	1.02	1.02	1.02	-	
+SigStat_FourMu	lnN	-	-	-	-	-	-	-	-	-	1.01093742614	-	-	-	-	-	-	-	-	-	-	
+MuSF	lnN	-	-	-	-	-	-	1.049	1.049	1.049	-	-	1.025	1.025	1.025	-	-	1.025	1.025	1.025	-	
+MuSca	lnN	-	-	-	-	-	-	1.005	1.005	1.005	-	-	1.005	1.005	1.005	-	-	1.005	1.005	1.005	-	
+MuRes	lnN	-	-	-	-	-	-	1.02	1.02	1.02	-	-	1.02	1.02	1.02	-	-	1.02	1.02	1.02	-	
+SigStat_TwoElTwoMu	lnN	-	-	-	-	-	-	-	-	-	-	-	-	-	-	1.01311735122	-	-	-	-	-	
+qqZZStat_TwoMuTwoEl	lnN	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	2.0	-	-	-	
+SigStat_TwoMuTwoEl	lnN	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	-	1.01149457523	
+
