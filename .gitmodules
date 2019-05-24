@@ -1,7 +1,4 @@
 
-[submodule "Core"]
-	path = Core
-	url = git@github.com:lucien1011/NTuple-Runner.git
 [submodule "CombineAPI"]
 	path = CombineAPI
 	url = git@github.com:lucien1011/CombineAPI.git
