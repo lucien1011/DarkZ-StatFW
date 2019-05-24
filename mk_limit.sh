@@ -34,7 +34,8 @@
 #python runCombineTask.py --inputDir DataCard/2019-04-04_136p1_CutAndCount_HiggsRateParam/ --selectStr "Zd_MZD" --option "-t -1 --run=blind"
 #python runCombineTask.py --inputDir DataCard/2019-04-04_136p1_CutAndCount_ppToZZd_HiggsRateParam/ --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
 #python runCombineTask.py --inputDir DataCard/2019-04-04_136p1_CutAndCount_EpsilonInDC_HiggsRateParam/ --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
-python runCombineTask.py --inputDir DataCard/2019-04-04_136p1_CutAndCount_qqZZXs0p04pb_HiggsRateParam/ --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
+#python runCombineTask.py --inputDir DataCard/2019-04-04_136p1_CutAndCount_qqZZXs0p04pb_HiggsRateParam/ --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
+python runCombineTask.py --inputDir DataCard/2019-05-09_136p1_EpsilonInDC_qqZZXs0p04pb_HiggsRateParam/ --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
 
 # ===============================================================
 # Cards for HToZdZd

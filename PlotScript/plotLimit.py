@@ -35,10 +35,13 @@ expOnly         = True
 quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
 #plots           = ["epsilon","BrHZZd"]
-plots           = ["kappa","BrHZdZd"]
+#plots           = ["kappa","BrHZdZd"]
+#plots           = ["epsilon_EpsPOI"]
+plots           = ["BrHZZd"]
 maxFactor       = 1.5
 y_label_dict    = {
                     "epsilon": "#varepsilon",
+                    "epsilon_EpsPOI": "#varepsilon",
                     "kappa": "#kappa",
                     "BrHZZd": "Br(h #rightarrow Z Z_{d})",
                     "BrHZdZd": "Br(h #rightarrow Z_{d} Z_{d})",
@@ -53,6 +56,8 @@ def calculate(r_value,window_value,what):
         return r_value*xs_HZdZd_dict[window_value]/xs_brHZdZd_dict[window_value]
     elif what == "BrHZZd":
         return r_value*xs_dict[window_value]/xs_brHZZd_dict[window_value]
+    elif what == "epsilon_EpsPOI":
+        return r_value
     else:
         raise RuntimeError
 

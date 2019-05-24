@@ -40,7 +40,9 @@
 #python makeDataCardV2.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l118To130_Nominal/2019-03-29_DarkPhotonSR_mZ2-35_Norm/ --verbose --outputDir DataCard/2019-04-04_136p1_CutAndCount_HiggsRateParam/ --sideband
 #python makeDataCardV2.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-04-04_DarkPhotonSR_mZ2-35_Norm/ --verbose --outputDir DataCard/2019-04-04_136p1_CutAndCount_ppToZZd_HiggsRateParam/ --sideband --epsilon
 #python makeDataCardV2.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l118To130_Nominal/2019-03-29_DarkPhotonSR_mZ2-35_Norm/ --verbose --outputDir DataCard/2019-04-04_136p1_CutAndCount_EpsilonInDC_HiggsRateParam/ --sideband --epsilon
-python makeDataCardV2.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-04-04_DarkPhotonSR_mZ2-35_Norm_qqZZXs0p04pb/ --verbose --outputDir DataCard/2019-04-04_136p1_CutAndCount_qqZZXs0p04pb_HiggsRateParam/ --sideband --epsilon
+#python makeDataCardV2.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-04-04_DarkPhotonSR_mZ2-35_Norm_qqZZXs0p04pb/ --verbose --outputDir DataCard/2019-04-04_136p1_CutAndCount_qqZZXs0p04pb_HiggsRateParam/ --sideband --epsilon
+#python makeDataCardV2.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-05-09_DarkPhotonSR_mZ2-35_Norm_qqZZXs0p04pb/ --verbose --outputDir DataCard/2019-05-09_136p1_EpsilonInDC_qqZZXs0p04pb_HiggsRateParam/ --sideband --epsilon
+python makeDataCardV2.py --inputDir /raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-05-10_CutAndCount_m4lSR/ --verbose --outputDir DataCard/2019-05-09_136p1_EpsilonInDC_qqZZXs0p04pb_HiggsRateParam/ --sideband --epsilon
 
 # ===============================================================
 # Cards for HToZdZd
