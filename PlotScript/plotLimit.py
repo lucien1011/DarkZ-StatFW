@@ -36,8 +36,8 @@ quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
 #plots           = ["epsilon","BrHZZd"]
 #plots           = ["kappa","BrHZdZd"]
-#plots           = ["epsilon_EpsPOI"]
-plots           = ["BrHZZd"]
+plots           = ["epsilon_EpsPOI"]
+#plots           = ["BrHZZd"]
 maxFactor       = 1.5
 y_label_dict    = {
                     "epsilon": "#varepsilon",
@@ -155,59 +155,3 @@ for plot in plots:
         c.SetLogy()
 
     c.SaveAs(option.outputPath.replace(".pdf","_"+plot+".pdf"))
-        
-    #x_list = []
-    #y_xs_list = []
-    #y_epsilon_list = []
-    #y_br4l_list = []
-    #y_brHZZd_list = []
-    #y_brHZX_XToll_list = []
-    ##if quantile != "central": continue
-    #window_values = quanDict.keys()
-    #window_values.sort()
-    ##for window_value,value in quanDict.iteritems():
-    #for window_value in window_values:
-    #    value = quanDict[window_value]
-    #    x_list.append(window_value)
-    #    y_xs_list.append(value*xs_dict[window_value])
-    #    y_epsilon_list.append(epsilon*math.sqrt(value))
-    #    y_br4l_list.append(value*xs_dict[window_value]/higgs_xs)
-    #    y_brHZZd_list.append(value*xs_dict[window_value]/xs_brHZZd_dict[window_value])
-    #    y_brHZX_XToll_list.append(value*xs_dict[window_value]/higgs_xs/z_2l_br/h_ZZ_br)
-    #    #print window_value,value,xs_dict[window_value],value*xs_dict[window_value]
-    #xArray = array.array('d',x_list)
-    #yArray = array.array('d',y_xs_list)
-    #espArray = array.array('d',y_epsilon_list)
-    #br4lArray = array.array('d',y_br4l_list)
-    #brHZZdArray = array.array('d',y_brHZZd_list)
-    #brHZX_XTollArray = array.array('d',y_brHZX_XToll_list)
-    #out_graph = ROOT.TGraph(nPoints,xArray,yArray)
-    #out_epsilon_graph = ROOT.TGraph(nPoints,xArray,espArray)
-    #out_br4l_graph = ROOT.TGraph(nPoints,xArray,br4lArray)
-    #out_brHZZd_graph = ROOT.TGraph(nPoints,xArray,brHZZdArray)
-    #out_brHZX_XToll_graph = ROOT.TGraph(nPoints,xArray,brHZX_XTollArray)
-    #outGraphDict[quantile]["epsilon"] = out_epsilon_graph
-    #outGraphDict[quantile]["BrHZZd"] = out_brHZZd_graph
-
-#for quantile,quanDict in outGraphDict.iteritems():
-#    outGraphDict[quantile]["epsilon"]
-
-#c = ROOT.TCanvas()
-#out_graph.Draw()
-#c.SaveAs(option.outputPath.replace(".pdf","_xs.pdf"))
-#
-#c = ROOT.TCanvas()
-#out_epsilon_graph.Draw()
-#c.SaveAs(option.outputPath.replace(".pdf","_epsilon.pdf"))
-#
-#c = ROOT.TCanvas()
-#out_br4l_graph.Draw()
-#c.SaveAs(option.outputPath.replace(".pdf","_br4l.pdf"))
-#
-#c = ROOT.TCanvas()
-#out_brHZZd_graph.Draw()
-#c.SaveAs(option.outputPath.replace(".pdf","_brHZZd.pdf"))
-#
-#c = ROOT.TCanvas()
-#out_brHZX_XToll_graph.Draw()
-#c.SaveAs(option.outputPath.replace(".pdf","_brHZX_XToll.pdf"))

@@ -8,62 +8,20 @@ from StatFW.Channel import Bin
 from StatFW.FileReader import FileReader
 from StatFW.RateParameter import RateParameter
 
-from Dataset.MergeSampleDict import mergeSampleDict
-
-from Parametric.InputParameters_Mu import parameterDict_Mu
-from Parametric.InputParameters_El import parameterDict_El
-from Parametric.ShapeFitConfig import pdfType_hist,pdfType_BW,pdfType_poly,pdfType_landau,pdfType_data,pdfType_dcb
-from Parametric.ShapeFitter import ShapeFitter
+from Utils.Hist import getCountAndError,getIntegral
+from Utils.DataCard import SignalModel
+from Utils.mkdir_p import mkdir_p
 
 shapeStr = "shapes * * FAKE\n"
 
-def getCountAndError(hist,central,width,isSR=True):
-    lower_value = central-width
-    upper_value = central+width
-
-    if isSR:
-        error = ROOT.Double(0.)
-        integral = hist.IntegralAndError(
-                hist.GetXaxis().FindFixBin(lower_value),
-                hist.GetXaxis().FindFixBin(upper_value),
-                error,
-                )
-    else:
-        error1 = ROOT.Double(0.)
-        integral1 = hist.IntegralAndError(
-                0,
-                hist.GetXaxis().FindFixBin(lower_value)-1,
-                error1,
-                )
-        error2 = ROOT.Double(0.)
-        integral2 = hist.IntegralAndError(
-                hist.GetXaxis().FindFixBin(upper_value)+1,
-                hist.GetNbinsX()+1,
-                error2,
-                )
-        integral = integral1+integral2
-        error = math.sqrt(error1**2+error2**2)
-    return integral,error
-
-def getIntegral(hist):
-    error = ROOT.Double(0.)
-    integral = hist.IntegralAndError(
-            0,
-            hist.GetNbinsX()+1,
-            #1,
-            #hist.GetNbinsX(),
-            error,
-            )
-    return integral,error
 # ____________________________________________________________________________________________________________________________________________ ||
 parser = argparse.ArgumentParser()
 parser.add_argument("--inputDir",action="store")
 parser.add_argument("--outputDir",action="store")
 parser.add_argument("--verbose",action="store_true")
-parser.add_argument("--parametric",action="store_true")
 parser.add_argument("--rateParamOnHiggs",action="store_true")
-parser.add_argument("--drawDir",action="store")
-parser.add_argument("--drawLog",action="store_true")
+parser.add_argument("--elWidth",action="store",type=float,default=0.05)
+parser.add_argument("--muWidth",action="store",type=float,default=0.02)
 
 option = parser.parse_args()
 
@@ -85,31 +43,30 @@ TFileName = "StatInput.root"
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
-signal_model_names = [
-        "HToZdZd_MZD4",
-        "HToZdZd_MZD5",
-        "HToZdZd_MZD6",
-        "HToZdZd_MZD7",
-        "HToZdZd_MZD8",
-        "HToZdZd_MZD9",
-        "HToZdZd_MZD10",
-        "HToZdZd_MZD15",
-        "HToZdZd_MZD20",
-        "HToZdZd_MZD25",
-        "HToZdZd_MZD30",
-        "HToZdZd_MZD35",
-        "HToZdZd_MZD40",
-        "HToZdZd_MZD45",
-        "HToZdZd_MZD50",
-        "HToZdZd_MZD55",
-        "HToZdZd_MZD60",
+signal_models = [
+        SignalModel("Zd_MZD4",["HToZdZd_MZD4",],4.,),
+        SignalModel("Zd_MZD5",["HToZdZd_MZD5",],5.,),
+        SignalModel("Zd_MZD6",["HToZdZd_MZD6",],6.,),
+        SignalModel("Zd_MZD7",["HToZdZd_MZD7",],7.,),
+        SignalModel("Zd_MZD8",["HToZdZd_MZD8",],8.,),
+        SignalModel("Zd_MZD9",["HToZdZd_MZD9",],9.,),
+        SignalModel("Zd_MZD10",["HToZdZd_MZD10",],10.,),
+        SignalModel("Zd_MZD15",["HToZdZd_MZD15",],15.,),
+        SignalModel("Zd_MZD20",["HToZdZd_MZD20",],20.,),
+        SignalModel("Zd_MZD25",["HToZdZd_MZD25",],25.,),
+        SignalModel("Zd_MZD30",["HToZdZd_MZD30",],30.,),
+        SignalModel("Zd_MZD35",["HToZdZd_MZD35",],35.,),
+        SignalModel("Zd_MZD40",["HToZdZd_MZD40",],40.,),
+        SignalModel("Zd_MZD45",["HToZdZd_MZD45",],45.,),
+        SignalModel("Zd_MZD50",["HToZdZd_MZD50",],50.,),
+        SignalModel("Zd_MZD55",["HToZdZd_MZD55",],55.,),
+        SignalModel("Zd_MZD60",["HToZdZd_MZD60",],60.,),
         ]
 
 data_names = [
         "Data2016",
         ]
 
-#bkg_names = mergeSampleDict.keys()
 bkg_names = [
         "Higgs",
         "qqZZ",
@@ -120,10 +77,10 @@ bkg_names = [
 # ____________________________________________________________________________________________________________________________________________ ||
 # bin list
 binList = [
-        Bin("FourEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=0.05),
-        Bin("FourMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",width=0.02),
-        Bin("TwoElTwoMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=0.02),
-        Bin("TwoMuTwoEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=0.05), 
+        Bin("FourEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=option.elWidth),
+        Bin("TwoMuTwoEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=option.elWidth), 
+        #Bin("FourMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",width=option.muWidth),
+        #Bin("TwoElTwoMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=option.muWidth),
         #Bin("FourEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=0.02),
         #Bin("FourMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",width=0.01),
         #Bin("TwoElTwoMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=0.01),
@@ -141,11 +98,8 @@ reader = FileReader()
 if not os.path.exists(os.path.abspath(outputDir)):
     os.makedirs(os.path.abspath(outputDir))
 
-if option.parametric:
-    fitter = ShapeFitter("massZ2",0.,1.)
-
-for signal_model_name in signal_model_names:
-    reader.openFile(inputDir,signal_model_name,TFileName)
+for signal_model in signal_models:
+    signal_model_name = signal_model.name
     if option.verbose: print "*"*100
     if option.verbose: print "Making data card for ",signal_model_name
     
@@ -156,7 +110,7 @@ for signal_model_name in signal_model_names:
     if not os.path.exists(os.path.abspath(cardDir)):
         os.makedirs(os.path.abspath(cardDir))
 
-    central_value = float(signal_model_name.replace("HToZdZd_MZD",""))
+    central_value = signal_model.central_value 
     binListCopy = copy.deepcopy(binList)
     for ibin,bin in enumerate(binListCopy):
         if option.verbose: print "-"*20
@@ -190,15 +144,17 @@ for signal_model_name in signal_model_names:
         bin.data = Process("data_obs",int(dataCount),error)
         
         # signal
-        hist = reader.getObj(signal_model_name,histName)
-        #count,error = getIntegral(hist)
-        count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
-        bin.processList.append(Process(signal_model_name,count if count > 0. else 1e-6,error))
+        for each_signal_model_name in signal_model.signal_list:
+            reader.openFile(inputDir,each_signal_model_name,TFileName)
+            hist = reader.getObj(each_signal_model_name,histName)
+            #count,error = getIntegral(hist)
+            count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
+            bin.processList.append(Process(each_signal_model_name,count if count > 0. else 1e-6,error))
         
         # systematics
-        if count:
-            mcSyst = lnNSystematic("SigStat_"+bin.name,[ signal_model_name, ],magnitude=float(1.+error/count))
-            bin.systList.append(copy.deepcopy(mcSyst))
+            if count:
+                mcSyst = lnNSystematic("SigStat_"+bin.name,[ each_signal_model_name, ],magnitude=float(1.+error/count))
+                bin.systList.append(copy.deepcopy(mcSyst))
         for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
         bin.systList += lnSystReader.makeLnSyst(bin.sysFile)
@@ -210,57 +166,6 @@ for signal_model_name in signal_model_names:
             else:
                 sm_higgs_rate_param = RateParameter(rate_param_name+"_"+bin.name,"Higgs","(@0)",rate_param_name)
             bin.rateParams.append(sm_higgs_rate_param)
-        
-        if option.parametric:
-            shapeFilePath = os.path.join(cardDir,"shape_"+bin.name+".root")
-            outputFile = ROOT.TFile(shapeFilePath,"RECREATE")
-            wsName = "parametric_pdf_"+bin.name
-            w = ROOT.RooWorkspace(wsName,wsName)
-            for sample,config in bin.parameterDict.iteritems():
-                if (sample not in bkg_names and sample not in data_names) and sample != signal_model_name: continue
-                inputShapeFile = ROOT.TFile(os.path.join(inputDir,sample,TFileName),"READ")
-                hist = inputShapeFile.Get(bin.inputBinName)
-                hist.Rebin(config.rebinFactor)
-                if config.histFunc: config.histFunc(hist)
-                if config.pdfType == pdfType_hist:
-                    pdf,dataHist,argSet = fitter.makeRooHistPdf(sample,hist)
-                elif config.pdfType == pdfType_data:
-                    #hist.Rebin(int(1./bin.parameterDict[signal_model_name].widthDict[bin.name]))
-                    #hist.Rebin(int(1./bin.parameterDict[signal_model_name].widthDict[bin.name]*hist.GetNbinsX()))
-                    pdf = ROOT.RooDataHist("data_obs","",ROOT.RooArgList(fitter.obsVar),hist)
-                elif config.pdfType in [pdfType_BW,pdfType_poly,pdfType_landau,pdfType_dcb]:
-                    if config.pdfType == pdfType_BW:
-                        #hist.Rebin(int(1./bin.parameterDict[signal_model_name].widthDict[bin.name]))
-                        pdf,meanVar,widthVar = fitter.makeBreitWignerPdf(*config.pdfInput)
-                    elif config.pdfType == pdfType_poly:
-                        pdf = fitter.makePolyPdf(*config.pdfInput)
-                    elif config.pdfType == pdfType_landau:
-                        pdf,meanVar,widthVar = fitter.makeLandauPdf(*config.pdfInput)
-                    elif config.pdfType == pdfType_dcb:
-                        pdf,meanVar,widthVar,alphaLVar,alphaRVar,nLVar,nRVar = fitter.makeDoubleCBPdf(*config.pdfInput)
-                    config.evtYield = ROOT.RooRealVar("Yield","Yield", 0.01, 10000)
-                    config.data = ROOT.RooDataHist("MCData_"+sample,"",ROOT.RooArgList(fitter.obsVar,config.evtYield),hist)
-                    result = pdf.fitTo(config.data)
-                    if option.drawDir:
-                        if not os.path.exists(os.path.abspath(option.drawDir)):
-                            os.makedirs(os.path.abspath(option.drawDir))
-                        c = ROOT.TCanvas("c1","c1",800,800)
-                        if option.drawLog:
-                            c.SetLogy()
-                        c.cd()
-                        plot = fitter.obsVar.frame()
-                        config.data.plotOn(plot,ROOT.RooFit.Name("data"))
-                        pdf.plotOn(plot,ROOT.RooFit.Name("Parametric"))
-                        if option.drawLog:
-                            plot.SetMinimum(1E-5)
-                            plot.SetMaximum(1E2)
-                        plot.Draw()
-                        c.SaveAs(option.drawDir+bin.name+"_"+sample+".pdf")
-                getattr(w,'import')(pdf)
-            outputFile.cd()
-            w.Write()
-            outputFile.Close()
-            inputShapeFile.Close()
-       
+ 
     dataCard.makeCard(cardDir,binListCopy)
     reader.end()
