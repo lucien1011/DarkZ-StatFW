@@ -37,6 +37,8 @@ lnSystFilePathDict = {
         "FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
         "TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
         "TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
+        "TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
+        "TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
         }
 outputDir = option.outputDir
 TFileName = "StatInput.root"
@@ -64,7 +66,8 @@ signal_models = [
         ]
 
 data_names = [
-        "Data2016",
+        #"Data2016",
+        "Data",
         ]
 
 bkg_names = [
@@ -77,14 +80,17 @@ bkg_names = [
 # ____________________________________________________________________________________________________________________________________________ ||
 # bin list
 binList = [
-        Bin("FourEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=option.elWidth),
-        Bin("TwoMuTwoEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=option.elWidth), 
+        #Bin("FourEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=option.elWidth),
+        #Bin("TwoMuTwoEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=option.elWidth), 
         #Bin("FourMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",width=option.muWidth),
         #Bin("TwoElTwoMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=option.muWidth),
         #Bin("FourEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourEl"],inputBinName="4e",width=0.02),
         #Bin("FourMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["FourMu"],inputBinName="4mu",width=0.01),
         #Bin("TwoElTwoMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=0.01),
         #Bin("TwoMuTwoEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=0.02),
+
+        Bin("TwoMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu",width=option.muWidth), 
+        Bin("TwoEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e",width=option.elWidth), 
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
