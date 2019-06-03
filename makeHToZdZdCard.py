@@ -22,6 +22,7 @@ parser.add_argument("--verbose",action="store_true")
 parser.add_argument("--rateParamOnHiggs",action="store_true")
 parser.add_argument("--elWidth",action="store",type=float,default=0.05)
 parser.add_argument("--muWidth",action="store",type=float,default=0.02)
+parser.add_argument("--massRatio",action="store",type=float,default=0.)
 
 option = parser.parse_args()
 
@@ -66,7 +67,6 @@ signal_models = [
         ]
 
 data_names = [
-        #"Data2016",
         "Data",
         ]
 
@@ -89,8 +89,8 @@ binList = [
         #Bin("TwoElTwoMu",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoElTwoMu"],inputBinName="2e2mu",width=0.01),
         #Bin("TwoMuTwoEl",signalName="HToZdZd",sysFile=lnSystFilePathDict["TwoMuTwoEl"],inputBinName="2mu2e",width=0.02),
 
-        Bin("TwoMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu",width=option.muWidth), 
-        Bin("TwoEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e",width=option.elWidth), 
+        Bin("TwoMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu" if not option.massRatio else "2mu_"+str(option.massRatio),width=option.muWidth), 
+        Bin("TwoEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e" if not option.massRatio else "2e_"+str(option.massRatio),width=option.elWidth), 
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
