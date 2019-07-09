@@ -90,7 +90,7 @@ parameterDict_Mu = {
                                 },
                             ), 
         "HZZd_M10":  ShapeFitConfig(
-                            rebinFactor=1,
+                            rebinFactor=2,
                             #pdfType="BreitWigner",
                             #pdfInput=[
                             #    "HZZd_M10",
@@ -102,7 +102,7 @@ parameterDict_Mu = {
                             pdfInput=[
                                 "HZZd_M10",
                                 "mean"+postfix,0.,1.,
-                                "width"+postfix,0.00001,0.01,
+                                "width"+postfix,0.00001,1,
                                 "alphaL"+postfix,0.1,3.,
                                 "alphaR"+postfix,0.1,3.,
                                 "nL"+postfix,0.1,5.,
@@ -276,7 +276,8 @@ parameterDict_Mu = {
                                 ],
                             histFunc=changeHist_ZX,
                             ),
-        "Data2016": ShapeFitConfig(
+        #"Data2016": ShapeFitConfig(
+        "Data": ShapeFitConfig(
                             rebinFactor=10,
                             pdfType="Data",
                             pdfInput=None,

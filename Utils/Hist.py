@@ -1,19 +1,19 @@
-import ROOT
+import ROOT,math
 
-def getIntegral(hist):
+def getIntegral(hist,overflow=False):
     error = ROOT.Double(0.)
+    start_bin = 0 if overflow else 1
+    end_bin = hist.GetNbinsX()+1 if overflow else hist.GetNbinsX()
     integral = hist.IntegralAndError(
-            0,
-            hist.GetNbinsX()+1,
-            #1,
-            #hist.GetNbinsX(),
+            start_bin,
+            end_bin,
             error,
             )
     return integral,error
 
 def getCountAndError(hist,central,width,isSR=True):
-    lower_value = central-width
-    upper_value = central+width
+    lower_value = central*(1.-width)
+    upper_value = central*(1.+width)
 
     if isSR:
         error = ROOT.Double(0.)

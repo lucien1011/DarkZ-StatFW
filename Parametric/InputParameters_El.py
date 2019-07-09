@@ -276,7 +276,8 @@ parameterDict_El = {
                                 ],
                             histFunc=changeHist_ZX,
                             ),
-        "Data2016": ShapeFitConfig(
+        #"Data2016": ShapeFitConfig(
+        "Data": ShapeFitConfig(
                             rebinFactor=10,
                             pdfType="Data",
                             pdfInput=None,

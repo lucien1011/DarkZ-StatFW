@@ -1,4 +1,5 @@
 from StatFW.SystWriter import *
+import os
 
 class CardConfig(object):
     def __init__(self,name):
@@ -94,7 +95,7 @@ class DataCard(object):
         outputStr += systWriter.writeRateParams(binList)
         outputStr += systWriter.writeParameters(binList)
 
-        outputPath = outputDir+self.makeOutFileName(".txt",appendToPath)
+        outputPath = os.path.join(outputDir,self.makeOutFileName(".txt",appendToPath))
 
         outputFile = open(outputPath,"w")
         outputFile.write(outputStr)
