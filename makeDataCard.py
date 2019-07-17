@@ -31,24 +31,34 @@ parser.add_argument("--elWidth",action="store",type=float,default=0.05)
 parser.add_argument("--muWidth",action="store",type=float,default=0.02)
 parser.add_argument("--drawDir",action="store")
 parser.add_argument("--drawLog",action="store_true")
+parser.add_argument("--appendToPath",action="store")
+parser.add_argument("--systTextFile",action="store")
 
 option = parser.parse_args()
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # Configurable
 inputDir = option.inputDir
-if option.sideband:
-    commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e.txt"
+if option.systTextFile:
+    tf1,tf2 = option.systTextFile.split(",")
+    commonLnSystFilePath = tf1
+    lnSystFilePathDict = {
+            "TwoMu": tf2, 
+            "TwoEl": tf2, 
+            }
 else:
-    commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e_HiggsSyst.txt"
-lnSystFilePathDict = {
-        #"FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
-        #"FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
-        #"TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
-        #"TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
-        "TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
-        "TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
-        }
+    if option.sideband:
+        commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e.txt"
+    else:
+        commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e_HiggsSyst.txt"
+    lnSystFilePathDict = {
+            #"FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
+            #"FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
+            #"TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
+            #"TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
+            "TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
+            "TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
+            }
 outputDir = option.outputDir
 TFileName = "StatInput.root"
 epsilon_name = "epsilon"
@@ -86,10 +96,10 @@ bkg_names = [
 # bin list
 if option.parametric:
     binList_SR = [
-            #Bin("TwoEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsSR-Norm",width=1.0,parameterDict=parameterDict_El if option.parametric else {},central_value=0.5,),
-            #Bin("TwoMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsSR-Norm",width=1.0,parameterDict=parameterDict_Mu if option.parametric else {},central_value=0.5,),
             Bin("TwoEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsSR-Norm",width=1.0,parameterDict=parameterDict_El if option.parametric else {},central_value=0.5,),
             Bin("TwoMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsSR-Norm",width=1.0,parameterDict=parameterDict_Mu if option.parametric else {},central_value=0.5,),
+            #Bin("TwoEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsSR-Norm",width=1.0,parameterDict=parameterDict_El if option.parametric else {},central_value=0.5,),
+            #Bin("TwoMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsSR-Norm",width=1.0,parameterDict=parameterDict_Mu if option.parametric else {},central_value=0.5,),
             ]
 else:
     binList_SR = [
@@ -110,7 +120,6 @@ binList = binList_SR + [
         Bin("TwoEl_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e_HiggsHighSB",width=option.elWidth),
         Bin("TwoMu_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu_HiggsHighSB",width=option.muWidth),
         ]
-binList = binList_SR
 
 if interpolate_path:
     for b in binList:
@@ -290,5 +299,5 @@ for signal_model in signal_models:
                     }
         #dataCard.makeCard(cardDir,binListCopy)
         #dataCard.makeCard(cardDir,[bin],appendToPath=bin.name)
-        dataCard.makeCard(cardDir,[bin],)
+        dataCard.makeCard(cardDir,[bin],appendToPath=option.appendToPath if option.appendToPath else "")
         reader.end()

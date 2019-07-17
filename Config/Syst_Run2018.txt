@@ -1,0 +1,7 @@
+logN            Higgs      VBF     WHminus     WHplus      WH      ZH      ggH     ggZZ    qqZZ    ZPlusX      HZZd_M15        HZZd_M20        HZZd_M25        HZZd_M30    HZZd_M4     HZZd_M7     HZZd_M10
+lumi_13TeV      0.025      0.025   0.025       0.025       0.025   0.025   0.025   0.025   0.025   -           0.025           0.025           0.025           0.025       0.025       0.025       0.025
+FakeRate        -          -       -           -           -       -       -       -       -       0.790       -               -               -               -           -           -           -
+QCDscale_qqZZ   -          -       -           -           -       -       -       -       0.042   -           -               -               -               -           -           -           -
+pdf_qqbar       -          -       -           -           -       -       -       -       0.034   -           -               -               -               -           -           -           -
+EWcorr_VV       -          -       -           -           -       -       -       -       0.001   -           -               -               -               -           -           -           -
+Interference     -          -       -           -           -       -       -       -       -       -           0.05            0.05            0.05            0.05        0.05        0.05        0.05

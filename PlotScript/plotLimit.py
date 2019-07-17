@@ -19,8 +19,10 @@ inputDir = option.inputDir
 # ________________________________________________________________ ||
 # CMS style
 # ________________________________________________________________ ||
-CMS_lumi.cmsText = "CMS"
-CMS_lumi.extraText = "Preliminary"
+#CMS_lumi.cmsText = "CMS"
+#CMS_lumi.extraText = "Preliminary"
+CMS_lumi.cmsText = ""
+CMS_lumi.extraText = ""
 CMS_lumi.cmsTextSize = 0.65
 CMS_lumi.outOfFrame = True
 #CMS_lumi.lumi_13TeV = "77.3 fb^{-1}"
@@ -36,8 +38,9 @@ quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
 #plots           = ["epsilon","BrHZZd"]
 #plots           = ["kappa","BrHZdZd"]
-plots           = ["epsilon_EpsPOI"]
-#plots           = ["BrHZZd"]
+#plots           = ["epsilon_EpsPOI"]
+plots           = ["BrHZZd"]
+#plots           = ["BrH4l",]
 maxFactor       = 1.5
 y_label_dict    = {
                     "epsilon": "#varepsilon",
@@ -45,7 +48,11 @@ y_label_dict    = {
                     "kappa": "#kappa",
                     "BrHZZd": "Br(h #rightarrow Z Z_{d})",
                     "BrHZdZd": "Br(h #rightarrow Z_{d} Z_{d})",
+                    "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
+                    #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
+#x_label         = "m_{Z_{d}}"
+x_label         = "m_{X}"
 
 def calculate(r_value,window_value,what):
     if what == "epsilon":
@@ -58,6 +65,8 @@ def calculate(r_value,window_value,what):
         return r_value*xs_dict[window_value]/xs_brHZZd_dict[window_value]
     elif what == "epsilon_EpsPOI":
         return r_value
+    elif what == "BrH4l":
+        return r_value*xs_dict[window_value]/higgs_xs
     else:
         raise RuntimeError
 
@@ -120,7 +129,7 @@ for plot in plots:
     frame.GetYaxis().CenterTitle(True)
     #frame.GetYaxis().SetTitle("95% upper limit on #sigma / #sigma_{SM}")
     frame.GetYaxis().SetTitle(y_label_dict[plot])
-    frame.GetXaxis().SetTitle("m_{Z_{d}}")
+    frame.GetXaxis().SetTitle(x_label)
     frame.SetMinimum(0)
     yellow = ROOT.TGraph(2*nPoints)
     green = ROOT.TGraph(2*nPoints)
