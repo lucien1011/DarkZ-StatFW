@@ -33,6 +33,7 @@ parser.add_argument("--drawDir",action="store")
 parser.add_argument("--drawLog",action="store_true")
 parser.add_argument("--appendToPath",action="store")
 parser.add_argument("--systTextFile",action="store")
+parser.add_argument("--interpolPath",action="store",default=None)
 
 option = parser.parse_args()
 
@@ -65,18 +66,16 @@ epsilon_name = "epsilon"
 init_epsilon = 0.05
 isSRFunc = lambda x: x.name.endswith("SR")
 
-#interpolate_path = "/home/lucien/public_html/Higgs/DarkZ/Interpolation/HZZd/2019-05-23_FirstVersion/"
-interpolate_path = None
+interpolate_path = option.interpolPath
 
-#mass_points = range(4,35)
-mass_points = [4,7,10,15,20,25,30]
-#mass_points = [15,30]
+mass_points = range(4,35)
+#mass_points = [4,7,10,15,20,25,30]
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 signal_models = [ 
-        #SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),"ppZZd4l_M"+str(m)],m) for m in mass_points 
-        SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),],m) for m in mass_points 
+        SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),"ppZZd4l_M"+str(m)],m) for m in mass_points 
+        #SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),],m) for m in mass_points 
         ]
 
 data_names = [
