@@ -23,24 +23,34 @@ parser.add_argument("--rateParamOnHiggs",action="store_true")
 parser.add_argument("--elWidth",action="store",type=float,default=0.05)
 parser.add_argument("--muWidth",action="store",type=float,default=0.02)
 parser.add_argument("--massRatio",action="store",type=float,default=0.)
+parser.add_argument("--systTextFile",action="store")
+parser.add_argument("--appendToPath",action="store")
 
 option = parser.parse_args()
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # Configurable
 inputDir = option.inputDir
-if option.rateParamOnHiggs:
-    commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e.txt"
+if option.systTextFile:
+    tf1,tf2 = option.systTextFile.split(",")
+    commonLnSystFilePath = tf1
+    lnSystFilePathDict = {
+            "TwoMu": tf2, 
+            "TwoEl": tf2, 
+            }
 else:
-    commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e_HiggsSyst.txt"
-lnSystFilePathDict = {
-        "FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
-        "FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
-        "TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
-        "TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
-        "TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
-        "TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
-        }
+    if option.sideband:
+        commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e.txt"
+    else:
+        commonLnSystFilePath = "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/CommonSyst_2mu2e_HiggsSyst.txt"
+    lnSystFilePathDict = {
+            #"FourEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4e.txt", 
+            #"FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
+            #"TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
+            #"TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
+            "TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
+            "TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
+            }
 outputDir = option.outputDir
 TFileName = "StatInput.root"
 
@@ -173,5 +183,5 @@ for signal_model in signal_models:
                 sm_higgs_rate_param = RateParameter(rate_param_name+"_"+bin.name,"Higgs","(@0)",rate_param_name)
             bin.rateParams.append(sm_higgs_rate_param)
  
-    dataCard.makeCard(cardDir,binListCopy)
+    dataCard.makeCard(cardDir,binListCopy,appendToPath=option.appendToPath if option.appendToPath else "")
     reader.end()
