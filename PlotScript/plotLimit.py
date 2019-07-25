@@ -36,10 +36,10 @@ expOnly         = True
 #quantiles       = ["down2","down1","central","up1","up2","obs"]
 quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
-#plots           = ["epsilon","BrHZZd"]
+plots           = ["epsilon","BrHZZd"]
 #plots           = ["kappa","BrHZdZd"]
 #plots           = ["epsilon_EpsPOI"]
-plots           = ["BrHZZd"]
+#plots           = ["BrHZZd"]
 #plots           = ["BrH4l",]
 maxFactor       = 1.5
 y_label_dict    = {
@@ -51,8 +51,8 @@ y_label_dict    = {
                     "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
-#x_label         = "m_{Z_{d}}"
-x_label         = "m_{X}"
+x_label         = "m_{Z_{d}}"
+#x_label         = "m_{X}"
 
 def calculate(r_value,window_value,what):
     if what == "epsilon":

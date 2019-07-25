@@ -17,7 +17,7 @@ higgs_xs    = 48.58
 sm_br_4l_xs = higgs_xs*0.0002768
 z_2l_br     = 0.06729
 h_ZZ_br     = 2.64E-02
-kappa       = 0.001
+kappa       = 0.0001
 #mass_points = range(4,35)
 mass_points = range(4,61)
 

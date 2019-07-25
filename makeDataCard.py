@@ -34,6 +34,7 @@ parser.add_argument("--drawLog",action="store_true")
 parser.add_argument("--appendToPath",action="store")
 parser.add_argument("--systTextFile",action="store")
 parser.add_argument("--interpolPath",action="store",default=None)
+parser.add_argument("--setDataCountToMC",action="store_true")
 
 option = parser.parse_args()
 
@@ -41,11 +42,11 @@ option = parser.parse_args()
 # Configurable
 inputDir = option.inputDir
 if option.systTextFile:
-    tf1,tf2 = option.systTextFile.split(",")
+    tf1,tf2,tf3 = option.systTextFile.split(",")
     commonLnSystFilePath = tf1
     lnSystFilePathDict = {
             "TwoMu": tf2, 
-            "TwoEl": tf2, 
+            "TwoEl": tf3, 
             }
 else:
     if option.sideband:
@@ -68,8 +69,8 @@ isSRFunc = lambda x: x.name.endswith("SR")
 
 interpolate_path = option.interpolPath
 
-mass_points = range(4,35)
-#mass_points = [4,7,10,15,20,25,30]
+#mass_points = range(4,35)
+mass_points = [4,7,10,15,20,25,30]
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
@@ -169,6 +170,7 @@ for signal_model in signal_models:
         dataCard = DataCard(config) 
 
         # bkg
+        spb_data_count = 0.
         for bkgName in bkg_names:
             reader.openFile(inputDir,bkgName,TFileName)
             hist = reader.getObj(bkgName,histName)
@@ -177,20 +179,8 @@ for signal_model in signal_models:
             else:
                 count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
             process = Process(bkgName,count if count >= 0. else 1e-12,error)
+            spb_data_count += count
             bin.processList.append(process)
-
-        # data
-        dataCount = 0.
-        for sample in data_names:
-            reader.openFile(inputDir,sample,TFileName)
-            hist = reader.getObj(sample,histName)
-            if bin.parameterDict:
-                count,error = getIntegral(hist)
-            else:
-                count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
-            dataCount += count
-        error = math.sqrt(dataCount)
-        bin.data = Process("data_obs",int(dataCount),error)
         
         bin.systList = []
         
@@ -203,7 +193,7 @@ for signal_model in signal_models:
                     count,error = getIntegral(hist)
                 else:
                     count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
-
+                spb_data_count += count
                 bin.processList.append(Process(each_signal_model_name,count if count >= 0. else 1e-12,error))
                 
                 # systematics
@@ -218,7 +208,20 @@ for signal_model in signal_models:
                 else:
                     count = 0.
                 bin.processList.append(Process(each_signal_model_name,count if count > 0. else 1e-12,0.))
-        
+
+        # data
+        dataCount = 0.
+        for sample in data_names:
+            reader.openFile(inputDir,sample,TFileName)
+            hist = reader.getObj(sample,histName)
+            if bin.parameterDict:
+                count,error = getIntegral(hist)
+            else:
+                count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
+            dataCount += count
+        error = math.sqrt(dataCount)
+        bin.data = Process("data_obs",int(dataCount) if not option.setDataCountToMC else int(spb_data_count),error)
+
         for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
         bin.systList += lnSystReader.makeLnSyst(bin.sysFile)
