@@ -34,12 +34,13 @@ class SystWriter(object):
         correlationStr = ""
         if not writeNameOnly:
             for eachProcess in processList:
-                if eachProcess.name not in systematic.process or forceDash:
+                foundProcess,foundProcessName = systematic.findProcess(eachProcess.name)
+                if not foundProcess or forceDash:
                     correlationStr += "-\t"
                 elif systematic.magnitude:
                     correlationStr += "%s\t"%systematic.magnitude
                 elif systematic.magnitudeFunc:
-                    correlationStr += "%s\t"%systematic.magnitudeFunc(systematic,eachProcess.name,analysisBin)
+                    correlationStr += "%s\t"%systematic.magnitudeFunc(systematic,foundProcessName,analysisBin)
             outputStr += correlationStr
         #outputStr +="\n"
         return outputStr

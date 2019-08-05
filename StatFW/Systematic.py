@@ -1,3 +1,5 @@
+import fnmatch
+
 class Systematic(object):
     def __init__(self,name,process,correlation=None,factor=1.,systNamePrefix=""):
         self.name = name
@@ -21,6 +23,16 @@ class lnNSystematic(Systematic):
     
     def getSystName(self):
         return self.name
+
+    def findProcess(self,processName):
+        for p in self.process:
+            if "*" not in p:
+                if processName == p:
+                    return True,p
+            else:
+                if fnmatch.filter([processName],p):
+                    return True,p
+        return False,None
 
 class ShapeSystematic(Systematic):
     def __init__(self,name,process,correlation="",factior=1.,systNamePrefix=""):
