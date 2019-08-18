@@ -36,17 +36,19 @@ expOnly         = True
 #quantiles       = ["down2","down1","central","up1","up2","obs"]
 quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
-plots           = ["epsilon","BrHZZd"]
+plots           = ["epsilon","r","BrHZZd_Interpolation"]
 #plots           = ["kappa","BrHZdZd"]
 #plots           = ["epsilon_EpsPOI"]
 #plots           = ["BrHZZd"]
 #plots           = ["BrH4l",]
-maxFactor       = 1.5
+maxFactor       = 1.2
 y_label_dict    = {
+                    "r": "Signal strength",
                     "epsilon": "#varepsilon",
                     "epsilon_EpsPOI": "#varepsilon",
                     "kappa": "#kappa",
                     "BrHZZd": "Br(h #rightarrow Z Z_{d})",
+                    "BrHZZd_Interpolation": "Br(h #rightarrow Z Z_{d})",
                     "BrHZdZd": "Br(h #rightarrow Z_{d} Z_{d})",
                     "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
@@ -63,10 +65,14 @@ def calculate(r_value,window_value,what):
         return r_value*xs_HZdZd_dict[window_value]/xs_brHZdZd_dict[window_value]
     elif what == "BrHZZd":
         return r_value*xs_dict[window_value]/xs_brHZZd_dict[window_value]
+    elif what == "BrHZZd_Interpolation":
+        return r_value*(higgs_xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(higgs_xs*reader.interpolate(window_value,"Br_ZdTo2l")*z_2l_br)
     elif what == "epsilon_EpsPOI":
         return r_value
     elif what == "BrH4l":
         return r_value*xs_dict[window_value]/higgs_xs
+    elif what == "r":
+        return r_value
     else:
         raise RuntimeError
 
@@ -83,7 +89,7 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     window_name = cardDir.split("/")[-2]
     #window_value = int(window_name.split("_")[1])
     #window_value = int(window_name.split("_")[1].replace("M",""))
-    window_value = int(window_name.split("_")[1].replace("MZD",""))
+    window_value = float(window_name.split("_")[1].replace("MZD",""))
     if expOnly:
         for i,entry in enumerate(tree):
             outDict[quantiles[i]][window_value] = getattr(entry,varName)
@@ -139,6 +145,7 @@ for plot in plots:
     window_values.sort()
     frame.GetXaxis().SetLimits(min(window_values),max(window_values))
     frame.SetMaximum(max([calculate(outDict[quan][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor)
+    if setLogY: frame.SetMinimum(1E-5)
     for i,window_value in enumerate(window_values):
         yellow.SetPoint( i, window_value,   calculate(outDict["up2"][window_value]         , window_value, plot) )
         yellow.SetPoint( 2*nPoints-1-i, window_value,   calculate(outDict["down2"][window_value]       , window_value, plot) )
