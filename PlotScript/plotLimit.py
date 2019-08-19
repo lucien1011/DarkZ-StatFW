@@ -36,8 +36,8 @@ expOnly         = True
 #quantiles       = ["down2","down1","central","up1","up2","obs"]
 quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
-plots           = ["epsilon","r","BrHZZd_Interpolation"]
-#plots           = ["kappa","BrHZdZd"]
+#plots           = ["epsilon","r","BrHZZd_Interpolation"]
+plots           = ["kappa","BrHZdZd_Interpolation"]
 #plots           = ["epsilon_EpsPOI"]
 #plots           = ["BrHZZd"]
 #plots           = ["BrH4l",]
@@ -50,6 +50,7 @@ y_label_dict    = {
                     "BrHZZd": "Br(h #rightarrow Z Z_{d})",
                     "BrHZZd_Interpolation": "Br(h #rightarrow Z Z_{d})",
                     "BrHZdZd": "Br(h #rightarrow Z_{d} Z_{d})",
+                    "BrHZdZd_Interpolation": "Br(h #rightarrow Z_{d} Z_{d})",
                     "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
@@ -67,6 +68,8 @@ def calculate(r_value,window_value,what):
         return r_value*xs_dict[window_value]/xs_brHZZd_dict[window_value]
     elif what == "BrHZZd_Interpolation":
         return r_value*(higgs_xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(higgs_xs*reader.interpolate(window_value,"Br_ZdTo2l")*z_2l_br)
+    elif what == "BrHZdZd_Interpolation":
+        return r_value*(higgs_xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))/(higgs_xs*reader.interpolate(window_value,"Br_ZdTo2l")**2)
     elif what == "epsilon_EpsPOI":
         return r_value
     elif what == "BrH4l":
