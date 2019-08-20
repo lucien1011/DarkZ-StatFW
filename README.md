@@ -41,6 +41,7 @@ python make_ZPlusX_ParaInput_Run201X.py
 A shell script has been prepared to run all steps. You have to enter the folder paths from the 
 preparation step in this shell script.
 ```bash
+source setup.sh
 source mk_comb_all.sh
 ```
 There are three steps in this script. First it makes a set of data cards for each signal model (
