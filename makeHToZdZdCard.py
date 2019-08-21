@@ -7,6 +7,7 @@ from StatFW.Reader import *
 from StatFW.Channel import Bin
 from StatFW.FileReader import FileReader
 from StatFW.RateParameter import RateParameter
+from StatFW.BaseObject import BaseObject
 
 from Utils.Hist import getCountAndError,getIntegral
 from Utils.DataCard import SignalModel
@@ -26,6 +27,7 @@ parser.add_argument("--massRatio",action="store",type=float,default=0.)
 parser.add_argument("--systTextFile",action="store")
 parser.add_argument("--appendToPath",action="store")
 parser.add_argument("--interpolPath",action="store",default=None)
+parser.add_argument("--zxShapeDir",action="store")
 
 option = parser.parse_args()
 
@@ -33,15 +35,16 @@ option = parser.parse_args()
 # Configurable
 inputDir = option.inputDir
 if option.systTextFile:
-    tf1,tf2,tf3,tf4,tf5 = option.systTextFile.split(",")
+    #tf1,tf2,tf3,tf4,tf5 = option.systTextFile.split(",")
+    tf1,tf2,tf3 = option.systTextFile.split(",")
     commonLnSystFilePath = tf1
     lnSystFilePathDict = {
-            #"TwoMu": tf2, 
-            #"TwoEl": tf2, 
-            "MuMu": tf2,
-            "ElMu": tf3,
-            "ElEl": tf4,
-            "MuEl": tf5,
+            "Mu": tf2, 
+            "El": tf3, 
+            #"MuMu": tf2,
+            #"ElMu": tf3,
+            #"ElEl": tf4,
+            #"MuEl": tf5,
             }
 else:
     if option.sideband:
@@ -62,6 +65,7 @@ TFileName = "StatInput.root"
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
+mass_points = [4.04*1.005**i for i in range(551)]
 signal_models = [
         #SignalModel("Zd_MZD4",["HToZdZd_MZD4",],4.,),
         #SignalModel("Zd_MZD5",["HToZdZd_MZD5",],5.,),
@@ -80,18 +84,21 @@ signal_models = [
         #SignalModel("Zd_MZD50",["HToZdZd_MZD50",],50.,),
         #SignalModel("Zd_MZD55",["HToZdZd_MZD55",],55.,),
         #SignalModel("Zd_MZD60",["HToZdZd_MZD60",],60.,),
-        SignalModel("Zd_MZD"+str(m),["HToZdZd_MZD"+str(m),],m,) for m in range(4,63)
+        SignalModel("Zd_MZD"+str(m),["HToZdZd_MZD"+str(m),],m,) for m in mass_points
         ]
 
-data_names = [
-        "Data",
+data = [
+        BaseObject("Data"),
         ]
 
-bkg_names = [
-        "Higgs",
-        "qqZZ",
-        "ggZZ",
-        "ZPlusX",
+bkgs = [
+        BaseObject("Higgs"),
+        BaseObject("qqZZ"),
+        BaseObject("ggZZ"),
+        BaseObject("ZPlusX",
+            inputDir=option.zxShapeDir,
+            TFileName="ParaShape.root",
+            )
         ]
 
 # ____________________________________________________________________________________________________________________________________________ ||
@@ -109,10 +116,13 @@ binList = [
         #Bin("TwoMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoMu"],inputBinName="2mu" if not option.massRatio else "2mu_"+str(option.massRatio),width=option.muWidth), 
         #Bin("TwoEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["TwoEl"],inputBinName="2e" if not option.massRatio else "2e_"+str(option.massRatio),width=option.elWidth), 
 
-        Bin("MuMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu",width=option.muWidth), 
-        Bin("ElMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu",width=option.muWidth), 
-        Bin("ElEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl",width=option.elWidth), 
-        Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",width=option.elWidth), 
+        #Bin("MuMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu",width=option.muWidth), 
+        #Bin("ElMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu",width=option.muWidth), 
+        #Bin("ElEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl",width=option.elWidth), 
+        #Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",width=option.elWidth),
+
+        Bin("Mu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["Mu"],inputBinName="Mu",width=option.muWidth), 
+        Bin("El",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["El"],inputBinName="El",width=option.elWidth), 
         ]
 
 if interpolate_path:
@@ -126,6 +136,8 @@ if interpolate_path:
 # syst
 lnSystReader = LogNormalSystReader()
 commonLnSystematics = lnSystReader.makeLnSyst(commonLnSystFilePath)
+
+zero = 1e-12
 
 # ____________________________________________________________________________________________________________________________________________ ||
 reader = FileReader()
@@ -155,25 +167,27 @@ for signal_model in signal_models:
         bin.systList = []
 
         # bkg
-        for bkgName in bkg_names:
-            reader.openFile(inputDir,bkgName,TFileName)
+        for bkg in bkgs:
+            bkgName = bkg.name
+            reader.openFile(inputDir if not hasattr(bkg,"inputDir") else bkg.inputDir,bkgName,TFileName if not hasattr(bkg,"TFileName") else bkg.TFileName)
             hist = reader.getObj(bkgName,histName)
-            count,error = getIntegral(hist) 
-            #count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
-            process = Process(bkgName,count if count > 0. else 1e-6,error)
+            #count,error = getIntegral(hist) 
+            count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
+            process = Process(bkgName,count if count > zero else zero,error)
             bin.processList.append(process)
-            if count and "ZPlusX" not in bkgName and "ggZZ" not in bkgName:
+            if count and "ZPlusX" not in bkgName:
                 #mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],lambda syst,procName,anaBin: float(1.+error/count))
                 mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],magnitude=float(1.+error/count))
                 bin.systList.append(copy.deepcopy(mcSyst))
 
         # data
         dataCount = 0.
-        for sample in data_names:
+        for datum in data:
+            sample = datum.name
             reader.openFile(inputDir,sample,TFileName)
             hist = reader.getObj(sample,histName)
-            count,error = getIntegral(hist)
-            #count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
+            #count,error = getIntegral(hist)
+            count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
             dataCount += count
         error = math.sqrt(dataCount)
         bin.data = Process("data_obs",int(dataCount),error)
@@ -183,9 +197,9 @@ for signal_model in signal_models:
             if not interpolate_path:
                 reader.openFile(inputDir,each_signal_model_name,TFileName)
                 hist = reader.getObj(each_signal_model_name,histName)
-                count,error = getIntegral(hist)
-                #count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
-                bin.processList.append(Process(each_signal_model_name,count if count > 0. else 1e-6,error))
+                #count,error = getIntegral(hist)
+                count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
+                bin.processList.append(Process(each_signal_model_name,count if count > zero else zero,error))
                 # systematics
                 if count:
                     mcSyst = lnNSystematic("SigStat_"+bin.name,[ each_signal_model_name, ],magnitude=float(1.+error/count))
@@ -194,7 +208,7 @@ for signal_model in signal_models:
                 for key in bin.interFuncDict:
                     if key in each_signal_model_name: break
                 count = bin.interFuncDict[key].Eval(central_value)
-                bin.processList.append(Process(each_signal_model_name,count if count > 0. else 1e-12,0.))
+                bin.processList.append(Process(each_signal_model_name,count if count > zero else zero,0.))
      
         for syst in commonLnSystematics:
             bin.systList.append(copy.deepcopy(syst))
