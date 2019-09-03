@@ -32,9 +32,9 @@ CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 setLogY         = False
-expOnly         = True 
-#quantiles       = ["down2","down1","central","up1","up2","obs"]
-quantiles       = ["down2","down1","central","up1","up2",]
+#expOnly         = True 
+quantiles       = ["down2","down1","central","up1","up2","obs"]
+#quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
 #plots           = ["epsilon","r","BrHZZd_Interpolation"]
 plots           = ["kappa","BrHZdZd_Interpolation"]
@@ -93,11 +93,13 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     #window_value = int(window_name.split("_")[1])
     #window_value = int(window_name.split("_")[1].replace("M",""))
     window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if expOnly:
-        for i,entry in enumerate(tree):
-            outDict[quantiles[i]][window_value] = getattr(entry,varName)
-    else:
-        raise RuntimeError
+    for i,entry in enumerate(tree):
+        outDict[quantiles[i]][window_value] = getattr(entry,varName)
+    #if expOnly:
+    #    for i,entry in enumerate(tree):
+    #        outDict[quantiles[i]][window_value] = getattr(entry,varName)
+    #else:
+    #    raise RuntimeError
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -143,6 +145,7 @@ for plot in plots:
     yellow = ROOT.TGraph(2*nPoints)
     green = ROOT.TGraph(2*nPoints)
     median = ROOT.TGraph(nPoints)
+    black = ROOT.TGraph(nPoints)
     CMS_lumi.CMS_lumi(c,4,11)
     window_values = outDict["central"].keys()
     window_values.sort()
@@ -150,11 +153,12 @@ for plot in plots:
     frame.SetMaximum(max([calculate(outDict[quan][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor)
     if setLogY: frame.SetMinimum(1E-5)
     for i,window_value in enumerate(window_values):
-        yellow.SetPoint( i, window_value,   calculate(outDict["up2"][window_value]         , window_value, plot) )
-        yellow.SetPoint( 2*nPoints-1-i, window_value,   calculate(outDict["down2"][window_value]       , window_value, plot) )
-        green.SetPoint( i, window_value,    calculate(outDict["up1"][window_value]         , window_value, plot) )
-        green.SetPoint( 2*nPoints-1-i, window_value,    calculate(outDict["down1"][window_value]       , window_value, plot) )
-        median.SetPoint( i, window_value,   calculate(outDict["central"][window_value]     , window_value, plot) )
+        yellow.SetPoint( i, window_value,calculate(outDict["up2"][window_value], window_value, plot) )
+        yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"][window_value], window_value, plot) )
+        green.SetPoint( i, window_value,calculate(outDict["up1"][window_value], window_value, plot) )
+        green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"][window_value], window_value, plot) )
+        median.SetPoint( i, window_value,calculate(outDict["central"][window_value], window_value, plot) )
+        black.SetPoint( i, window_value,calculate(outDict["obs"][window_value], window_value, plot) )
     yellow.SetFillColor(ROOT.kOrange)
     yellow.SetLineColor(ROOT.kOrange)
     yellow.SetFillStyle(1001)
@@ -169,6 +173,11 @@ for plot in plots:
     median.SetLineWidth(2)
     median.SetLineStyle(2)
     median.Draw('Lsame')
+
+    black.SetLineColor(1)
+    black.SetLineWidth(2)
+    black.SetLineStyle(1)
+    black.Draw('Lsame')
     
     if setLogY:
         c.SetLogy()

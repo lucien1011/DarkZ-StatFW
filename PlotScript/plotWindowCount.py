@@ -18,14 +18,18 @@ ROOT.gStyle.SetTitleSize(0.035,"XYZ")
 ROOT.gStyle.SetTitleXOffset(1.8)
 
 # ____________________________________________________________________________________________________________________________________________ ||
-#inputDir        = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-08-14_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
-#zxShapeDir      = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-08-14_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
+inputDir        = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-09-02_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
+zxShapeDir      = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-09-02_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
 #outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-08-19/"
-#mass_points     = [4.04*1.005**i for i in range(434)]
+#outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-08-23/"
+outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-09-02/"
+mass_points     = [4.04*1.005**i for i in range(434)]
 
 inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
 zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
-outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-21/"
+#outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-21/"
+#outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-23/"
+outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-09-02/"
 mass_points     = [4.04*1.005**i for i in range(551)]
 
 TFileName       = "StatInput.root"
@@ -78,6 +82,8 @@ sigs            = [
                     BaseObject("HToZdZd_MZD60",color=ROOT.kRed+3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 60 GeV",),
                 ]
 
+data            = BaseObject("Data",)
+
 CMS_lumi.cmsText = "CMS Preliminary"
 CMS_lumi.extraText = ""
 CMS_lumi.cmsTextSize = 0.65
@@ -86,6 +92,7 @@ CMS_lumi.outOfFrame = True
 #CMS_lumi.lumi_13TeV = "35.9 fb^{-1}"
 CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
 #CMS_lumi.lumi_13TeV = "150 fb^{-1}"
+maxFactor = 2.
 
 # ____________________________________________________________________________________________________________________________________________ ||
 print("Mass range: "+str(mass_points[0])+"-"+str(mass_points[-1]))
@@ -96,13 +103,14 @@ for channel in channels: channel.histDict = {}
 reader = FileReader()
 for channel in channels:
     c = ROOT.TCanvas()
+    #c = ROOT.TCanvas("c_"+channel.name,"",0,0,100,100)
     channel.histDict = {}
     channel.tstack = ROOT.THStack("stackHist_"+channel.name,";Window index (mass);Event yield/window width")
-    for sample in bkgs+sigs: 
+    for sample in bkgs+sigs+[data,]: 
         channel.histDict[sample.name] = ROOT.TH1D("_".join(["hist",channel.name,sample.name]),"",len(mass_points),-0.5,len(mass_points))
     for ibin,m in enumerate(mass_points):
         window_width = 2*channel.width*m
-        for sample in bkgs+sigs:
+        for sample in bkgs+sigs+[data,]:
             sampleName = sample.name
             reader.openFile(inputDir if not hasattr(sample,"inputDir") else sample.inputDir,sampleName,TFileName if not hasattr(sample,"TFileName") else sample.TFileName)
             hist = reader.getObj(sampleName,channel.inputBinName)
@@ -125,7 +133,7 @@ for channel in channels:
     for ibin in range(nbins):
         channel.errHist.SetBinError(ibin+1,math.sqrt(channel.errHist.GetBinError(ibin+1)))
     maximum = max([channel.errHist.GetMaximum()]+[channel.histDict[sig.name].GetMaximum() for sig in sigs])
-    channel.tstack.SetMaximum(1.5*maximum)
+    channel.tstack.SetMaximum(maxFactor*maximum)
     channel.tstack.Draw()
     for sig in sigs:
         channel.histDict[sig.name].SetLineColor(sig.color)
@@ -137,6 +145,11 @@ for channel in channels:
     channel.errHist.SetFillColor(1)
     channel.errHist.SetFillStyle(3004)
     channel.errHist.Draw("samee2")
+    channel.histDict[data.name].SetLineWidth(1)
+    channel.histDict[data.name].SetLineColor(1)
+    channel.histDict[data.name].SetMarkerStyle(6)
+    channel.histDict[data.name].SetMarkerSize(0.0001)
+    channel.histDict[data.name].Draw("samep")
     leg = ROOT.TLegend(0.70,0.70,0.89,0.92)
     leg.SetBorderSize(0)
     leg.SetFillColor(0)

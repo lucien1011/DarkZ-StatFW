@@ -5,7 +5,7 @@ from Parametric.InputParameters import parameterDict
 parser = argparse.ArgumentParser()
 parser.add_argument("--inputDir",action="store")
 parser.add_argument("--selectStr",action="store")
-parser.add_argument("--option",action="store",default=str)
+parser.add_argument("--option",action="store",default="",type=str)
 parser.add_argument("--pattern",action="store")
 parser.add_argument("--method",action="store",default="AsymptoticLimits")
 
