@@ -172,7 +172,7 @@ for signal_model in signal_models:
             reader.openFile(inputDir if not hasattr(bkg,"inputDir") else bkg.inputDir,bkgName,TFileName if not hasattr(bkg,"TFileName") else bkg.TFileName)
             hist = reader.getObj(bkgName,histName)
             #count,error = getIntegral(hist) 
-            count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
+            count,error = getCountAndError(hist,central_value,bin.width,True)
             process = Process(bkgName,count if count > zero else zero,error)
             bin.processList.append(process)
             if count and "ZPlusX" not in bkgName:
@@ -187,7 +187,7 @@ for signal_model in signal_models:
             reader.openFile(inputDir,sample,TFileName)
             hist = reader.getObj(sample,histName)
             #count,error = getIntegral(hist)
-            count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
+            count,error = getCountAndError(hist,central_value,bin.width,True)
             dataCount += count
         error = math.sqrt(dataCount)
         bin.data = Process("data_obs",int(dataCount),error)
@@ -198,7 +198,7 @@ for signal_model in signal_models:
                 reader.openFile(inputDir,each_signal_model_name,TFileName)
                 hist = reader.getObj(each_signal_model_name,histName)
                 #count,error = getIntegral(hist)
-                count,error = getCountAndError(hist,central_value,central_value*bin.width,True)
+                count,error = getCountAndError(hist,central_value,bin.width,True)
                 bin.processList.append(Process(each_signal_model_name,count if count > zero else zero,error))
                 # systematics
                 if count:
