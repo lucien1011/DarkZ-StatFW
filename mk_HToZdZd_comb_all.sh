@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=true
-mkWS=true
-mkLimit=true
-mkFit=true
+mkDC=false
+mkWS=false
+mkLimit=false
+mkFit=false
+mkImpact=true
 
 # ________________________________________________________________________________________________________________________ ||
 inputDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_Run2016/
@@ -30,6 +31,7 @@ interDir2017=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-08-21_Run
 interDir2018=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-08-21_Run2018/
 
 postFitPlotDir=/home/lucien/public_html/Higgs/HToZdZd/FitDiagnostics/2019-09-03_RunII/
+impactPlotDir=/home/lucien/public_html/Higgs/HToZdZd/Impacts/2019-09-03_RunII/
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then
@@ -58,5 +60,14 @@ if ${mkFit} ; then
     do
         python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD${m}" --option "" --method FitDiagnostics
         python PlotScript/plotNuisance.py --inputPath ${outputDir}/Zd_MZD${m}/fitDiagnostics.root --outputPath ${postFitPlotDir}/Zd_MZD${m}.pdf
+    done
+fi
+
+# ________________________________________________________________________________________________________________________ ||
+if ${mkImpact} ; then
+    for m in 4.04 7.20517492369 12.0433938681 15.5316658805 18.0384780411 20.4339081063 25.0703252313 30.0011699553 34.4975235989 40.0654267675 45.1601374688 55.1312355409 60.0096060023;
+    do
+        python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD${m}" --method Impacts 
+        plotImpacts.py -i ${outputDir}/Zd_MZD${m}/impacts.json -o ${impactPlotDir}/Zd_MZD${m}
     done
 fi

@@ -4,7 +4,8 @@
 mkDC=false
 mkWS=false
 mkLimit=false
-mkFit=true
+mkFit=false
+mkImpact=true
 
 # ________________________________________________________________________________________________________________________ ||
 inputDir2016=/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-09-02_m4lSR-m4lSB_HZZd-ppZZd_Run2016/
@@ -34,6 +35,7 @@ systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Sys
 systTextFile2018=Config/Syst_Run2018.txt,Config/Syst_MuMu_Run2018.txt,Config/Syst_ElMu_Run2018.txt,Config/Syst_ElEl_Run2018.txt,Config/Syst_MuEl_Run2018.txt
 
 postFitPlotDir=/home/lucien/public_html/Higgs/DarkZ/StatFW/2019-09-02_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd_RunII/FitDiagnostics/
+impactPlotDir=/home/lucien/public_html/Higgs/DarkZ/StatFW/2019-09-02_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd_RunII/Impacts/
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then
@@ -64,5 +66,14 @@ if ${mkFit} ; then
     do
         python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD${m}" --option "" --method FitDiagnostics
         python PlotScript/plotNuisance.py --inputPath ${outputDir}/Zd_MZD${m}/fitDiagnostics.root --outputPath ${postFitPlotDir}/Zd_MZD${m}.pdf
+    done
+fi
+
+# ________________________________________________________________________________________________________________________ ||
+if ${mkImpact} ; then
+    for m in 4.04 7.20517492369 12.0433938681 15.5316658805 18.0384780411 20.4339081063 25.0703252313 30.0011699553 34.4975235989;
+    do
+        python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD${m}" --method Impacts 
+        plotImpacts.py -i ${outputDir}/Zd_MZD${m}/impacts.json -o ${impactPlotDir}/Zd_MZD${m}
     done
 fi

@@ -36,8 +36,8 @@ setLogY         = False
 quantiles       = ["down2","down1","central","up1","up2","obs"]
 #quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
-#plots           = ["epsilon","r","BrHZZd_Interpolation"]
-plots           = ["kappa","BrHZdZd_Interpolation"]
+plots           = ["epsilon","r","BrHZZd_Interpolation"]
+#plots           = ["kappa","BrHZdZd_Interpolation"]
 #plots           = ["epsilon_EpsPOI"]
 #plots           = ["BrHZZd"]
 #plots           = ["BrH4l",]
@@ -56,6 +56,7 @@ y_label_dict    = {
                   }
 x_label         = "m_{Z_{d}}"
 #x_label         = "m_{X}"
+drawVetoBox     = True
 
 def calculate(r_value,window_value,what):
     if what == "epsilon":
@@ -150,7 +151,8 @@ for plot in plots:
     window_values = outDict["central"].keys()
     window_values.sort()
     frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-    frame.SetMaximum(max([calculate(outDict[quan][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor)
+    frameMax = max([calculate(outDict[quan][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+    frame.SetMaximum(frameMax)
     if setLogY: frame.SetMinimum(1E-5)
     for i,window_value in enumerate(window_values):
         yellow.SetPoint( i, window_value,calculate(outDict["up2"][window_value], window_value, plot) )
@@ -181,5 +183,10 @@ for plot in plots:
     
     if setLogY:
         c.SetLogy()
+
+    if drawVetoBox:
+        box = ROOT.TBox(8.5,0.,11.,frameMax)
+        box.SetFillColor(ROOT.kGray)
+        box.Draw('same')
 
     c.SaveAs(option.outputPath.replace(".pdf","_"+plot+".pdf"))
