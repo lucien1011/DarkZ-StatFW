@@ -1,4 +1,4 @@
-import os,copy,math,argparse,ROOT
+import os,copy,math,argparse,ROOT,bisect
 
 from Utils.Hist import getCountAndError,getIntegral
 from Utils.DataCard import SignalModel
@@ -25,31 +25,31 @@ zxShapeDir      = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_
 outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-09-02/"
 mass_points     = [4.04*1.005**i for i in range(434)]
 
-inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
-zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
-#outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-21/"
-#outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-23/"
-outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-09-02/"
-mass_points     = [4.04*1.005**i for i in range(551)]
+#inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
+#zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
+##outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-21/"
+##outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-23/"
+#outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-09-02/"
+#mass_points     = [4.04*1.005**i for i in range(551)]
 
 TFileName       = "StatInput.root"
 
 channels        = [
-                    #BaseObject("MuMu_HiggsSR",inputBinName="MuMu_HiggsSR",width=0.02),
-                    #BaseObject("ElMu_HiggsSR",inputBinName="ElMu_HiggsSR",width=0.02),
-                    #BaseObject("ElEl_HiggsSR",inputBinName="ElEl_HiggsSR",width=0.05),
-                    #BaseObject("MuEl_HiggsSR",inputBinName="MuEl_HiggsSR",width=0.05),
-                    #BaseObject("MuMu_HiggsLowSB",inputBinName="MuMu_HiggsLowSB",width=0.02),
-                    #BaseObject("ElMu_HiggsLowSB",inputBinName="ElMu_HiggsLowSB",width=0.02),
-                    #BaseObject("ElEl_HiggsLowSB",inputBinName="ElEl_HiggsLowSB",width=0.05),
-                    #BaseObject("MuEl_HiggsLowSB",inputBinName="MuEl_HiggsLowSB",width=0.05),
-                    #BaseObject("MuMu_HiggsHighSB",inputBinName="MuMu_HiggsHighSB",width=0.02),
-                    #BaseObject("ElMu_HiggsHighSB",inputBinName="ElMu_HiggsHighSB",width=0.02),
-                    #BaseObject("ElEl_HiggsHighSB",inputBinName="ElEl_HiggsHighSB",width=0.05),
-                    #BaseObject("MuEl_HiggsHighSB",inputBinName="MuEl_HiggsHighSB",width=0.05),
+                    BaseObject("MuMu_HiggsSR",inputBinName="MuMu_HiggsSR",width=0.02),
+                    BaseObject("ElMu_HiggsSR",inputBinName="ElMu_HiggsSR",width=0.02),
+                    BaseObject("ElEl_HiggsSR",inputBinName="ElEl_HiggsSR",width=0.05),
+                    BaseObject("MuEl_HiggsSR",inputBinName="MuEl_HiggsSR",width=0.05),
+                    BaseObject("MuMu_HiggsLowSB",inputBinName="MuMu_HiggsLowSB",width=0.02),
+                    BaseObject("ElMu_HiggsLowSB",inputBinName="ElMu_HiggsLowSB",width=0.02),
+                    BaseObject("ElEl_HiggsLowSB",inputBinName="ElEl_HiggsLowSB",width=0.05),
+                    BaseObject("MuEl_HiggsLowSB",inputBinName="MuEl_HiggsLowSB",width=0.05),
+                    BaseObject("MuMu_HiggsHighSB",inputBinName="MuMu_HiggsHighSB",width=0.02),
+                    BaseObject("ElMu_HiggsHighSB",inputBinName="ElMu_HiggsHighSB",width=0.02),
+                    BaseObject("ElEl_HiggsHighSB",inputBinName="ElEl_HiggsHighSB",width=0.05),
+                    BaseObject("MuEl_HiggsHighSB",inputBinName="MuEl_HiggsHighSB",width=0.05),
                     
-                    BaseObject("Mu",inputBinName="Mu",width=0.02),
-                    BaseObject("El",inputBinName="El",width=0.05),
+                    #BaseObject("Mu",inputBinName="Mu",width=0.02),
+                    #BaseObject("El",inputBinName="El",width=0.05),
                 ]
 bkgs            = [
                    BaseObject("qqZZ",color=ROOT.kBlue+2,latexName="qqZZ",),
@@ -63,36 +63,38 @@ bkgs            = [
                        ),
                 ]
 sigs            = [
-                    #BaseObject("HZZd_M4",color=ROOT.kRed,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 4 GeV",),
-                    #BaseObject("HZZd_M7",color=ROOT.kRed+1,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 7 GeV",),
-                    #BaseObject("HZZd_M10",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 10 GeV",),
-                    #BaseObject("HZZd_M15",color=ROOT.kRed+2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 15 GeV",),
-                    #BaseObject("HZZd_M25",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 25 GeV",),
-                    #BaseObject("HZZd_M30",color=ROOT.kRed+3,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 30 GeV",),
+                    BaseObject("HZZd_M4",color=ROOT.kRed,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 4 GeV",),
+                    BaseObject("HZZd_M7",color=ROOT.kRed+1,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 7 GeV",),
+                    BaseObject("HZZd_M10",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 10 GeV",),
+                    BaseObject("HZZd_M15",color=ROOT.kRed+2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 15 GeV",),
+                    BaseObject("HZZd_M25",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 25 GeV",),
+                    BaseObject("HZZd_M30",color=ROOT.kRed+3,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 30 GeV",),
                     #BaseObject("ppZZd4l_M5",color=ROOT.kGreen,latexName="pp #rightarrow ZZ_{d}, m_{Z_{d}} = 5 GeV",),
                     #BaseObject("ppZZd4l_M15",color=ROOT.kGreen+1,latexName="pp #rightarrow ZZ_{d}, m_{Z_{d}} = 15 GeV",),
                     #BaseObject("ppZZd4l_M30",color=ROOT.kGreen-1,latexName="pp #rightarrow ZZ_{d}, m_{Z_{d}} = 30 GeV",),
                     
-                    BaseObject("HToZdZd_MZD4",color=ROOT.kRed,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 4 GeV",),
-                    BaseObject("HToZdZd_MZD10",color=ROOT.kRed-1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 10 GeV",),
-                    BaseObject("HToZdZd_MZD20",color=ROOT.kRed+1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 20 GeV",),
-                    BaseObject("HToZdZd_MZD30",color=ROOT.kRed-2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 30 GeV",),
-                    BaseObject("HToZdZd_MZD40",color=ROOT.kRed+2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 40 GeV",),
-                    BaseObject("HToZdZd_MZD50",color=ROOT.kRed-3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 50 GeV",),
-                    BaseObject("HToZdZd_MZD60",color=ROOT.kRed+3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 60 GeV",),
+                    #BaseObject("HToZdZd_MZD4",color=ROOT.kRed,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 4 GeV",),
+                    #BaseObject("HToZdZd_MZD10",color=ROOT.kRed-1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 10 GeV",),
+                    #BaseObject("HToZdZd_MZD20",color=ROOT.kRed+1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 20 GeV",),
+                    #BaseObject("HToZdZd_MZD30",color=ROOT.kRed-2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 30 GeV",),
+                    #BaseObject("HToZdZd_MZD40",color=ROOT.kRed+2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 40 GeV",),
+                    #BaseObject("HToZdZd_MZD50",color=ROOT.kRed-3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 50 GeV",),
+                    #BaseObject("HToZdZd_MZD60",color=ROOT.kRed+3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 60 GeV",),
                 ]
 
 data            = BaseObject("Data",)
 
-CMS_lumi.cmsText = "CMS Preliminary"
-CMS_lumi.extraText = ""
-CMS_lumi.cmsTextSize = 0.65
-CMS_lumi.outOfFrame = True
-#CMS_lumi.lumi_13TeV = "77.3 fb^{-1}"
-#CMS_lumi.lumi_13TeV = "35.9 fb^{-1}"
-CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
-#CMS_lumi.lumi_13TeV = "150 fb^{-1}"
-maxFactor = 2.
+CMS_lumi.cmsText        = "CMS Preliminary"
+CMS_lumi.extraText      = ""
+CMS_lumi.cmsTextSize    = 0.65
+CMS_lumi.outOfFrame     = True
+#CMS_lumi.lumi_13TeV    = "77.3 fb^{-1}"
+#CMS_lumi.lumi_13TeV    = "35.9 fb^{-1}"
+CMS_lumi.lumi_13TeV     = "136.1 fb^{-1}"
+#CMS_lumi.lumi_13TeV    = "150 fb^{-1}"
+maxFactor               = 4.0
+drawVetoBox             = True
+vetoMassRange           = [8.5,11.0]
 
 # ____________________________________________________________________________________________________________________________________________ ||
 print("Mass range: "+str(mass_points[0])+"-"+str(mass_points[-1]))
@@ -158,5 +160,9 @@ for channel in channels:
     for sig in reversed(sigs): leg.AddEntry(channel.histDict[sig.name],sig.latexName,"l")
     leg.Draw("same")
     CMS_lumi.CMS_lumi(c,4,11)
+    if drawVetoBox:
+        box = ROOT.TBox(bisect.bisect(mass_points,vetoMassRange[0]),0.,bisect.bisect(mass_points,vetoMassRange[1]),maxFactor*maximum)
+        box.SetFillColor(ROOT.kGray)
+        box.Draw('same')
     c.SaveAs(os.path.join(outputDir,channel.name+".pdf"))
     reader.end()
