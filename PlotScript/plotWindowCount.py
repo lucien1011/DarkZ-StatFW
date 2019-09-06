@@ -18,38 +18,42 @@ ROOT.gStyle.SetTitleSize(0.035,"XYZ")
 ROOT.gStyle.SetTitleXOffset(1.8)
 
 # ____________________________________________________________________________________________________________________________________________ ||
-inputDir        = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-09-02_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
-zxShapeDir      = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-09-02_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
+#inputDir        = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-09-02_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
+#zxShapeDir      = "/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-09-02_m4lSR-m4lSB_HZZd-ppZZd_RunII/"
 #outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-08-19/"
 #outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-08-23/"
-outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-09-02/"
-mass_points     = [4.04*1.005**i for i in range(434)]
+#outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-09-02/"
+#outputDir       = "/home/lucien/public_html/Higgs/DarkZ/WindowCount/RunII/2019-09-02/"
+#mass_points     = [4.04*1.005**i for i in range(434)]
 
 #inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
 #zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_RunII/"
+inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_RunII/"
+zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_RunII/"
 ##outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-21/"
 ##outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-08-23/"
 #outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-09-02/"
-#mass_points     = [4.04*1.005**i for i in range(551)]
+outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowCount/RunII/2019-09-06/"
+mass_points     = [4.04*1.005**i for i in range(551)]
 
 TFileName       = "StatInput.root"
 
 channels        = [
-                    BaseObject("MuMu_HiggsSR",inputBinName="MuMu_HiggsSR",width=0.02),
-                    BaseObject("ElMu_HiggsSR",inputBinName="ElMu_HiggsSR",width=0.02),
-                    BaseObject("ElEl_HiggsSR",inputBinName="ElEl_HiggsSR",width=0.05),
-                    BaseObject("MuEl_HiggsSR",inputBinName="MuEl_HiggsSR",width=0.05),
-                    BaseObject("MuMu_HiggsLowSB",inputBinName="MuMu_HiggsLowSB",width=0.02),
-                    BaseObject("ElMu_HiggsLowSB",inputBinName="ElMu_HiggsLowSB",width=0.02),
-                    BaseObject("ElEl_HiggsLowSB",inputBinName="ElEl_HiggsLowSB",width=0.05),
-                    BaseObject("MuEl_HiggsLowSB",inputBinName="MuEl_HiggsLowSB",width=0.05),
-                    BaseObject("MuMu_HiggsHighSB",inputBinName="MuMu_HiggsHighSB",width=0.02),
-                    BaseObject("ElMu_HiggsHighSB",inputBinName="ElMu_HiggsHighSB",width=0.02),
-                    BaseObject("ElEl_HiggsHighSB",inputBinName="ElEl_HiggsHighSB",width=0.05),
-                    BaseObject("MuEl_HiggsHighSB",inputBinName="MuEl_HiggsHighSB",width=0.05),
+                    #BaseObject("MuMu_HiggsSR",inputBinName="MuMu_HiggsSR",width=0.02),
+                    #BaseObject("ElMu_HiggsSR",inputBinName="ElMu_HiggsSR",width=0.02),
+                    #BaseObject("ElEl_HiggsSR",inputBinName="ElEl_HiggsSR",width=0.05),
+                    #BaseObject("MuEl_HiggsSR",inputBinName="MuEl_HiggsSR",width=0.05),
+                    #BaseObject("MuMu_HiggsLowSB",inputBinName="MuMu_HiggsLowSB",width=0.02),
+                    #BaseObject("ElMu_HiggsLowSB",inputBinName="ElMu_HiggsLowSB",width=0.02),
+                    #BaseObject("ElEl_HiggsLowSB",inputBinName="ElEl_HiggsLowSB",width=0.05),
+                    #BaseObject("MuEl_HiggsLowSB",inputBinName="MuEl_HiggsLowSB",width=0.05),
+                    #BaseObject("MuMu_HiggsHighSB",inputBinName="MuMu_HiggsHighSB",width=0.02),
+                    #BaseObject("ElMu_HiggsHighSB",inputBinName="ElMu_HiggsHighSB",width=0.02),
+                    #BaseObject("ElEl_HiggsHighSB",inputBinName="ElEl_HiggsHighSB",width=0.05),
+                    #BaseObject("MuEl_HiggsHighSB",inputBinName="MuEl_HiggsHighSB",width=0.05),
                     
-                    #BaseObject("Mu",inputBinName="Mu",width=0.02),
-                    #BaseObject("El",inputBinName="El",width=0.05),
+                    BaseObject("Mu",inputBinName="Mu",width=0.02),
+                    BaseObject("El",inputBinName="El",width=0.05),
                 ]
 bkgs            = [
                    BaseObject("qqZZ",color=ROOT.kBlue+2,latexName="qqZZ",),
@@ -63,23 +67,23 @@ bkgs            = [
                        ),
                 ]
 sigs            = [
-                    BaseObject("HZZd_M4",color=ROOT.kRed,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 4 GeV",),
-                    BaseObject("HZZd_M7",color=ROOT.kRed+1,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 7 GeV",),
-                    BaseObject("HZZd_M10",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 10 GeV",),
-                    BaseObject("HZZd_M15",color=ROOT.kRed+2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 15 GeV",),
-                    BaseObject("HZZd_M25",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 25 GeV",),
-                    BaseObject("HZZd_M30",color=ROOT.kRed+3,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 30 GeV",),
+                    #BaseObject("HZZd_M4",color=ROOT.kRed,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 4 GeV",),
+                    #BaseObject("HZZd_M7",color=ROOT.kRed+1,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 7 GeV",),
+                    #BaseObject("HZZd_M10",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 10 GeV",),
+                    #BaseObject("HZZd_M15",color=ROOT.kRed+2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 15 GeV",),
+                    #BaseObject("HZZd_M25",color=ROOT.kRed-2,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 25 GeV",),
+                    #BaseObject("HZZd_M30",color=ROOT.kRed+3,latexName="h #rightarrow ZZ_{d}, m_{Z_{d}} = 30 GeV",),
                     #BaseObject("ppZZd4l_M5",color=ROOT.kGreen,latexName="pp #rightarrow ZZ_{d}, m_{Z_{d}} = 5 GeV",),
                     #BaseObject("ppZZd4l_M15",color=ROOT.kGreen+1,latexName="pp #rightarrow ZZ_{d}, m_{Z_{d}} = 15 GeV",),
                     #BaseObject("ppZZd4l_M30",color=ROOT.kGreen-1,latexName="pp #rightarrow ZZ_{d}, m_{Z_{d}} = 30 GeV",),
                     
-                    #BaseObject("HToZdZd_MZD4",color=ROOT.kRed,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 4 GeV",),
-                    #BaseObject("HToZdZd_MZD10",color=ROOT.kRed-1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 10 GeV",),
-                    #BaseObject("HToZdZd_MZD20",color=ROOT.kRed+1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 20 GeV",),
-                    #BaseObject("HToZdZd_MZD30",color=ROOT.kRed-2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 30 GeV",),
-                    #BaseObject("HToZdZd_MZD40",color=ROOT.kRed+2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 40 GeV",),
-                    #BaseObject("HToZdZd_MZD50",color=ROOT.kRed-3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 50 GeV",),
-                    #BaseObject("HToZdZd_MZD60",color=ROOT.kRed+3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 60 GeV",),
+                    BaseObject("HToZdZd_MZD4",color=ROOT.kRed,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 4 GeV",),
+                    BaseObject("HToZdZd_MZD10",color=ROOT.kRed-1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 10 GeV",),
+                    BaseObject("HToZdZd_MZD20",color=ROOT.kRed+1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 20 GeV",),
+                    BaseObject("HToZdZd_MZD30",color=ROOT.kRed-2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 30 GeV",),
+                    BaseObject("HToZdZd_MZD40",color=ROOT.kRed+2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 40 GeV",),
+                    BaseObject("HToZdZd_MZD50",color=ROOT.kRed-3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 50 GeV",),
+                    BaseObject("HToZdZd_MZD60",color=ROOT.kRed+3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 60 GeV",),
                 ]
 
 data            = BaseObject("Data",)

@@ -1,18 +1,20 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=false
-mkWS=false
-mkLimit=false
+mkDC=true
+mkWS=true
+mkLimit=true
+mkSignif=true
 mkFit=false
-mkImpact=true
+mkImpact=false
 
 # ________________________________________________________________________________________________________________________ ||
-inputDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_Run2016/
-inputDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_Run2017/
-inputDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_Run2018/
+inputDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_Run2016/
+inputDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_Run2017/
+inputDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_Run2018/
 #outputDir=HToZdZd_DataCard/2019-08-21_RunII/
-outputDir=HToZdZd_DataCard/2019-09-03_RunII/
+#outputDir=HToZdZd_DataCard/2019-09-03_RunII/
+outputDir=HToZdZd_DataCard/2019-09-06_RunII_mZd8To12/
 
 #systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Syst_ElMu_Run2016.txt,Config/Syst_ElEl_Run2016.txt,Config/Syst_MuEl_Run2016.txt
 #systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt,Config/Syst_MuEl_Run2017.txt
@@ -22,9 +24,9 @@ systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Sys
 systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt
 systTextFile2018=Config/Syst_Run2018.txt,Config/Syst_MuMu_Run2018.txt,Config/Syst_ElEl_Run2018.txt
 
-zxShapeDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_Run2016/
-zxShapeDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_Run2017/
-zxShapeDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-08-21_Run2018/
+zxShapeDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_Run2016/
+zxShapeDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_Run2017/
+zxShapeDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_Run2018/
 
 interDir2016=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-08-21_Run2016/
 interDir2017=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-08-21_Run2017/
@@ -55,6 +57,11 @@ if ${mkLimit} ; then
 fi
 
 # ________________________________________________________________________________________________________________________ ||
+if ${mkSignif} ; then
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method Significance
+fi
+
+# ________________________________________________________________________________________________________________________ ||
 if ${mkFit} ; then
     for m in 4.04 7.20517492369 12.0433938681 15.5316658805 18.0384780411 20.4339081063 25.0703252313 30.0011699553 34.4975235989 40.0654267675 45.1601374688 55.1312355409 60.0096060023;
     do
@@ -65,9 +72,15 @@ fi
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkImpact} ; then
-    for m in 4.04 7.20517492369 12.0433938681 15.5316658805 18.0384780411 20.4339081063 25.0703252313 30.0011699553 34.4975235989 40.0654267675 45.1601374688 55.1312355409 60.0096060023;
+    #for m in 4.04 7.20517492369 12.0433938681 15.5316658805 18.0384780411 20.4339081063 25.0703252313 30.0011699553 34.4975235989 40.0654267675 45.1601374688 55.1312355409 60.0096060023;
+    #for m in 10.9545291766;
+    for m in $(ls ${outputDir}) ;
     do
-        python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD${m}" --method Impacts 
-        plotImpacts.py -i ${outputDir}/Zd_MZD${m}/impacts.json -o ${impactPlotDir}/Zd_MZD${m}
+        #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD${m}" --method Impacts 
+        #plotImpacts.py -i ${outputDir}/Zd_MZD${m}/impacts.json -o ${impactPlotDir}/Zd_MZD${m}
+        if [[ ${m} == *"D19."* ]] ; then 
+            python runCombineTask.py --inputDir ${outputDir} --selectStr "${m}" --method Impacts ;
+            plotImpacts.py -i ${outputDir}/${m}/impacts.json -o ${impactPlotDir}/${m} ;
+        fi
     done
 fi

@@ -83,8 +83,8 @@ mass_points     = [4.04*1.005**i for i in range(434)]
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 signal_models = [ 
-        #SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),"ppZZd4l_M"+str(m)],m) for m in mass_points 
-        SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),],m) for m in mass_points 
+        SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),"ppZZd4l_M"+str(m)],m) for m in mass_points 
+        #SignalModel("Zd_MZD"+str(m),["HZZd_M"+str(m),],m) for m in mass_points 
         ]
 
 data = [
