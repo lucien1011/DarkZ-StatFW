@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--inputDir",action="store")
 parser.add_argument("--outputPath",action="store")
 parser.add_argument("--selectStr",action="store",default="")
+parser.add_argument("--poi",action="store",default="")
 
 option = parser.parse_args()
 
@@ -37,12 +38,13 @@ quantiles       = ["down2","down1","central","up1","up2","obs"]
 #quantiles       = ["down2","down1","central","up1","up2",]
 varName         = "limit"
 #plots           = ["epsilon","r","BrHZZd_Interpolation",]
-plots           = ["BrHZZd_Interpolation",]
+#plots           = ["epsilon",]
 #plots           = ["epsilon","r",]
 #plots           = ["kappa","BrHZdZd_Interpolation"]
 #plots           = ["epsilon_EpsPOI"]
 #plots           = ["BrHZZd"]
 #plots           = ["BrH4l",]
+plots           = ["BrHZZd_Interpolation"] if not option.poi else option.poi.split(",")
 maxFactor       = 1.2
 y_label_dict    = {
                     "r": "Signal strength",
