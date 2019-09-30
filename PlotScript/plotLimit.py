@@ -58,13 +58,13 @@ y_label_dict    = {
                     "BrHZdZd_Interpolation": "Br(h #rightarrow Z_{d} Z_{d})",
                     "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
                     "c_zh_div_Lambda_Interpolation": "|C^{eff}_{Zh}|/#Lambda [TeV^{-1}]",
-                    "xs_ZZd": "Cross section",
-                    "xs_ZdZd": "Cross section",
+                    "xs_ZZd": "Cross section [pb]",
+                    "xs_ZdZd": "Cross section [pb]",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
 #x_label         = "m_{Z_{d}}"
-#x_label         = "m_{X}"
-x_label         = "m_{a}"
+x_label         = "m_{X}"
+#x_label         = "m_{a}"
 drawVetoBox     = True
 
 def calculate(r_value,window_value,what):
