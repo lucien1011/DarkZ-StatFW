@@ -4,6 +4,7 @@ import Utils.CMS_lumi as CMS_lumi
 import Utils.tdrstyle as tdrstyle
 
 from Physics.Zd_XS import *
+from Physics.ALP_XS import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
@@ -56,10 +57,12 @@ y_label_dict    = {
                     "BrHZdZd": "Br(h #rightarrow Z_{d} Z_{d})",
                     "BrHZdZd_Interpolation": "Br(h #rightarrow Z_{d} Z_{d})",
                     "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
+                    "c_zh_div_Lambda_Interpolation": "|C^{eff}_{Zh}|/#Lambda [TeV^{-1}]",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
-x_label         = "m_{Z_{d}}"
+#x_label         = "m_{Z_{d}}"
 #x_label         = "m_{X}"
+x_label         = "m_{a}"
 drawVetoBox     = True
 
 def calculate(r_value,window_value,what):
@@ -81,6 +84,10 @@ def calculate(r_value,window_value,what):
         return r_value*xs_dict[window_value]/higgs_xs
     elif what == "r":
         return r_value
+    elif what == "c_zh_div_Lambda_Interpolation":
+        ratio_exc = r_value*(higgs_boson.xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/higgs_boson.xs/z_boson.ll_br
+        Gamma_hToZa_exc = ratio_exc*higgs_boson.total_width/(1.-ratio_exc)
+        return math.sqrt(Gamma_hToZa_exc*16.*math.pi/higgs_boson.mass**3/lambda_x_y_func((z_boson.mass/higgs_boson.mass)**2,(window_value/higgs_boson.mass)**2)**1.5)*1000
     else:
         raise RuntimeError
 
