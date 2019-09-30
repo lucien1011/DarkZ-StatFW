@@ -58,6 +58,8 @@ y_label_dict    = {
                     "BrHZdZd_Interpolation": "Br(h #rightarrow Z_{d} Z_{d})",
                     "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
                     "c_zh_div_Lambda_Interpolation": "|C^{eff}_{Zh}|/#Lambda [TeV^{-1}]",
+                    "xs_ZZd": "Cross section",
+                    "xs_ZdZd": "Cross section",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
 #x_label         = "m_{Z_{d}}"
@@ -84,6 +86,10 @@ def calculate(r_value,window_value,what):
         return r_value*xs_dict[window_value]/higgs_xs
     elif what == "r":
         return r_value
+    elif what == "xs_ZZd":
+        return r_value*(higgs_boson.xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))
+    elif what == "xs_ZdZd":
+        return r_value*(higgs_boson.xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
     elif what == "c_zh_div_Lambda_Interpolation":
         ratio_exc = r_value*(higgs_boson.xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/higgs_boson.xs/z_boson.ll_br
         Gamma_hToZa_exc = ratio_exc*higgs_boson.total_width/(1.-ratio_exc)
