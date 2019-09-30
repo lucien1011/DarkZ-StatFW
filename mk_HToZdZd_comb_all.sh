@@ -14,7 +14,9 @@ inputDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_
 inputDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-09-06_Run2018/
 #outputDir=HToZdZd_DataCard/2019-08-21_RunII/
 #outputDir=HToZdZd_DataCard/2019-09-03_RunII/
-outputDir=HToZdZd_DataCard/2019-09-06_RunII_mZd8To12/
+#outputDir=HToZdZd_DataCard/2019-09-06_RunII_mZd8To12/
+#outputDir=HToZdZd_DataCard/2019-09-10_RunII_Mu/
+outputDir=HToZdZd_DataCard/2019-09-10_RunII_El/
 
 #systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Syst_ElMu_Run2016.txt,Config/Syst_ElEl_Run2016.txt,Config/Syst_MuEl_Run2016.txt
 #systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt,Config/Syst_MuEl_Run2017.txt

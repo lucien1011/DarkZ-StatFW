@@ -38,3 +38,12 @@ def getCountAndError(hist,central,width,isSR=True):
         integral = integral1+integral2
         error = math.sqrt(error1**2+error2**2)
     return integral,error
+
+def getBinContentAndError(hist,x1,x2):
+    error = ROOT.Double(0.)
+    integral = hist.IntegralAndError(
+            hist.GetXaxis().FindFixBin(x1),
+            hist.GetXaxis().FindFixBin(x2),
+            error,
+            )
+    return integral,error

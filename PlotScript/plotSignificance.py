@@ -31,4 +31,9 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     for i,entry in enumerate(tree):
         outDict[quantiles[i]][window_value] = getattr(entry,varName)
 for quantile in quantiles:
-    print max(outDict[quantile].iteritems(), key=operator.itemgetter(1))
+    print "-"*100
+    print quantile
+    print "Maximum local significance: ",max(outDict[quantile].iteritems(), key=operator.itemgetter(1))
+    print "Proportion of 2sigma significance: ",sum([1. for window_value,sigma in outDict[quantile].iteritems() if sigma > 2.])/len(outDict[quantile])
+
+
