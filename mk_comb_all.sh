@@ -4,7 +4,7 @@
 mkDC=true
 mkWS=true
 mkLimit=true
-mkSignif=true
+mkSignif=false
 mkFit=false
 mkImpact=false
 
@@ -33,7 +33,8 @@ zxShapeDir2018=/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l1
 #outputDir=DataCard/2019-09-02_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd-ppZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl_HZZd_RunII/
-outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-MuEl_HZZd_RunII/
+#outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-MuEl_HZZd_RunII/
+outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl-MuEl_HZZd_RunII/
 
 systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Syst_ElMu_Run2016.txt,Config/Syst_ElEl_Run2016.txt,Config/Syst_MuEl_Run2016.txt
 systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt,Config/Syst_MuEl_Run2017.txt

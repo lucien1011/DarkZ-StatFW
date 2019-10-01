@@ -58,6 +58,7 @@ y_label_dict    = {
                     "BrHZdZd_Interpolation": "Br(h #rightarrow Z_{d} Z_{d})",
                     "BrH4l": "Br(h #rightarrow ZX #rightarrow 4#mu)",
                     "c_zh_div_Lambda_Interpolation": "|C^{eff}_{Zh}|/#Lambda [TeV^{-1}]",
+                    "c_ah_div_Lambda_Interpolation": "|C^{eff}_{ah}|/#Lambda^{2} [TeV^{-2}]",
                     "xs_ZZd": "Cross section [pb]",
                     "xs_ZdZd": "Cross section [pb]",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
@@ -91,9 +92,13 @@ def calculate(r_value,window_value,what):
     elif what == "xs_ZdZd":
         return r_value*(higgs_boson.xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
     elif what == "c_zh_div_Lambda_Interpolation":
-        ratio_exc = r_value*(higgs_boson.xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/higgs_boson.xs/z_boson.ll_br
+        ratio_exc = r_value*(higgs_boson.xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/higgs_boson.xs/z_boson.ll_br/ALP.ll_br
         Gamma_hToZa_exc = ratio_exc*higgs_boson.total_width/(1.-ratio_exc)
         return math.sqrt(Gamma_hToZa_exc*16.*math.pi/higgs_boson.mass**3/lambda_x_y_func((z_boson.mass/higgs_boson.mass)**2,(window_value/higgs_boson.mass)**2)**1.5)*1000
+    elif what == "c_ah_div_Lambda_Interpolation":
+        ratio_exc = r_value*(higgs_boson.xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))/higgs_boson.xs/ALP.ll_br/ALP.ll_br
+        Gamma_hToaa_exc = ratio_exc*higgs_boson.total_width/(1.-ratio_exc)
+        return math.sqrt(Gamma_hToaa_exc*32.*math.pi/higgs_boson.mass**3/higgs_boson.vev**2/(1.-2.*window_value**2/higgs_boson.mass**2)**2/math.sqrt(1.-4.*window_value**2/higgs_boson.mass**2))*1000*1000
     else:
         raise RuntimeError
 
@@ -111,6 +116,7 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     #window_value = int(window_name.split("_")[1])
     #window_value = int(window_name.split("_")[1].replace("M",""))
     window_value = float(window_name.split("_")[1].replace("MZD",""))
+    if window_value > higgs_boson.mass/2.: continue
     for i,entry in enumerate(tree):
         outDict[quantiles[i]][window_value] = getattr(entry,varName)
     #if expOnly:
