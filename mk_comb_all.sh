@@ -21,6 +21,8 @@ zxShapeDir2016=/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l1
 zxShapeDir2017=/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-08-14_m4lSR-m4lSB_HZZd-ppZZd_Run2017/
 zxShapeDir2018=/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l100To170_Nominal/2019-08-14_m4lSR-m4lSB_HZZd-ppZZd_Run2018/
 
+sigSF=2.
+
 #outputDir=DataCard/2019-07-17_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd_RunII/
 #outputDir=DataCard/2019-07-24_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd-ppZZd_RunII/
 #outputDir=DataCard/2019-07-17_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd-ppZZd_RunII_EpsPOI/
@@ -34,7 +36,8 @@ zxShapeDir2018=/raid/raid7/lucien/Higgs/DarkZ/ParaInput/DarkPhotonSelection_m4l1
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl_HZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-MuEl_HZZd_RunII/
-outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl-MuEl_HZZd_RunII/
+#outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl-MuEl_HZZd_RunII/
+outputDir=DataCard/2019-10-02_CutAndCount_m4lSR-ElEl-MuEl_HZZd_RunII/
 
 systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Syst_ElMu_Run2016.txt,Config/Syst_ElEl_Run2016.txt,Config/Syst_MuEl_Run2016.txt
 systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt,Config/Syst_MuEl_Run2017.txt
@@ -48,9 +51,9 @@ impactPlotDir=/home/lucien/public_html/Higgs/DarkZ/StatFW/2019-09-02_CutAndCount
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then
-    python makeDataCard.py --inputDir ${inputDir2016} --verbose --outputDir ${outputDir} --sideband --appendToPath "2016" --systTextFile ${systTextFile2016} --zxShapeDir ${zxShapeDir2016} --interpolPath ${interDir2016} #--epsilon --setDataCountToMC 
-    python makeDataCard.py --inputDir ${inputDir2017} --verbose --outputDir ${outputDir} --sideband --appendToPath "2017" --systTextFile ${systTextFile2017} --zxShapeDir ${zxShapeDir2017} --interpolPath ${interDir2017} #--epsilon --setDataCountToMC 
-    python makeDataCard.py --inputDir ${inputDir2018} --verbose --outputDir ${outputDir} --sideband --appendToPath "2018" --systTextFile ${systTextFile2018} --zxShapeDir ${zxShapeDir2018} --interpolPath ${interDir2018} #--epsilon --setDataCountToMC 
+    python makeDataCard.py --inputDir ${inputDir2016} --verbose --outputDir ${outputDir} --sideband --appendToPath "2016" --systTextFile ${systTextFile2016} --zxShapeDir ${zxShapeDir2016} --interpolPath ${interDir2016} --sigSF=${sigSF} #--epsilon --setDataCountToMC 
+    python makeDataCard.py --inputDir ${inputDir2017} --verbose --outputDir ${outputDir} --sideband --appendToPath "2017" --systTextFile ${systTextFile2017} --zxShapeDir ${zxShapeDir2017} --interpolPath ${interDir2017} --sigSF=${sigSF} #--epsilon --setDataCountToMC 
+    python makeDataCard.py --inputDir ${inputDir2018} --verbose --outputDir ${outputDir} --sideband --appendToPath "2018" --systTextFile ${systTextFile2018} --zxShapeDir ${zxShapeDir2018} --interpolPath ${interDir2018} --sigSF=${sigSF} #--epsilon --setDataCountToMC 
 fi
 
 # ________________________________________________________________________________________________________________________ ||
