@@ -38,6 +38,7 @@ parser.add_argument("--systTextFile",action="store")
 parser.add_argument("--interpolPath",action="store",default=None)
 parser.add_argument("--setDataCountToMC",action="store_true")
 parser.add_argument("--zxShapeDir",action="store")
+parser.add_argument("--sigSF",action="store",type=float,default=1.)
 
 option = parser.parse_args()
 
@@ -106,17 +107,17 @@ bkgs = [
 # ____________________________________________________________________________________________________________________________________________ ||
 # bin list
 binList_SR = [
-        Bin("MuMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
-        Bin("MuMu_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
-        Bin("ElMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
-        Bin("ElMu_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
+        #Bin("MuMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
+        #Bin("MuMu_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
+        #Bin("ElMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
+        #Bin("ElMu_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
         Bin("ElEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsSR",width=option.muWidth),
         Bin("ElEl_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsSR",width=option.muWidth),
         Bin("MuEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsSR",width=option.muWidth),
         Bin("MuEl_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsSR",width=option.muWidth),
         ]
 
-binList = binList_SR + [
+binList_LowSB = [
         Bin("MuMu_HiggsLowSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsLowSB",width=option.elWidth),
         Bin("MuMu_HiggsLowSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsLowSB",width=option.elWidth),
         Bin("ElMu_HiggsLowSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsLowSB",width=option.elWidth),
@@ -125,7 +126,9 @@ binList = binList_SR + [
         Bin("ElEl_HiggsLowSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsLowSB",width=option.elWidth),
         Bin("MuEl_HiggsLowSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsLowSB",width=option.elWidth),
         Bin("MuEl_HiggsLowSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsLowSB",width=option.elWidth),
+        ]
 
+binList_HighSB = [
         Bin("MuMu_HiggsHighSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsHighSB",width=option.elWidth),
         Bin("MuMu_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsHighSB",width=option.elWidth),
         Bin("ElMu_HiggsHighSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsHighSB",width=option.elWidth),
@@ -136,6 +139,9 @@ binList = binList_SR + [
         Bin("MuEl_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsHighSB",width=option.elWidth),
         ]
 
+binList = binList_SR
+
+# ____________________________________________________________________________________________________________________________________________ ||
 if interpolate_path:
     for b in binList:
         if not b.name.endswith("_SR"): continue
@@ -194,7 +200,7 @@ for signal_model in signal_models:
                 count,error = getIntegral(hist)
             else:
                 count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
-            process = Process(bkgName,count if count >= 0. else 1e-12,error)
+            process = Process(bkgName,count*option.sigSF if count >= 0. else 1e-12,error*option.sigSF)
             spb_data_count += count
             bin.processList.append(process)
         

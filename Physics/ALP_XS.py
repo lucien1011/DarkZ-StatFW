@@ -8,6 +8,7 @@ higgs_boson = BaseObject(
         mass = 125.18,
         ZZ_br = 2.64E-02,
         llll_br = 0.0002768,
+        vev = 246.33,
         )
 z_boson = BaseObject(
         "Z boson",
@@ -16,7 +17,7 @@ z_boson = BaseObject(
         )
 ALP = BaseObject(
         "ALP",
-        ll_br = 1.,
+        ll_br = 0.1,
         )
 
 mass_points             = range(4,35)
