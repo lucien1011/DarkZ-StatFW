@@ -200,7 +200,7 @@ for signal_model in signal_models:
                 count,error = getIntegral(hist)
             else:
                 count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
-            process = Process(bkgName,count*option.sigSF if count >= 0. else 1e-12,error*option.sigSF)
+            process = Process(bkgName,count if count >= 0. else 1e-12,error*option.sigSF)
             spb_data_count += count
             bin.processList.append(process)
         
@@ -216,7 +216,7 @@ for signal_model in signal_models:
                 else:
                     count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
                 spb_data_count += count
-                bin.processList.append(Process(each_signal_model_name,count if count >= 0. else 1e-12,error))
+                bin.processList.append(Process(each_signal_model_name,count*option.sigSF if count >= 0. else 1e-12,error*option.sigSF))
                 
                 # systematics
                 if count:
@@ -229,7 +229,7 @@ for signal_model in signal_models:
                     count = bin.interFuncDict[key].Eval(central_value)
                 else:
                     count = 0.
-                bin.processList.append(Process(each_signal_model_name,count if count > 0. else 1e-12,0.))
+                bin.processList.append(Process(each_signal_model_name,count*option.sigSF if count > 0. else 1e-12,0.))
 
         # data
         dataCount = 0.
