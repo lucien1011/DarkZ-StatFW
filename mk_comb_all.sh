@@ -34,10 +34,16 @@ sigSF=2.
 #outputDir=DataCard/2019-09-02_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd_RunII/
 #outputDir=DataCard/2019-09-02_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd-ppZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd_RunII/
+#outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB_HZZd-ppZZd_RunII/
+#outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-MuMu_HZZd_RunII/
+#outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElMu_HZZd_RunII/
+#outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElMu-MuEl_HZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl_HZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-MuEl_HZZd_RunII/
+#outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-MuMu-ElMu_HZZd_RunII/
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl-MuEl_HZZd_RunII/
-outputDir=DataCard/2019-10-02_CutAndCount_m4lSR-ElEl-MuEl_HZZd_RunII/
+#outputDir=DataCard/2019-10-02_CutAndCount_m4lSR-ElEl-MuEl_HZZd_RunII/
+outputDir=DataCard/2019-10-02_CutAndCount_m4lSR-MuMu-ElMu_HZZd_RunII/
 
 systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Syst_ElMu_Run2016.txt,Config/Syst_ElEl_Run2016.txt,Config/Syst_MuEl_Run2016.txt
 systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt,Config/Syst_MuEl_Run2017.txt

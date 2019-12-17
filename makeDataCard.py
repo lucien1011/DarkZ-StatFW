@@ -200,7 +200,7 @@ for signal_model in signal_models:
                 count,error = getIntegral(hist)
             else:
                 count,error = getCountAndError(hist,central_value if not bin.central_value else bin.central_value,bin.width,isSR=isSRFunc(bin))
-            process = Process(bkgName,count if count >= 0. else 1e-12,error*option.sigSF)
+            process = Process(bkgName,count if count >= 0. else 1e-12,error)
             spb_data_count += count
             bin.processList.append(process)
         
