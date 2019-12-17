@@ -66,25 +66,9 @@ TFileName = "StatInput.root"
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 mass_points = [4.04*1.005**i for i in range(551)]
+#mass_points = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
 signal_models = [
-        SignalModel("Zd_MZD4",["HToZdZd_M4",],4.,),
-        SignalModel("Zd_MZD5",["HToZdZd_M5",],5.,),
-        SignalModel("Zd_MZD6",["HToZdZd_M6",],6.,),
-        SignalModel("Zd_MZD7",["HToZdZd_M7",],7.,),
-        SignalModel("Zd_MZD8",["HToZdZd_M8",],8.,),
-        SignalModel("Zd_MZD9",["HToZdZd_M9",],9.,),
-        SignalModel("Zd_MZD10",["HToZdZd_M10",],10.,),
-        SignalModel("Zd_MZD15",["HToZdZd_M15",],15.,),
-        SignalModel("Zd_MZD20",["HToZdZd_M20",],20.,),
-        SignalModel("Zd_MZD25",["HToZdZd_M25",],25.,),
-        SignalModel("Zd_MZD30",["HToZdZd_M30",],30.,),
-        SignalModel("Zd_MZD35",["HToZdZd_M35",],35.,),
-        SignalModel("Zd_MZD40",["HToZdZd_M40",],40.,),
-        SignalModel("Zd_MZD45",["HToZdZd_M45",],45.,),
-        SignalModel("Zd_MZD50",["HToZdZd_M50",],50.,),
-        SignalModel("Zd_MZD55",["HToZdZd_M55",],55.,),
-        SignalModel("Zd_MZD60",["HToZdZd_M60",],60.,),
-        #SignalModel("Zd_MZD"+str(m),["HToZdZd_MZD"+str(m),],m,) for m in mass_points
+        SignalModel("Zd_MZD"+str(m),["HToZdZd_M"+str(m),],m,) for m in mass_points
         ]
 
 data = [
@@ -135,7 +119,7 @@ if interpolate_path:
     for b in binList:
         b.interFuncDict = {}
         b.interFileDict = {}
-        b.interFileDict["HToZdZd"] = ROOT.TFile(os.path.join(interpolate_path,b.inputBinName+".root"),"READ")
+        b.interFileDict["HToZdZd"] = ROOT.TFile(os.path.join(interpolate_path,b.inputBinName+"_pol5.root"),"READ")
         b.interFuncDict["HToZdZd"] = b.interFileDict["HToZdZd"].Get(b.inputBinName+"_fitFunc")
 
 # ____________________________________________________________________________________________________________________________________________ ||
