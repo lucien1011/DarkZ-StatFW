@@ -1,13 +1,11 @@
 #!/bin/bash
 
 declare -a arr_dir=(
-"DataCard/2018-11-30_150p0_ParametricShape_SignalDCB_HiggsRateParam/" 
-"DataCard/2018-11-30_150p0_ParametricShape_SignalDCB/" 
-"DataCard/2018-11-30_150p0_Unblinding_NoSB/"
-"DataCard/2018-11-30_150p0_Unblinding/"
+"HToZdZd_DataCard/2019-12-06_SR_RunII/" 
+"HToZdZd_DataCard/2019-12-06_SR2D_RunII/"
 )
 
-for m in 7 10 15 20 25 30 ; 
+for m in 4 5 6 7 8 9 10 15 20 25 30 35 40 45 50 55 60 ; 
 do 
     echo "-----------------------------------" ; 
     echo "MZd ${m}" ; 
@@ -15,6 +13,6 @@ do
     do
         #echo "===================================" ;
         echo ${i}; 
-        cat ${i}HZZd_M${m}/AsymptoticLimits_Out.txt | grep "Expected 50.0%" ; 
+        cat ${i}Zd_MZD${m}/AsymptoticLimits_Out.txt | grep "Expected 50.0%" ; 
     done
 done

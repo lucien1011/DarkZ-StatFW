@@ -61,6 +61,10 @@ y_label_dict    = {
                     "c_ah_div_Lambda_Interpolation": "|C^{eff}_{ah}|/#Lambda^{2} [TeV^{-2}]",
                     "xs_ZZd": "Cross section [pb]",
                     "xs_ZdZd": "Cross section [pb]",
+                    "BrHZX_BrXll": "Br(h #rightarrow Z X) #times Br(X #rightarrow ll)",
+                    "BrHZX_BrXMuMu": "Br(h #rightarrow Z X) #times Br(X #rightarrow #mu #mu)",
+                    "BrHZX_BrXee": "Br(h #rightarrow Z X) #times Br(X #rightarrow ee)",
+                    "BrHXX_Br2Xll": "Br(h #rightarrow X X) #times Br(X #rightarrow ll)^2",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
 #x_label         = "m_{Z_{d}}"
@@ -81,6 +85,14 @@ def calculate(r_value,window_value,what):
         return r_value*(higgs_xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(higgs_xs*reader.interpolate(window_value,"Br_ZdTo2l")*z_2l_br)
     elif what == "BrHZdZd_Interpolation":
         return r_value*(higgs_xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))/(higgs_xs*reader.interpolate(window_value,"Br_ZdTo2l")**2)
+    elif what == "BrHZX_BrXll":
+        return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/z_2l_br
+    elif what == "BrHZX_BrXMuMu":
+        return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(z_2l_br/2.)
+    elif what == "BrHZX_BrXee":
+        return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(z_2l_br/2.)
+    elif what == "BrHXX_Br2Xll":
+        return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
     elif what == "epsilon_EpsPOI":
         return r_value
     elif what == "BrH4l":
