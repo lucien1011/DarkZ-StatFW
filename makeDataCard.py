@@ -92,7 +92,6 @@ data = [
         BaseObject("Data"),
         ]
 
-#bkg_names = mergeSampleDict.keys()
 bkgs = [
         BaseObject("Higgs"),
         BaseObject("qqZZ"),

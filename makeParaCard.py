@@ -8,8 +8,6 @@ from StatFW.Channel import Bin
 from StatFW.FileReader import FileReader
 from StatFW.RateParameter import RateParameter
 
-from Dataset.MergeSampleDict import mergeSampleDict
-
 from Parametric.InputParameters_Mu import parameterDict_Mu
 from Parametric.InputParameters_El import parameterDict_El
 from Parametric.ShapeFitConfig import pdfType_hist,pdfType_BW,pdfType_poly,pdfType_landau,pdfType_data,pdfType_dcb
@@ -102,7 +100,6 @@ data_names = [
         "Data2016",
         ]
 
-#bkg_names = mergeSampleDict.keys()
 bkg_names = [
         "Higgs",
         "qqZZ",
