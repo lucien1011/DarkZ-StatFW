@@ -1,4 +1,4 @@
-logN            Higgs        VBF     WHminus     WHplus      WH      ZH      ggH     ggZZ    qqZZ    ZPlusX      HZZd_M*        ppZZd4l_M*        HZZd_M25        HZZd_M30    HZZd_M4     HZZd_M7     HZZd_M10 
+logN            Higgs        VBF     WHminus     WHplus      WH      ZH      ggH     ggZZ    qqZZ    ZPlusX      HZZd_M*        ppZZd4l_M*        HZZd_M25        HZZd_M30    HZZd_M4     HZZd_M7     HToZdZd_M* 
 CMS_eff_m       0.032        0.032   0.032       0.032       0.032   0.032   0.032   0.032   0.032   0.032       0.032           0.032           0.032           0.032       0.032       0.032       0.032
 CMS_scale_m     0.042        0.042   0.042       0.042       0.042   0.042   0.042   0.042   0.042   0.042       0.042           0.042           0.042           0.042       0.042       0.042       0.042
 #CMS_res_m       0.020        0.020   0.020       0.020       0.020   0.020   0.020   0.020   0.020   0.020       0.020           0.020           0.020           0.020       0.020       0.020       0.020

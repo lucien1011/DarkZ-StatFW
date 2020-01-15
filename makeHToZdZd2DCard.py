@@ -9,7 +9,7 @@ from StatFW.FileReader import FileReader
 from StatFW.RateParameter import RateParameter
 from StatFW.BaseObject import BaseObject
 
-from Utils.Hist import getCountAndError,getIntegral
+from Utils.Hist import getCountAndError2D,getCountAndError
 from Utils.DataCard import SignalModel
 from Utils.mkdir_p import mkdir_p
 
@@ -35,16 +35,16 @@ option = parser.parse_args()
 # Configurable
 inputDir = option.inputDir
 if option.systTextFile:
-    #tf1,tf2,tf3,tf4,tf5 = option.systTextFile.split(",")
-    tf1,tf2,tf3 = option.systTextFile.split(",")
+    tf1,tf2,tf3,tf4,tf5 = option.systTextFile.split(",")
+    #tf1,tf2,tf3 = option.systTextFile.split(",")
     commonLnSystFilePath = tf1
     lnSystFilePathDict = {
-            "Mu": tf2, 
-            "El": tf3, 
-            #"MuMu": tf2,
-            #"ElMu": tf3,
-            #"ElEl": tf4,
-            #"MuEl": tf5,
+            #"Mu": tf2, 
+            #"El": tf3, 
+            "MuMu": tf2,
+            "ElMu": tf3,
+            "ElEl": tf4,
+            "MuEl": tf5,
             }
 else:
     if option.sideband:
@@ -56,8 +56,8 @@ else:
             #"FourMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_4mu.txt", 
             #"TwoElTwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e2mu.txt", 
             #"TwoMuTwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu2e.txt", 
-            "TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
-            "TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
+            #"TwoMu": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2mu.txt", 
+            #"TwoEl": "/home/lucien/Higgs/DarkZ/DarkZ-StatFW/Config/Syst_2e.txt", 
             }
 outputDir = option.outputDir
 interpolate_path = option.interpolPath
@@ -66,25 +66,9 @@ TFileName = "StatInput.root"
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
 mass_points = [4.04*1.005**i for i in range(551)]
+#mass_points = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
 signal_models = [
-        SignalModel("Zd_MZD4",["HToZdZd_MZD4",],4.,),
-        SignalModel("Zd_MZD5",["HToZdZd_MZD5",],5.,),
-        SignalModel("Zd_MZD6",["HToZdZd_MZD6",],6.,),
-        SignalModel("Zd_MZD7",["HToZdZd_MZD7",],7.,),
-        SignalModel("Zd_MZD8",["HToZdZd_MZD8",],8.,),
-        SignalModel("Zd_MZD9",["HToZdZd_MZD9",],9.,),
-        SignalModel("Zd_MZD10",["HToZdZd_MZD10",],10.,),
-        SignalModel("Zd_MZD15",["HToZdZd_MZD15",],15.,),
-        SignalModel("Zd_MZD20",["HToZdZd_MZD20",],20.,),
-        SignalModel("Zd_MZD25",["HToZdZd_MZD25",],25.,),
-        SignalModel("Zd_MZD30",["HToZdZd_MZD30",],30.,),
-        SignalModel("Zd_MZD35",["HToZdZd_MZD35",],35.,),
-        SignalModel("Zd_MZD40",["HToZdZd_MZD40",],40.,),
-        SignalModel("Zd_MZD45",["HToZdZd_MZD45",],45.,),
-        SignalModel("Zd_MZD50",["HToZdZd_MZD50",],50.,),
-        SignalModel("Zd_MZD55",["HToZdZd_MZD55",],55.,),
-        SignalModel("Zd_MZD60",["HToZdZd_MZD60",],60.,),
-        #SignalModel("Zd_MZD"+str(m),["HToZdZd_MZD"+str(m),],m,) for m in mass_points
+        SignalModel("Zd_MZD"+str(m),["HToZdZd_M"+str(m),],m,) for m in mass_points
         ]
 
 data = [
@@ -96,8 +80,9 @@ bkgs = [
         BaseObject("qqZZ"),
         BaseObject("ggZZ"),
         BaseObject("ZPlusX",
-            #inputDir=option.zxShapeDir,
-            #TFileName="ParaShape.root",
+            inputDir=option.zxShapeDir,
+            TFileName="ParaShape.root",
+            countErrorFunc=getCountAndError
             )
         ]
 
@@ -121,15 +106,20 @@ binList = [
         #Bin("ElEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl",width=option.elWidth), 
         #Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",width=option.elWidth),
 
-        Bin("Mu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["Mu"],inputBinName="Mu",width=option.muWidth), 
-        Bin("El",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["El"],inputBinName="El",width=option.elWidth), 
+        #Bin("Mu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["Mu"],inputBinName="Mu",width=option.muWidth), 
+        #Bin("El",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["El"],inputBinName="El",width=option.elWidth),
+
+        Bin("MuMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu",x_width=option.muWidth,y_width=option.muWidth), 
+        Bin("ElMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu",x_width=option.elWidth,y_width=option.muWidth), 
+        Bin("ElEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl",x_width=option.elWidth,y_width=option.elWidth), 
+        Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",x_width=option.muWidth,y_width=option.elWidth),
         ]
 
 if interpolate_path:
     for b in binList:
         b.interFuncDict = {}
         b.interFileDict = {}
-        b.interFileDict["HToZdZd"] = ROOT.TFile(os.path.join(interpolate_path,b.inputBinName+".root"),"READ")
+        b.interFileDict["HToZdZd"] = ROOT.TFile(os.path.join(interpolate_path,b.inputBinName+"_pol5.root"),"READ")
         b.interFuncDict["HToZdZd"] = b.interFileDict["HToZdZd"].Get(b.inputBinName+"_fitFunc")
 
 # ____________________________________________________________________________________________________________________________________________ ||
@@ -171,8 +161,7 @@ for signal_model in signal_models:
             bkgName = bkg.name
             reader.openFile(inputDir if not hasattr(bkg,"inputDir") else bkg.inputDir,bkgName,TFileName if not hasattr(bkg,"TFileName") else bkg.TFileName)
             hist = reader.getObj(bkgName,histName)
-            #count,error = getIntegral(hist) 
-            count,error = getCountAndError(hist,central_value,bin.width,True)
+            count,error = getCountAndError2D(hist,central_value,bin.x_width,bin.y_width) if not hasattr(bkg,"countErrorFunc") else bkg.countErrorFunc(hist,central_value,bin.y_width)
             process = Process(bkgName,count if count > zero else zero,error)
             bin.processList.append(process)
             if count and "ZPlusX" not in bkgName:
@@ -186,8 +175,7 @@ for signal_model in signal_models:
             sample = datum.name
             reader.openFile(inputDir,sample,TFileName)
             hist = reader.getObj(sample,histName)
-            #count,error = getIntegral(hist)
-            count,error = getCountAndError(hist,central_value,bin.width,True)
+            count,error = getCountAndError2D(hist,central_value,bin.x_width,bin.y_width)
             dataCount += count
         error = math.sqrt(dataCount)
         bin.data = Process("data_obs",int(dataCount),error)
@@ -197,8 +185,7 @@ for signal_model in signal_models:
             if not interpolate_path:
                 reader.openFile(inputDir,each_signal_model_name,TFileName)
                 hist = reader.getObj(each_signal_model_name,histName)
-                #count,error = getIntegral(hist)
-                count,error = getCountAndError(hist,central_value,bin.width,True)
+                count,error = getCountAndError2D(hist,central_value,bin.x_width,bin.y_width)
                 bin.processList.append(Process(each_signal_model_name,count if count > zero else zero,error))
                 # systematics
                 if count:

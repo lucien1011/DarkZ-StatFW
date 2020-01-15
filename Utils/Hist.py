@@ -39,6 +39,21 @@ def getCountAndError(hist,central,width,isSR=True):
         error = math.sqrt(error1**2+error2**2)
     return integral,error
 
+def getCountAndError2D(hist,central,x_width,y_width):
+    x_lower_value = central*(1.-x_width)
+    x_upper_value = central*(1.+x_width)
+    y_lower_value = central*(1.-y_width)
+    y_upper_value = central*(1.+y_width)
+    error = ROOT.Double(0.)
+    integral = hist.IntegralAndError(
+            hist.GetXaxis().FindFixBin(x_lower_value),
+            hist.GetXaxis().FindFixBin(x_upper_value),
+            hist.GetYaxis().FindFixBin(y_lower_value),
+            hist.GetYaxis().FindFixBin(y_upper_value),
+            error,
+            )
+    return integral,error
+
 def getBinContentAndError(hist,x1,x2):
     error = ROOT.Double(0.)
     integral = hist.IntegralAndError(
