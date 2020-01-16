@@ -4,13 +4,18 @@ from .BaseObject import BaseObject
 from mkdir_p import mkdir_p
 import os
 
-condor_file_template = """
+condor_file_template = """universe = vanilla
 executable          = {exec_file_path}
 arguments           = "{arguments}"
+input               = {input}
 output              = {output}
 error               = {error}
 log                 = {log}
-queue
+# Send the job to Held state on failure.
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+# Periodically retry the jobs every 10 minutes, up to a maximum of 5 retries.
+periodic_release =  (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
+queue {njob}
 """
 
 class CondorConfig(BaseObject):
@@ -35,9 +40,11 @@ class CondorWorker(Worker):
         condor_file_content = condor_file_template.format(
                 exec_file_path = condorConfig.exec_file_path,
                 arguments = condorConfig.arguments,
+                input = condorConfig.input,
                 output = condorConfig.output,
                 error = condorConfig.error,
                 log = condorConfig.log,
+                njob = condorConfig.njob,
                 )
         outputFile = open(outputPath,"w")
         outputFile.write(condor_file_content)
