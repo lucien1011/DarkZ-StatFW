@@ -1,7 +1,7 @@
 import glob,os,argparse,subprocess
 from CombineAPI.CombineInterface import CombineAPI,CombineOption 
 from Parametric.InputParameters import parameterDict
-from BatchWorker.CondorWorker import CondorWorker,CondorConfig
+from BatchWorker.CrabWorker import CrabWorker,CrabConfig
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--inputDir",action="store")
@@ -9,9 +9,9 @@ parser.add_argument("--selectStr",action="store")
 parser.add_argument("--option",action="store",default="",type=str)
 parser.add_argument("--pattern",action="store")
 parser.add_argument("--method",action="store",default="AsymptoticLimits")
-parser.add_argument("--batch",action="store_true")
+parser.add_argument("--crab",action="store_true")
+parser.add_argument("--taskName",action="store",default="test")
 parser.add_argument("--dry_run",action="store_true")
-parser.add_argument("--njob",action="store",default=1,type=int)
 
 option = parser.parse_args()
 
@@ -19,23 +19,50 @@ inputDir = option.inputDir
 pattern = "window*.root" if not option.pattern else option.pattern
 
 shell_script_template = """
-#!/bin/bash
-ulimit -s unlimited
+#!/bin/sh
+set -x
 set -e
-echo "Setting up CMSSW"
-cd {cmssw_base}/src
-export SCRAM_ARCH={scram_arch}
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-eval `scramv1 runtime -sh`
-cd {pwd}
-echo "Running combine"
-{combine_cmd}
+ulimit -s unlimited
+ulimit -c 0
+function error_exit
+{
+  if [ $1 -ne 0 ]; then
+    echo "Error with exit code ${1}"
+    if [ -e FrameworkJobReport.xml ]
+    then
+      cat << EOF > FrameworkJobReport.xml.tmp
+      <FrameworkJobReport>
+      <FrameworkError ExitStatus="${1}" Type="" >
+      Error with exit code ${1}
+      </FrameworkError>
+EOF
+      tail -n+2 FrameworkJobReport.xml >> FrameworkJobReport.xml.tmp
+      mv FrameworkJobReport.xml.tmp FrameworkJobReport.xml
+    else
+      cat << EOF > FrameworkJobReport.xml
+      <FrameworkJobReport>
+      <FrameworkError ExitStatus="${1}" Type="" >
+      Error with exit code ${1}
+      </FrameworkError>
+      </FrameworkJobReport>
+EOF
+    fi
+    exit 0
+  fi
+}
+trap 'error_exit $?' ERR
+
+ls -lrt
+./combine %s >> combine_log.txt
+
+tar -cf combine_output.tar *.root
+rm higgsCombine*.root
 """
 
 api = CombineAPI()
 for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     print "Running on directory "+cardDir
-    if not option.batch:
+    if not option.crab:
         wsFilePath = cardDir+cardDir.split("/")[-2]+".root"
         optionList = option.option.split()
         combineOption = CombineOption(cardDir,wsFilePath,option=optionList,verbose=True,method=option.method)
@@ -45,25 +72,32 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
         optionList = option.option.split()
         combineOption = CombineOption(cardDir,os.path.basename(wsFilePath),option=optionList,verbose=True,method=option.method)
         combine_cmd = api.make_cmd(combineOption)
-        worker = CondorWorker()
-        condorConfig = CondorConfig(
-                "CondorConfig",
-                condor_file_path = os.path.abspath(os.path.join(cardDir,"combine_condor.job")),
-                exec_file_path = os.path.abspath(os.path.join(cardDir,"combine_condor.sh")),
-                cmd_str = shell_script_template.format(
-                    combine_cmd=combine_cmd,
-                    cmssw_base=os.environ['CMSSW_BASE'],
-                    scram_arch=os.environ['SCRAM_ARCH'],
-                    pwd=os.environ['PWD'],
-                    ),
-                arguments = "",
-                output = os.path.abspath(os.path.join(cardDir,"combine_condor.out")),
-                error = os.path.abspath(os.path.join(cardDir,"combine_condor.err")),
-                log = os.path.abspath(os.path.join(cardDir,"combine_condor.log")),
-                njob = str(option.njob),
-                input=os.path.abspath(wsFilePath),
+        worker = CrabWorker()
+        crabConfig = CrabConfig(
+                "CrabConfig",
+                crab_file_path = os.path.join(cardDir,"combine_crab.py"),
+                taskName = option.taskName,
+                JobType_plugName = 'PrivateMC',
+                JobType_psetName = 'os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/do_nothing_cfg.py\'',
+                JobType_scriptExe = 'combine_crab.sh',
+                JobType_inputFiles = '[os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/FrameworkJobReport.xml\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/copyRemoteWorkspace.sh\', os.environ[\'CMSSW_BASE\']+\'/bin/\'+os.environ[\'SCRAM_ARCH\']+\'/combine\',\'{wsFileName}\']'.format(wsFileName=os.path.basename(wsFilePath)),
+                JobType_outputFiles = '[\'combine_output.tar\',\'combine_log.txt\',]',
+                Data_outputPrimaryDataset = 'Combine',
+                Data_unitsPerJob = 1,
+                Data_totalUnits = 1,
+                Data_publication = False,
+                Data_outputDatasetTag = '',
+                Data_outLFNDirBase = '\'/store/user/%s/HiggsCombine/\' % (getUsernameFromSiteDB()) + taskName + \'/\'',
+                Site_storageSite = 'T2_US_Florida',
                 )
-        worker.make_exec_file(condorConfig)
-        worker.make_condor_file(condorConfig)
-        if not option.dry_run: worker.submit(os.path.abspath(os.path.join(cardDir,"combine_condor.job")))
-
+        execConfig = CrabConfig(
+                "ExecConfig",
+                exec_file_path = os.path.join(cardDir,"combine_crab.sh"),
+                cmd_str = shell_script_template%os.path.basename(wsFilePath),
+                )
+        worker.make_exec_file(execConfig)
+        worker.make_crab_file(crabConfig)
+        if not option.dry_run: 
+            os.chdir(cardDir)
+            #worker.submit(os.path.abspath(os.path.join(cardDir,"combine_condor.job")))
+            worker.submit("combine_crab.py")
