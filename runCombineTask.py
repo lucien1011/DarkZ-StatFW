@@ -61,6 +61,7 @@ rm higgsCombine*.root
 
 api = CombineAPI()
 for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
+    print "********************"
     print "Running on directory "+cardDir
     if not option.crab:
         wsFilePath = cardDir+cardDir.split("/")[-2]+".root"
