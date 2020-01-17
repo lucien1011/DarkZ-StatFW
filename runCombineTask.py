@@ -53,7 +53,7 @@ EOF
 trap 'error_exit $?' ERR
 
 ls -lrt
-./combine %s >> combine_log.txt
+%s >> combine_log.txt
 
 tar -cf combine_output.tar *.root
 rm higgsCombine*.root
@@ -68,6 +68,7 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
         combineOption = CombineOption(cardDir,wsFilePath,option=optionList,verbose=True,method=option.method)
         api.run(combineOption)
     else:
+        pwdPath = os.environ['PWD']
         wsFilePath = cardDir+cardDir.split("/")[-2]+".root"
         optionList = option.option.split()
         combineOption = CombineOption(cardDir,os.path.basename(wsFilePath),option=optionList,verbose=True,method=option.method)
@@ -80,24 +81,25 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
                 JobType_plugName = 'PrivateMC',
                 JobType_psetName = 'os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/do_nothing_cfg.py\'',
                 JobType_scriptExe = 'combine_crab.sh',
-                JobType_inputFiles = '[os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/FrameworkJobReport.xml\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/copyRemoteWorkspace.sh\', os.environ[\'CMSSW_BASE\']+\'/bin/\'+os.environ[\'SCRAM_ARCH\']+\'/combine\',\'{wsFileName}\']'.format(wsFileName=os.path.basename(wsFilePath)),
+                JobType_inputFiles = '[os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/FrameworkJobReport.xml\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/copyRemoteWorkspace.sh\', os.environ[\'CMSSW_BASE\']+\'/bin/\'+os.environ[\'SCRAM_ARCH\']+\'/combine\',\'{wsFileName}\']'.format(wsFileName=os.path.abspath(wsFilePath)),
                 JobType_outputFiles = '[\'combine_output.tar\',\'combine_log.txt\',]',
                 Data_outputPrimaryDataset = 'Combine',
                 Data_unitsPerJob = 1,
                 Data_totalUnits = 1,
                 Data_publication = False,
                 Data_outputDatasetTag = '',
-                Data_outLFNDirBase = '\'/store/user/%s/HiggsCombine/\' % (getUsernameFromSiteDB()) + taskName + \'/\'',
+                Data_outLFNDirBase = '\'/store/user/%s/HiggsCombine/\' % (getUsernameFromSiteDB()) + taskName + \'/{modelName}/\''.format(modelName=cardDir.split("/")[-2],),
                 Site_storageSite = 'T2_US_Florida',
                 )
         execConfig = CrabConfig(
                 "ExecConfig",
                 exec_file_path = os.path.join(cardDir,"combine_crab.sh"),
-                cmd_str = shell_script_template%os.path.basename(wsFilePath),
+                cmd_str = shell_script_template%("./"+combine_cmd),
                 )
         worker.make_exec_file(execConfig)
         worker.make_crab_file(crabConfig)
-        if not option.dry_run: 
+        if not option.dry_run:
             os.chdir(cardDir)
             #worker.submit(os.path.abspath(os.path.join(cardDir,"combine_condor.job")))
             worker.submit("combine_crab.py")
+            os.chdir(pwdPath)
