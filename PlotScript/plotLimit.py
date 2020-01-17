@@ -64,7 +64,9 @@ y_label_dict    = {
                     "BrHZX_BrXll": "Br(h #rightarrow Z X) #times Br(X #rightarrow ll)",
                     "BrHZX_BrXMuMu": "Br(h #rightarrow Z X) #times Br(X #rightarrow #mu #mu)",
                     "BrHZX_BrXee": "Br(h #rightarrow Z X) #times Br(X #rightarrow ee)",
-                    "BrHXX_Br2Xll": "Br(h #rightarrow X X) #times Br(X #rightarrow ll)^2",
+                    "BrHXX_Br2Xll": "Br(h #rightarrow X X) #times Br(X #rightarrow ll)^{2}",
+                    "BrHXX_Br2XMuMu": "Br(h #rightarrow X X) #times Br(X #rightarrow #mu #mu)^{2}",
+                    "BrHXX_Br2Xee": "Br(h #rightarrow X X) #times Br(X #rightarrow ee)^{2}",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
 #x_label         = "m_{Z_{d}}"
@@ -92,6 +94,10 @@ def calculate(r_value,window_value,what):
     elif what == "BrHZX_BrXee":
         return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(z_2l_br/2.)
     elif what == "BrHXX_Br2Xll":
+        return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
+    elif what == "BrHXX_Br2XMuMu":
+        return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
+    elif what == "BrHXX_Br2Xee":
         return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
     elif what == "epsilon_EpsPOI":
         return r_value
