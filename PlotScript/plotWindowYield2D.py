@@ -1,14 +1,14 @@
 import os,copy,math,argparse,ROOT,bisect
 
-from Utils.Hist import getCountAndError2D,getCountAndError
-from Utils.DataCard import SignalModel
-from Utils.mkdir_p import mkdir_p
+from Utilities.Hist import getCountAndError2D,getCountAndError
+from Utilities.DataCard import SignalModel
+from Utilities.mkdir_p import mkdir_p
 
 from StatFW.BaseObject import BaseObject
 from StatFW.FileReader import *
 
-import Utils.CMS_lumi as CMS_lumi
-import Utils.tdrstyle as tdrstyle
+import Utilities.CMS_lumi as CMS_lumi
+import Utilities.tdrstyle as tdrstyle
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 tdrstyle.setTDRStyle()

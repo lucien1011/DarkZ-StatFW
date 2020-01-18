@@ -1,7 +1,7 @@
 import ROOT,glob,os,argparse,subprocess,array,math
 from collections import OrderedDict
-import Utils.CMS_lumi as CMS_lumi
-import Utils.tdrstyle as tdrstyle
+import Utilities.CMS_lumi as CMS_lumi
+import Utilities.tdrstyle as tdrstyle
 
 from Physics.Zd_XS import *
 from Physics.ALP_XS import *

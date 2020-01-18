@@ -9,9 +9,9 @@ from StatFW.FileReader import FileReader
 from StatFW.RateParameter import RateParameter
 from StatFW.BaseObject import BaseObject
 
-from Utils.Hist import getCountAndError2D,getCountAndError
-from Utils.DataCard import SignalModel
-from Utils.mkdir_p import mkdir_p
+from Utilities.Hist import getCountAndError2D,getCountAndError
+from Utilities.DataCard import SignalModel
+from Utilities.mkdir_p import mkdir_p
 
 shapeStr = "shapes * * FAKE\n"
 
@@ -109,10 +109,10 @@ binList = [
         #Bin("Mu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["Mu"],inputBinName="Mu",width=option.muWidth), 
         #Bin("El",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["El"],inputBinName="El",width=option.elWidth),
 
-        Bin("MuMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu",x_width=option.muWidth,y_width=option.muWidth), 
-        Bin("ElMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu",x_width=option.elWidth,y_width=option.muWidth), 
+        #Bin("MuMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu",x_width=option.muWidth,y_width=option.muWidth), 
+        #Bin("ElMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu",x_width=option.elWidth,y_width=option.muWidth), 
         Bin("ElEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl",x_width=option.elWidth,y_width=option.elWidth), 
-        Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",x_width=option.muWidth,y_width=option.elWidth),
+        #Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",x_width=option.muWidth,y_width=option.elWidth),
         ]
 
 if interpolate_path:

@@ -1,6 +1,6 @@
 import ROOT,os
 from StatFW.BaseObject import BaseObject
-from Utils.mkdir_p import mkdir_p
+from Utilities.mkdir_p import mkdir_p
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 

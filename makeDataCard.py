@@ -8,9 +8,9 @@ from StatFW.Channel import Bin
 from StatFW.FileReader import FileReader
 from StatFW.RateParameter import RateParameter
 
-from Utils.Hist import getCountAndError,getIntegral
-from Utils.DataCard import SignalModel
-from Utils.mkdir_p import mkdir_p
+from Utilities.Hist import getCountAndError,getIntegral
+from Utilities.DataCard import SignalModel
+from Utilities.mkdir_p import mkdir_p
 
 from Parametric.InputParameters_Mu import parameterDict_Mu
 from Parametric.InputParameters_El import parameterDict_El

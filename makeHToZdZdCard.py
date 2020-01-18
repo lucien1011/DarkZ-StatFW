@@ -9,9 +9,9 @@ from StatFW.FileReader import FileReader
 from StatFW.RateParameter import RateParameter
 from StatFW.BaseObject import BaseObject
 
-from Utils.Hist import getCountAndError,getIntegral
-from Utils.DataCard import SignalModel
-from Utils.mkdir_p import mkdir_p
+from Utilities.Hist import getCountAndError,getIntegral
+from Utilities.DataCard import SignalModel
+from Utilities.mkdir_p import mkdir_p
 
 shapeStr = "shapes * * FAKE\n"
 

@@ -1,8 +1,8 @@
 import ROOT,glob,os,argparse,subprocess,array,math
 from collections import OrderedDict
-import Utils.CMS_lumi as CMS_lumi
-import Utils.tdrstyle as tdrstyle
-from Utils.mkdir_p import mkdir_p
+import Utilities.CMS_lumi as CMS_lumi
+import Utilities.tdrstyle as tdrstyle
+from Utilities.mkdir_p import mkdir_p
 
 from Physics.Zd_XS import *
 from StatFW.BaseObject import BaseObject
