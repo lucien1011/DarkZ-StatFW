@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=true
-mkWS=true
-mkLimit=true
+mkDC=false
+mkWS=false
+mkAsymLimit=false
+mkToyLimit=true
 mkSignif=false
 mkFit=false
 mkImpact=false
@@ -73,10 +74,15 @@ if ${mkWS} ; then
 fi
 
 # ________________________________________________________________________________________________________________________ ||
-if ${mkLimit} ; then
+if ${mkAsymLimit} ; then
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind"
     python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option ""
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
+fi
+
+# ________________________________________________________________________________________________________________________ ||
+if ${mkToyLimit} ; then
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method HybridNew --option "--LHEmode LHE-limits"
 fi
 
 # ________________________________________________________________________________________________________________________ ||

@@ -1,22 +1,16 @@
-import ROOT,glob,os,argparse,subprocess,array,math
+import ROOT,glob,os,subprocess,array,math
 from collections import OrderedDict
 import CMS_lumi 
 import tdrstyle 
 
-from Physics.Zd_XS import *
 from Physics.ALP_XS import *
+from PlotScript.limitUtils import y_label_dict,calculate
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--inputDir",action="store")
-parser.add_argument("--outputPath",action="store")
-parser.add_argument("--selectStr",action="store",default="")
-parser.add_argument("--poi",action="store",default="")
-
-option = parser.parse_args()
-
-inputDir = option.inputDir
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2019-12-17_CutAndCount_m4lSR-HZZd_RunII/"
+outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-02-26_CutAndCount_m4lSR-HZZd_RunII/ExpObsLimit.pdf" 
+selectStr = ""
 
 # ________________________________________________________________ ||
 # CMS style
@@ -30,13 +24,14 @@ CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 setLogY         = True
+#expOnly         = True 
 quantiles       = ["down2","down1","central","up1","up2","obs"]
 varName         = "limit"
-plots           = ["BrHZZd_Interpolation"] if not option.poi else option.poi.split(",")
+plots           = ["BrHZX_BrXll"]
+#maxFactor       = 1E3
 y_min           = 1E-3
 maxFactor       = 1.2
-
-x_label         = "m_{X} [GeV]"
+x_label         = "m_{a}"
 drawVetoBox     = True
 
 # ________________________________________________________________ ||
@@ -45,20 +40,27 @@ drawVetoBox     = True
 outDict = OrderedDict()
 for quantile in quantiles:
     outDict[quantile] = OrderedDict()
-for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
+for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
     print "Reading directory "+cardDir
     inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
     tree = inputFile.Get("limit")
     window_name = cardDir.split("/")[-2]
+    #window_value = int(window_name.split("_")[1])
+    #window_value = int(window_name.split("_")[1].replace("M",""))
     window_value = float(window_name.split("_")[1].replace("MZD",""))
     if window_value > higgs_boson.mass/2.: continue
     for i,entry in enumerate(tree):
         outDict[quantiles[i]][window_value] = getattr(entry,varName)
+    #if expOnly:
+    #    for i,entry in enumerate(tree):
+    #        outDict[quantiles[i]][window_value] = getattr(entry,varName)
+    #else:
+    #    raise RuntimeError
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
 # ________________________________________________________________ ||
-outputDir = os.path.dirname(option.outputPath)
+outputDir = os.path.dirname(outputPath)
 if not os.path.exists(outputDir):
     os.makedirs(outputDir)
 nPoints = len(outDict["central"])
@@ -92,6 +94,7 @@ for plot in plots:
     frame.GetYaxis().SetTitleOffset(1.2)
     frame.GetXaxis().SetNdivisions(508)
     frame.GetYaxis().CenterTitle(True)
+    #frame.GetYaxis().SetTitle("95% upper limit on #sigma / #sigma_{SM}")
     frame.GetYaxis().SetTitle(y_label_dict[plot])
     frame.GetXaxis().SetTitle(x_label)
     frame.SetMinimum(0)
@@ -141,4 +144,4 @@ for plot in plots:
         box.SetFillColor(ROOT.kGray)
         box.Draw('same')
 
-    c.SaveAs(option.outputPath.replace(".pdf","_"+plot+".pdf"))
+    c.SaveAs(outputPath.replace(".pdf","_"+plot+".pdf"))

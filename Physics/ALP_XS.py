@@ -1,4 +1,5 @@
 from StatFW.BaseObject import BaseObject
+import math
 
 # ____________________________________________________________________________________________________________________________________________ ||
 higgs_boson = BaseObject(
@@ -17,7 +18,7 @@ z_boson = BaseObject(
         )
 ALP = BaseObject(
         "ALP",
-        ll_br = 0.1,
+        ll_br = 1.0,
         )
 
 mass_points             = range(4,35)
@@ -28,5 +29,7 @@ def lambda_x_y_func(x,y):
     return (1.-x-y)**2-4.*x*y
 
 def Gamma_hToZa_func(c_zh_div_Lambda,m_a):
-    return higgs_boson.mass**3*c_zh_div_Lambda**2*lambda_x_y_func((z_boson.mass/higgs_boson.mass)**2,(m_a/higgs_boson.mass)**2)**1.5
+    return (higgs_boson.mass**3)*(c_zh_div_Lambda**2)*(lambda_x_y_func((z_boson.mass/higgs_boson.mass)**2,(m_a/higgs_boson.mass)**2)**1.5)/16./math.pi
 
+def Gamma_HToaa_func(c_ah_div_Lambda,m_a):
+    return higgs_boson.vev**2*(higgs_boson.mass**3)*c_ah_div_Lambda**2*(1.-2.*(m_a**2)/higgs_boson.mass**2)**2*math.sqrt(1.-4.*(m_a**2)/higgs_boson.mass**2)/32./math.pi
