@@ -39,6 +39,8 @@ parser.add_argument("--interpolPath",action="store",default=None)
 parser.add_argument("--setDataCountToMC",action="store_true")
 parser.add_argument("--zxShapeDir",action="store")
 parser.add_argument("--sigSF",action="store",type=float,default=1.)
+parser.add_argument("--muOnly",action="store_true")
+parser.add_argument("--elOnly",action="store_true")
 
 option = parser.parse_args()
 
@@ -105,49 +107,25 @@ bkgs = [
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # bin list
-binList_SR = [
-        #Bin("MuMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
-        #Bin("MuMu_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
-        #Bin("ElMu_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
-        #Bin("ElMu_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
-        #Bin("ElEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsSR",width=option.muWidth),
-        #Bin("ElEl_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsSR",width=option.muWidth),
-        #Bin("MuEl_HiggsSR_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsSR",width=option.muWidth),
-        #Bin("MuEl_HiggsSR_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsSR",width=option.muWidth),
+binList_Mu = [
         Bin("MuMu_HiggsSR_SR",signalNames=["HZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
         Bin("MuMu_HiggsSR_SB",signalNames=["HZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsSR",width=option.muWidth),
         Bin("ElMu_HiggsSR_SR",signalNames=["HZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
         Bin("ElMu_HiggsSR_SB",signalNames=["HZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="ElMu_HiggsSR",width=option.muWidth),
+        ]
+
+binList_El = [
         Bin("ElEl_HiggsSR_SR",signalNames=["HZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsSR",width=option.elWidth),
         Bin("ElEl_HiggsSR_SB",signalNames=["HZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsSR",width=option.elWidth),
         Bin("MuEl_HiggsSR_SR",signalNames=["HZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsSR",width=option.elWidth),
         Bin("MuEl_HiggsSR_SB",signalNames=["HZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsSR",width=option.elWidth),
-
         ]
-
-binList_LowSB = [
-        Bin("MuMu_HiggsLowSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsLowSB",width=option.elWidth),
-        Bin("MuMu_HiggsLowSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsLowSB",width=option.elWidth),
-        Bin("ElMu_HiggsLowSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsLowSB",width=option.elWidth),
-        Bin("ElMu_HiggsLowSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsLowSB",width=option.elWidth),
-        Bin("ElEl_HiggsLowSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsLowSB",width=option.elWidth),
-        Bin("ElEl_HiggsLowSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsLowSB",width=option.elWidth),
-        Bin("MuEl_HiggsLowSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsLowSB",width=option.elWidth),
-        Bin("MuEl_HiggsLowSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsLowSB",width=option.elWidth),
-        ]
-
-binList_HighSB = [
-        Bin("MuMu_HiggsHighSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsHighSB",width=option.elWidth),
-        Bin("MuMu_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu_HiggsHighSB",width=option.elWidth),
-        Bin("ElMu_HiggsHighSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsHighSB",width=option.elWidth),
-        Bin("ElMu_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu_HiggsHighSB",width=option.elWidth),
-        Bin("ElEl_HiggsHighSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsHighSB",width=option.elWidth),
-        Bin("ElEl_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl_HiggsHighSB",width=option.elWidth),
-        Bin("MuEl_HiggsHighSB_SR",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsHighSB",width=option.elWidth),
-        Bin("MuEl_HiggsHighSB_SB",signalNames=["HZZd","ppZZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl_HiggsHighSB",width=option.elWidth),
-        ]
-
-binList = binList_SR
+if option.muOnly:
+    binList = binList_Mu
+elif option.elOnly:
+    binList = binList_El
+else:
+    binList = binList_Mu + binList_El
 
 # ____________________________________________________________________________________________________________________________________________ ||
 if interpolate_path:
