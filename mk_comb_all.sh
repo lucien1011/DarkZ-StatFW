@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=false
-mkWS=false
-mkAsymLimit=false
-mkToyLimit=true
+mkDC=true
+mkWS=true
+mkAsymLimit=true
+mkToyLimit=false
 mkSignif=false
 mkFit=false
 mkImpact=false
@@ -45,7 +45,8 @@ sigSF=1.
 #outputDir=DataCard/2019-09-09_CutAndCount_m4lSR-m4lLowSB-m4lHighSB-ElEl-MuEl_HZZd_RunII/
 #outputDir=DataCard/2019-10-02_CutAndCount_m4lSR-ElEl-MuEl_HZZd_RunII/
 #outputDir=DataCard/2019-10-02_CutAndCount_m4lSR-MuMu-ElMu_HZZd_RunII/
-outputDir=DataCard/2019-12-17_CutAndCount_m4lSR-HZZd_RunII/
+#outputDir=DataCard/2019-12-17_CutAndCount_m4lSR-HZZd_RunII/
+outputDir=DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/
 
 systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Syst_ElMu_Run2016.txt,Config/Syst_ElEl_Run2016.txt,Config/Syst_MuEl_Run2016.txt
 systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt,Config/Syst_MuEl_Run2017.txt

@@ -18,19 +18,23 @@ ROOT.gStyle.SetTitleSize(0.035,"XYZ")
 ROOT.gStyle.SetTitleXOffset(1.8)
 
 # ____________________________________________________________________________________________________________________________________________ ||
-inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_hadd_RunII/"
-zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_hadd_RunII/"
-outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowYield/RunII/2019-12-06_SR2D/"
-mass_points     = [4.04*1.005**i for i in range(551)]
+#inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_hadd_RunII/"
+#zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_hadd_RunII/"
+#outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowYield/RunII/2019-12-06_SR2D/"
+#mass_points     = [4.04*1.005**i for i in range(551)]
+inputDir        = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_RunII_hadd/"
+zxShapeDir      = "/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_RunII_hadd/"
+outputDir       = "/home/lucien/public_html/Higgs/HToZdZd/WindowYield/RunII/2020-02-29_SR2D/"
+mass_points     = [4.20*1.005**i for i in range(541)]
 muWidth         = 0.02
 elWidth         = 0.05
 
 TFileName       = "StatInput.root"
 
 channels        = [
-                #BaseObject("MuMu",inputBinName="MuMu",x_width=muWidth,y_width=muWidth), 
+                BaseObject("MuMu",inputBinName="MuMu",x_width=muWidth,y_width=muWidth), 
                 BaseObject("ElMu",inputBinName="ElMu",x_width=elWidth,y_width=muWidth), 
-                #BaseObject("ElEl",inputBinName="ElEl",x_width=elWidth,y_width=elWidth), 
+                BaseObject("ElEl",inputBinName="ElEl",x_width=elWidth,y_width=elWidth), 
                 BaseObject("MuEl",inputBinName="MuEl",x_width=muWidth,y_width=elWidth),
                 ]
 bkgs            = [
@@ -40,19 +44,21 @@ bkgs            = [
                    BaseObject("ZPlusX",
                        inputDir=zxShapeDir,
                        TFileName="ParaShape.root",
-                       countErrorFunc=getCountAndError,
+                       #countErrorFunc=getCountAndError,
+                       shapeFuncPostfix="_fitFunc",
+                       normHistPostfix="_norm",
                        color=ROOT.kGreen,
                        latexName="Z+X",
                        ),
                 ]
 sigs            = [                    
-                    BaseObject("HToZdZd_M4",color=ROOT.kRed,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 4 GeV",),
-                    BaseObject("HToZdZd_M10",color=ROOT.kRed-1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 10 GeV",),
+                    #BaseObject("HToZdZd_M4",color=ROOT.kRed,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 4 GeV",),
+                    #BaseObject("HToZdZd_M10",color=ROOT.kRed-1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 10 GeV",),
                     BaseObject("HToZdZd_M20",color=ROOT.kRed+1,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 20 GeV",),
-                    BaseObject("HToZdZd_M30",color=ROOT.kRed-2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 30 GeV",),
+                    #BaseObject("HToZdZd_M30",color=ROOT.kRed-2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 30 GeV",),
                     BaseObject("HToZdZd_M40",color=ROOT.kRed+2,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 40 GeV",),
-                    BaseObject("HToZdZd_M50",color=ROOT.kRed-3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 50 GeV",),
-                    BaseObject("HToZdZd_M60",color=ROOT.kRed+3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 60 GeV",),
+                    #BaseObject("HToZdZd_M50",color=ROOT.kRed-3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 50 GeV",),
+                    #BaseObject("HToZdZd_M60",color=ROOT.kRed+3,latexName="H #rightarrow Z_{d}Z_{d}, m_{Z_{d}} = 60 GeV",),
                 ]
 
 data            = BaseObject("Data",)
@@ -90,7 +96,15 @@ for channel in channels:
             sampleName = sample.name
             reader.openFile(inputDir if not hasattr(sample,"inputDir") else sample.inputDir,sampleName,TFileName if not hasattr(sample,"TFileName") else sample.TFileName)
             hist = reader.getObj(sampleName,channel.inputBinName)
-            count,error = getCountAndError2D(hist,m,channel.x_width,channel.y_width) if not hasattr(sample,"countErrorFunc") else sample.countErrorFunc(hist,m,channel.y_width)
+            #count,error = getCountAndError2D(hist,m,channel.x_width,channel.y_width) if not hasattr(sample,"countErrorFunc") else sample.countErrorFunc(hist,m,channel.y_width)
+            if not hasattr(sample,"shapeFuncPostfix") and not hasattr(sample,"normHistPostfix"):
+                count,error = getCountAndError2D(hist,m,channel.x_width,channel.y_width) 
+            else:
+                fitFunc = reader.getObj(sampleName,channel.inputBinName+sample.shapeFuncPostfix)
+                normHist = reader.getObj(sampleName,channel.inputBinName+sample.normHistPostfix)
+                normFactor = normHist.Integral() if normHist.Integral() >= 0. else 0.
+                count = fitFunc.Eval(m)*normFactor
+                error = 0.
             channel.histDict[sample.name].SetBinContent(ibin+1,count)
             channel.histDict[sample.name].SetBinError(ibin+1,error)
             channel.histDict[sample.name].GetXaxis().SetBinLabel(ibin+1,str(ibin+1)+" (%4.4f)"%m if ibin % 20 == 0 else "")
@@ -108,7 +122,7 @@ for channel in channels:
         channel.tstack.Add(channel.histDict[bkg.name])
     for ibin in range(nbins):
         channel.errHist.SetBinError(ibin+1,math.sqrt(channel.errHist.GetBinError(ibin+1)))
-    maximum = max([channel.errHist.GetMaximum()]+[channel.histDict[sig.name].GetMaximum() for sig in sigs])
+    maximum = max([channel.errHist.GetMaximum(),channel.histDict[data.name].GetMaximum()]+[channel.histDict[sig.name].GetMaximum() for sig in sigs])
     channel.tstack.SetMaximum(maxFactor*maximum if not maxRange else maxRange)
     channel.tstack.Draw()
     for sig in sigs:
@@ -135,7 +149,7 @@ for channel in channels:
     leg.Draw("same")
     CMS_lumi.CMS_lumi(c,4,11)
     if drawVetoBox:
-        box = ROOT.TBox(bisect.bisect(mass_points,vetoMassRange[0]),0.,bisect.bisect(mass_points,vetoMassRange[1]),maxFactor*maximum)
+        box = ROOT.TBox(bisect.bisect(mass_points,vetoMassRange[0]),0.,bisect.bisect(mass_points,vetoMassRange[1]),maxFactor*maximum if not maxRange else maxRange)
         box.SetFillColor(ROOT.kGray)
         box.Draw('same')
     c.SaveAs(os.path.join(outputDir,channel.name+".pdf"))

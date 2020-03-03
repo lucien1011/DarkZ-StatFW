@@ -2,33 +2,44 @@
 
 # ________________________________________________________________________________________________________________________ ||
 mkDC=false
-mkWS=false
+mkWS=true
 mkLimit=true
 mkSignif=false
 mkFit=false
 mkImpact=false
 
 # ________________________________________________________________________________________________________________________ ||
-inputDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2016/
-inputDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2017/
-inputDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2018/
+#inputDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2016/
+#inputDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2017/
+#inputDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2018/
+inputDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_Run2016/
+inputDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_Run2017/
+inputDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_Run2018/
 
 systTextFile2016=Config/Syst_Run2016.txt,Config/Syst_MuMu_Run2016.txt,Config/Syst_ElMu_Run2016.txt,Config/Syst_ElEl_Run2016.txt,Config/Syst_MuEl_Run2016.txt
 systTextFile2017=Config/Syst_Run2017.txt,Config/Syst_MuMu_Run2017.txt,Config/Syst_ElMu_Run2017.txt,Config/Syst_ElEl_Run2017.txt,Config/Syst_MuEl_Run2017.txt
 systTextFile2018=Config/Syst_Run2018.txt,Config/Syst_MuMu_Run2018.txt,Config/Syst_ElMu_Run2018.txt,Config/Syst_ElEl_Run2018.txt,Config/Syst_MuEl_Run2018.txt
 
-zxShapeDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2016/
-zxShapeDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2017/
-zxShapeDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2018/
+#zxShapeDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2016/
+#zxShapeDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2017/
+#zxShapeDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2019-12-06_SR2D_Run2018/
+zxShapeDir2016=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_Run2016/
+zxShapeDir2017=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_Run2017/
+zxShapeDir2018=/raid/raid7/lucien/Higgs/HToZdZd/DarkPhotonSR/StatInput/2020-02-29_SR2D_Run2018/
 
-interDir2016=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-12-10_SignalInterpolation2D_Run2016/
-interDir2017=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-12-10_SignalInterpolation2D_Run2017/
-interDir2018=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-12-10_SignalInterpolation2D_Run2018/
+#interDir2016=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-12-10_SignalInterpolation2D_Run2016/
+#interDir2017=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-12-10_SignalInterpolation2D_Run2017/
+#interDir2018=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2019-12-10_SignalInterpolation2D_Run2018/
+interDir2016=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2020-02-29_SignalInterpolation2D_Run2016/
+interDir2017=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2020-02-29_SignalInterpolation2D_Run2017/
+interDir2018=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2020-02-29_SignalInterpolation2D_Run2018/
 
 postFitPlotDir=/home/lucien/public_html/Higgs/HToZdZd/FitDiagnostics/2019-09-03_RunII/
 impactPlotDir=/home/lucien/public_html/Higgs/HToZdZd/Impacts/2019-09-03_RunII/
 
-outputDir=HToZdZd_DataCard/2019-12-17_SR2D_RunII/
+#outputDir=HToZdZd_DataCard/2019-12-17_SR2D_RunII/
+#outputDir=HToZdZd_DataCard/2020-02-29_SR2D_RunII/
+outputDir=HToZdZd_DataCard/2020-03-03_SR2D_RunII/
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then
@@ -41,7 +52,7 @@ fi
 if ${mkWS} ; then
     for d in $(ls ${outputDir}); 
     do
-        python makeWorkspace.py --inputDir ${outputDir}/${d}/ --cardName ${d}.txt --combinePattern "Zd*.txt"
+        python makeWorkspace.py --inputDir ${outputDir}/${d}/ --cardName ${d}.txt --combinePattern "Zd*_201*.txt"
     done
 fi
 

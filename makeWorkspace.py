@@ -71,5 +71,5 @@ if option.batch:
     worker.make_condor_file(condorConfig)
     if not option.dry_run: worker.submit(os.path.abspath(os.path.join(inputDir,"mk_ws_condor.job")))
 else:
-    os.system(cmd)
+    os.system(mk_ws_cmd)
 

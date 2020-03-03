@@ -8,8 +8,8 @@ from PlotScript.limitUtils import y_label_dict,calculate
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2019-12-17_CutAndCount_m4lSR-HZZd_RunII/"
-outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-02-26_CutAndCount_m4lSR-HZZd_RunII/ExpObsLimit.pdf" 
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
+outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||

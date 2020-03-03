@@ -8,8 +8,8 @@ from PlotScript.limitUtils import y_label_dict,calculate
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2019-12-17_CutAndCount_m4lSR-HZZd_RunII/"
-outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-02-26_CutAndCount_m4lSR-HZZd_RunII/ExpObsLimit.pdf" 
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
+outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||
@@ -29,9 +29,9 @@ quantiles       = ["down2","down1","central","up1","up2","obs"]
 varName         = "limit"
 plots           = ["BrHZX_BrXll"]
 #maxFactor       = 1E3
-y_min           = 1E-3
-maxFactor       = 1.2
-x_label         = "m_{a}"
+y_min           = 1E-6
+maxFactor       = 100
+x_label         = "m_{X}"
 drawVetoBox     = True
 
 # ________________________________________________________________ ||

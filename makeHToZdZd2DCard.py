@@ -65,7 +65,8 @@ TFileName = "StatInput.root"
 
 # ____________________________________________________________________________________________________________________________________________ ||
 # mass window
-mass_points = [4.04*1.005**i for i in range(551)]
+#mass_points = [4.04*1.005**i for i in range(551)]
+mass_points = [4.20*1.005**i for i in range(541)]
 #mass_points = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
 signal_models = [
         SignalModel("Zd_MZD"+str(m),["HToZdZd_M"+str(m),],m,) for m in mass_points
@@ -82,7 +83,9 @@ bkgs = [
         BaseObject("ZPlusX",
             inputDir=option.zxShapeDir,
             TFileName="ParaShape.root",
-            countErrorFunc=getCountAndError
+            shapeFuncPostfix="_fitFunc",
+            normHistPostfix="_norm",
+            #countErrorFunc=getCountAndError
             )
         ]
 
@@ -109,10 +112,10 @@ binList = [
         #Bin("Mu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["Mu"],inputBinName="Mu",width=option.muWidth), 
         #Bin("El",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["El"],inputBinName="El",width=option.elWidth),
 
-        #Bin("MuMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu",x_width=option.muWidth,y_width=option.muWidth), 
-        #Bin("ElMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu",x_width=option.elWidth,y_width=option.muWidth), 
+        Bin("MuMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuMu"],inputBinName="MuMu",x_width=option.muWidth,y_width=option.muWidth), 
+        Bin("ElMu",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElMu"],inputBinName="ElMu",x_width=option.elWidth,y_width=option.muWidth), 
         Bin("ElEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["ElEl"],inputBinName="ElEl",x_width=option.elWidth,y_width=option.elWidth), 
-        #Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",x_width=option.muWidth,y_width=option.elWidth),
+        Bin("MuEl",signalNames=["HToZdZd",],sysFile=lnSystFilePathDict["MuEl"],inputBinName="MuEl",x_width=option.muWidth,y_width=option.elWidth),
         ]
 
 if interpolate_path:
@@ -161,7 +164,14 @@ for signal_model in signal_models:
             bkgName = bkg.name
             reader.openFile(inputDir if not hasattr(bkg,"inputDir") else bkg.inputDir,bkgName,TFileName if not hasattr(bkg,"TFileName") else bkg.TFileName)
             hist = reader.getObj(bkgName,histName)
-            count,error = getCountAndError2D(hist,central_value,bin.x_width,bin.y_width) if not hasattr(bkg,"countErrorFunc") else bkg.countErrorFunc(hist,central_value,bin.y_width)
+            if not hasattr(bkg,"shapeFuncPostfix") and not hasattr(bkg,"normHistPostfix"):
+                count,error = getCountAndError2D(hist,central_value,bin.x_width,bin.y_width) 
+            else:
+                fitFunc = reader.getObj(bkgName,bin.inputBinName+bkg.shapeFuncPostfix)
+                normHist = reader.getObj(bkgName,bin.inputBinName+bkg.normHistPostfix)
+                normFactor = normHist.Integral() if normHist.Integral() >= 0. else 0.
+                count = fitFunc.Eval(central_value)*normFactor
+                error = 0.
             process = Process(bkgName,count if count > zero else zero,error)
             bin.processList.append(process)
             if count and "ZPlusX" not in bkgName:
