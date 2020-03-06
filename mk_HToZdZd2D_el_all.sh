@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=false
-mkWS=false
+mkDC=true
+mkWS=true
 mkLimit=true
 mkSignif=false
 mkFit=false
@@ -28,7 +28,8 @@ interDir2018=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2020-02-29_Sig
 postFitPlotDir=/home/lucien/public_html/Higgs/HToZdZd/FitDiagnostics/2019-09-03_RunII/
 impactPlotDir=/home/lucien/public_html/Higgs/HToZdZd/Impacts/2019-09-03_RunII/
 
-outputDir=HToZdZd_DataCard/2020-03-03_SR2D_RunII_El/
+#outputDir=HToZdZd_DataCard/2020-03-03_SR2D_RunII_El/
+outputDir=HToZdZd_DataCard/2020-03-06_SR2D_RunII_El/
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then

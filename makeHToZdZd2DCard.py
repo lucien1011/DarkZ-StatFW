@@ -80,8 +80,9 @@ data = [
 
 bkgs = [
         BaseObject("Higgs"),
-        BaseObject("qqZZ"),
-        BaseObject("ggZZ"),
+        #BaseObject("qqZZ"),
+        #BaseObject("ggZZ"),
+        BaseObject("ZZ"),
         BaseObject("ZPlusX",
             inputDir=option.zxShapeDir,
             TFileName="ParaShape.root",
@@ -133,7 +134,7 @@ if not os.path.exists(os.path.abspath(outputDir)):
 for signal_model in signal_models:
     signal_model_name = signal_model.name
     if option.verbose: print "*"*100
-    if option.verbose: print "Making data card for ",signal_model_name
+    if option.verbose: print "Making data card for ",signal_model_name,option.appendToPath
     
     config = CardConfig(signal_model_name)
     config.shapeStr = shapeStr
@@ -168,7 +169,7 @@ for signal_model in signal_models:
             bin.processList.append(process)
             if count and "ZPlusX" not in bkgName:
                 #mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],lambda syst,procName,anaBin: float(1.+error/count))
-                mcSyst = lnNSystematic("_".join(bkgName+"Stat",bin.name,option.appendToPath),[ bkgName,],magnitude=float(1.+error/count))
+                mcSyst = lnNSystematic("_".join([bkgName+"Stat",bin.name,option.appendToPath]),[ bkgName,],magnitude=float(1.+error/count))
                 bin.systList.append(copy.deepcopy(mcSyst))
 
         # data

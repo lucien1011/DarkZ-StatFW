@@ -3,7 +3,8 @@
 # ________________________________________________________________________________________________________________________ ||
 mkDC=false
 mkWS=false
-mkLimit=true
+mkLimit=false
+mkToyLimit=true
 mkSignif=false
 mkFit=false
 mkImpact=false
@@ -28,7 +29,8 @@ interDir2018=/home/lucien/public_html/Higgs/HToZdZd/Interpolation/2020-02-29_Sig
 postFitPlotDir=/home/lucien/public_html/Higgs/HToZdZd/FitDiagnostics/2019-09-03_RunII/
 impactPlotDir=/home/lucien/public_html/Higgs/HToZdZd/Impacts/2019-09-03_RunII/
 
-outputDir=HToZdZd_DataCard/2020-03-03_SR2D_RunII_Mu/
+#outputDir=HToZdZd_DataCard/2020-03-03_SR2D_RunII_Mu/
+outputDir=HToZdZd_DataCard/2020-03-06_SR2D_RunII_Mu/
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then
@@ -49,6 +51,11 @@ fi
 if ${mkLimit} ; then
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind"
     python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --run_in_wsdir
+fi
+
+# ________________________________________________________________________________________________________________________ ||
+if ${mkToyLimit} ; then
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method HybridNew --option "--LHEmode LHE-limits" --crab
 fi
 
 # ________________________________________________________________________________________________________________________ ||
