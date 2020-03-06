@@ -168,7 +168,7 @@ for signal_model in signal_models:
             bin.processList.append(process)
             if count and "ZPlusX" not in bkgName:
                 #mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],lambda syst,procName,anaBin: float(1.+error/count))
-                mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],magnitude=float(1.+error/count))
+                mcSyst = lnNSystematic("_".join(bkgName+"Stat",bin.name,option.appendToPath),[ bkgName,],magnitude=float(1.+error/count))
                 bin.systList.append(copy.deepcopy(mcSyst))
 
         # data

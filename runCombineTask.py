@@ -12,6 +12,7 @@ parser.add_argument("--method",action="store",default="AsymptoticLimits")
 parser.add_argument("--crab",action="store_true")
 parser.add_argument("--taskName",action="store",default="test")
 parser.add_argument("--dry_run",action="store_true")
+parser.add_argument("--run_in_wsdir",action="store_true")
 
 option = parser.parse_args()
 
@@ -64,9 +65,9 @@ for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
     print "********************"
     print "Running on directory "+cardDir
     if not option.crab:
-        wsFilePath = cardDir+cardDir.split("/")[-2]+".root"
+        wsFilePath = os.path.abspath(cardDir+cardDir.split("/")[-2]+".root")
         optionList = option.option.split()
-        combineOption = CombineOption(cardDir,wsFilePath,option=optionList,verbose=True,method=option.method)
+        combineOption = CombineOption(os.path.abspath(cardDir),wsFilePath,option=optionList,verbose=True,method=option.method,run_in_wsdir=option.run_in_wsdir,)
         api.run(combineOption)
     else:
         pwdPath = os.environ['PWD']

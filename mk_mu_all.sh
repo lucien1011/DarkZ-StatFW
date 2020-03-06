@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=true
-mkWS=true
+mkDC=false
+mkWS=false
 mkAsymLimit=true
 mkToyLimit=false
 mkSignif=false
@@ -35,9 +35,9 @@ impactPlotDir=/home/lucien/public_html/Higgs/DarkZ/StatFW/2019-09-02_CutAndCount
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then
-    python makeDataCard.py --inputDir ${inputDir2016} --verbose --outputDir ${outputDir} --sideband --appendToPath "2016" --systTextFile ${systTextFile2016} --zxShapeDir ${zxShapeDir2016} --interpolPath ${interDir2016} --sigSF=${sigSF} --muOnly 
-    python makeDataCard.py --inputDir ${inputDir2017} --verbose --outputDir ${outputDir} --sideband --appendToPath "2017" --systTextFile ${systTextFile2017} --zxShapeDir ${zxShapeDir2017} --interpolPath ${interDir2017} --sigSF=${sigSF} --muOnly 
-    python makeDataCard.py --inputDir ${inputDir2018} --verbose --outputDir ${outputDir} --sideband --appendToPath "2018" --systTextFile ${systTextFile2018} --zxShapeDir ${zxShapeDir2018} --interpolPath ${interDir2018} --sigSF=${sigSF} --muOnly 
+    python makeDataCard.py --inputDir ${inputDir2016} --verbose --outputDir ${outputDir} --sideband --appendToPath "2016" --systTextFile ${systTextFile2016} --zxShapeDir ${zxShapeDir2016} --interpolPath ${interDir2016} --sigSF=${sigSF} --muOnly  
+    python makeDataCard.py --inputDir ${inputDir2017} --verbose --outputDir ${outputDir} --sideband --appendToPath "2017" --systTextFile ${systTextFile2017} --zxShapeDir ${zxShapeDir2017} --interpolPath ${interDir2017} --sigSF=${sigSF} --muOnly  
+    python makeDataCard.py --inputDir ${inputDir2018} --verbose --outputDir ${outputDir} --sideband --appendToPath "2018" --systTextFile ${systTextFile2018} --zxShapeDir ${zxShapeDir2018} --interpolPath ${interDir2018} --sigSF=${sigSF} --muOnly  
 fi
 
 # ________________________________________________________________________________________________________________________ ||
@@ -52,7 +52,7 @@ fi
 # ________________________________________________________________________________________________________________________ ||
 if ${mkAsymLimit} ; then
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind"
-    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option ""
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --run_in_wsdir
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
 fi
 

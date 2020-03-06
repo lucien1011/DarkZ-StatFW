@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=true
-mkWS=true
+mkDC=false
+mkWS=false
 mkLimit=true
 mkSignif=false
 mkFit=false
@@ -48,7 +48,7 @@ fi
 # ________________________________________________________________________________________________________________________ ||
 if ${mkLimit} ; then
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind"
-    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD"
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --run_in_wsdir
 fi
 
 # ________________________________________________________________________________________________________________________ ||

@@ -53,7 +53,7 @@ fi
 # ________________________________________________________________________________________________________________________ ||
 if ${mkAsymLimit} ; then
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind"
-    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option ""
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --run_in_wsdir
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind --redefineSignalPOIs epsilon --freezeParameters r"
 fi
 
