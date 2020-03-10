@@ -32,6 +32,8 @@ impactPlotDir=/home/lucien/public_html/Higgs/HToZdZd/Impacts/2019-09-03_RunII/
 #outputDir=HToZdZd_DataCard/2020-03-03_SR2D_RunII_Mu/
 outputDir=HToZdZd_DataCard/2020-03-06_SR2D_RunII_Mu/
 
+taskName=2020-03-06_SR2D_RunII_Mu
+
 # ________________________________________________________________________________________________________________________ ||
 if ${mkDC} ; then
     python makeHToZdZd2DCard.py --inputDir ${inputDir2016} --verbose --outputDir ${outputDir} --appendToPath "2016" --systTextFile ${systTextFile2016} --zxShapeDir ${zxShapeDir2016} --interpolPath ${interDir2016} --muOnly 
@@ -55,7 +57,7 @@ fi
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkToyLimit} ; then
-    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method HybridNew --option "--LHEmode LHE-limits" --crab
+    python runToyLimit.py --inputDir ${outputDir} --selectStr "Zd_MZD*" --option "" --method HybridNew --option "--LHCmode LHC-limits" --crab --taskName ${taskName}
 fi
 
 # ________________________________________________________________________________________________________________________ ||

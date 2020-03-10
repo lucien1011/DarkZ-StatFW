@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=true
-mkWS=true
-mkLimit=true
+mkDC=false
+mkWS=false
+mkLimit=false
+mkToyLimit=true
 mkSignif=false
 mkFit=false
 mkImpact=false
@@ -61,6 +62,15 @@ fi
 if ${mkLimit} ; then
     #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --run=blind"
     python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD"
+fi
+
+# ________________________________________________________________________________________________________________________ ||
+if ${mkToyLimit} ; then
+    #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method HybridNew --option "--LHEmode LHE-limits"
+    #python runToyLimit.py --inputDir ${outputDir} --selectStr "Zd_MZD*" --option "" --method HybridNew --option "--LHCmode LHC-limits" --crab --taskName ${taskName}
+    for m in 5.60894100711 8.23507630298 15.6707432118 31.9769048976 41.6521763424 51.3584954025 60.8496930595 ; do 
+        python runToyLimit.py --inputDir ${outputDir} --selectStr "Zd_MZD${m}*" --option "" --method HybridNew --option "--LHCmode LHC-limits" --crab --taskName ${taskName}
+    done
 fi
 
 # ________________________________________________________________________________________________________________________ ||

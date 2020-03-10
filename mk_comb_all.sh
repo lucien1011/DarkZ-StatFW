@@ -83,7 +83,8 @@ fi
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkToyLimit} ; then
-    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method HybridNew --option "--LHEmode LHE-limits"
+    #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method HybridNew --option "--LHEmode LHE-limits"
+    python runToyLimit.py --inputDir ${outputDir} --selectStr "Zd_MZD*" --option "" --method HybridNew --option "--LHCmode LHC-limits" --crab --taskName ${taskName}
 fi
 
 # ________________________________________________________________________________________________________________________ ||
