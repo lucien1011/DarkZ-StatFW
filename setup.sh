@@ -10,7 +10,11 @@ then
 elif [[ $HOSTNAME == *"ihepa"* ]] ;
 then
     echo "In IHEPA" ; 
-    cd /home/lucien/Higgs/DarkZ/Combine/CMSSW_8_1_0/src/
+    cd /home/lucien/Higgs/DarkZ/Combine/CMSSW_8_1_0/src/ ;
+elif [[ $HOSTNAME == *"ufhpc"* ]] ;
+then
+    echo "In UF HPG" ; 
+    cd /home/kinho.lo/Higgs/CombineArea/CMSSW_8_1_0/src/ ;
 fi
 eval `scramv1 runtime -sh`
 cd -
