@@ -61,7 +61,8 @@ fi
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkSignif} ; then
-    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method Significance
+    #python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method Significance
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --expectSignal=1" --method Significance
 fi
 
 # ________________________________________________________________________________________________________________________ ||
