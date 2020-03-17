@@ -17,8 +17,12 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-03_SR2D_RunII/ExpObsLimit.pdf" 
 #selectStr = ""
 
-inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII_El/"
-outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
+#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII_El/"
+#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
+#selectStr = ""
+
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII_El/"
+outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||
@@ -42,6 +46,7 @@ y_min           = 1E-9
 maxFactor       = 100
 x_label         = "m_{X}"
 drawVetoBox     = True
+drawLegend      = True
 
 # ________________________________________________________________ ||
 # Read limit from directory

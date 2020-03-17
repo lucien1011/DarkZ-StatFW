@@ -34,6 +34,26 @@ class lnNSystematic(Systematic):
                     return True,p
         return False,None
 
+class gmNSystematic(Systematic):
+    def __init__(self,name,process,correlation="",factor=1.,systNamePrefix="",N=None,rate=None):
+        super(gmNSystematic,self).__init__(name,process,correlation=correlation,factor=factor,systNamePrefix=systNamePrefix)
+        self.systType = "gmN"
+        self.N = N
+        self.rate = rate
+ 
+    def getSystName(self):
+        return self.name
+
+    def findProcess(self,processName):
+        for p in self.process:
+            if "*" not in p:
+                if processName == p:
+                    return True,p
+            else:
+                if fnmatch.filter([processName],p):
+                    return True,p
+        return False,None
+
 class ShapeSystematic(Systematic):
     def __init__(self,name,process,correlation="",factior=1.,systNamePrefix=""):
         super(ShapeSystematic,self).__init__(name,process,correlation=correlation,factor=factor,systNamePrefix=systNamePrefix)
@@ -48,4 +68,4 @@ class RateParameter(Systematic):
         self.process = process
         self.formulaStr = formulaStr
         self.parameterStr = parameterStr
-        self.correlation = correlationi
+        self.correlation = correlation

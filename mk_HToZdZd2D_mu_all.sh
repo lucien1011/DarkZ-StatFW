@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=false
-mkWS=false
-mkLimit=false
-mkToyLimit=true
+mkDC=true
+mkWS=true
+mkLimit=true
+mkToyLimit=false
 mkSignif=false
 mkFit=false
 mkImpact=false
@@ -30,8 +30,10 @@ postFitPlotDir=/home/lucien/public_html/Higgs/HToZdZd/FitDiagnostics/2019-09-03_
 impactPlotDir=/home/lucien/public_html/Higgs/HToZdZd/Impacts/2019-09-03_RunII/
 
 #outputDir=HToZdZd_DataCard/2020-03-03_SR2D_RunII_Mu/
-outputDir=HToZdZd_DataCard/2020-03-06_SR2D_RunII_Mu/
+#outputDir=HToZdZd_DataCard/2020-03-15_SR2D_RunII_Mu/
+outputDir=HToZdZd_DataCard/2020-03-17_SR2D_RunII_Mu/
 
+#taskName=2020-03-06_SR2D_RunII_Mu
 taskName=2020-03-06_SR2D_RunII_Mu
 
 # ________________________________________________________________________________________________________________________ ||

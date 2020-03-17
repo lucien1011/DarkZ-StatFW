@@ -17,8 +17,16 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-03_SR2D_RunII/ExpObsLimit.pdf" 
 #selectStr = ""
 
-inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII/"
-outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
+#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII/"
+#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
+#selectStr = ""
+
+#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-15_SR2D_RunII/"
+#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-15_SR2D_RunII/ExpObsLimit.pdf" 
+#selectStr = ""
+
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
+outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||
@@ -46,6 +54,7 @@ drawZdCurve     = True
 drawLegend      = True
 kappa_on_graph  = 1E-4
 leg_pos         = [0.65,0.78,0.89,0.90]
+skipBadFiles    = True
 
 # ________________________________________________________________ ||
 # Read limit from directory
@@ -55,13 +64,16 @@ for quantile in quantiles:
     outDict[quantile] = OrderedDict()
 for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
     print "Reading directory "+cardDir
-    inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
-    tree = inputFile.Get("limit")
-    window_name = cardDir.split("/")[-2]
-    window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value > higgs_boson.mass/2.: continue
-    for i,entry in enumerate(tree):
-        outDict[quantiles[i]][window_value] = getattr(entry,varName)
+    try:
+        inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
+        tree = inputFile.Get("limit")
+        window_name = cardDir.split("/")[-2]
+        window_value = float(window_name.split("_")[1].replace("MZD",""))
+        if window_value > higgs_boson.mass/2.: continue
+        for i,entry in enumerate(tree):
+            outDict[quantiles[i]][window_value] = getattr(entry,varName)
+    except TypeError:
+        if skipBadFiles: continue
 
 # ________________________________________________________________ ||
 # Draw limit with outDict

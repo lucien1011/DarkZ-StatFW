@@ -83,6 +83,8 @@ bkgs = [
         #BaseObject("qqZZ"),
         #BaseObject("ggZZ"),
         BaseObject("ZZ"),
+        BaseObject("WWZ"),
+        BaseObject("ttZ"),
         BaseObject("ZPlusX",
             inputDir=option.zxShapeDir,
             TFileName="ParaShape.root",
@@ -167,9 +169,23 @@ for signal_model in signal_models:
                 error = 0.
             process = Process(bkgName,count if count > zero else zero,error)
             bin.processList.append(process)
-            if count and "ZPlusX" not in bkgName:
-                #mcSyst = lnNSystematic(bkgName+"Stat_"+bin.name,[ bkgName, ],lambda syst,procName,anaBin: float(1.+error/count))
+            if count > 0. and "ZPlusX" not in bkgName:
                 mcSyst = lnNSystematic("_".join([bkgName+"Stat",bin.name,option.appendToPath]),[ bkgName,],magnitude=float(1.+error/count))
+                #if count < zero:
+                #    gmnN = int((count/error)**2)
+                #    gmnRate = zero/gmnN
+                #else:
+                #    gmnN = int((count/error)**2)
+                #    gmnRate = count/gmnN
+                #mcSyst = gmNSystematic("_".join([bkgName+"Stat",bin.name,option.appendToPath]),[ bkgName,],N=gmnN,rate=gmnRate)
+                bin.systList.append(copy.deepcopy(mcSyst))
+            elif "ZPlusX" == bkgName and count > zero:
+                gmnN = int(normHist.GetEntries())
+                if count > zero:
+                    gmnRate = count/gmnN
+                else:
+                    gmnRate = zero/gmnN
+                mcSyst = gmNSystematic("_".join([bkgName+"Stat",bin.name,option.appendToPath]),[ bkgName,],N=gmnN,rate=gmnRate)
                 bin.systList.append(copy.deepcopy(mcSyst))
 
         # data
@@ -193,6 +209,7 @@ for signal_model in signal_models:
                 # systematics
                 if count:
                     mcSyst = lnNSystematic("SigStat_"+bin.name,[ each_signal_model_name, ],magnitude=float(1.+error/count))
+                    #mcSyst = gmNSystematic("SigStat_"+bin.name,[ each_signal_model_name, ],N=count,rate=1.)
                     bin.systList.append(copy.deepcopy(mcSyst))
             else:
                 for key in bin.interFuncDict:
