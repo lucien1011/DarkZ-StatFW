@@ -1,11 +1,13 @@
+from Physics.ALP_XS import *
+from Physics.Zd_XS import * 
+from PlotScript.limitUtils import y_label_dict,calculate
+
 import ROOT,glob,os,subprocess,array,math
 from collections import OrderedDict
 import CMS_lumi 
 import tdrstyle 
 
-from Physics.ALP_XS import *
-from Physics.Zd_XS import * 
-from PlotScript.limitUtils import y_label_dict,calculate
+from StatFW.BaseObject import BaseObject
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
@@ -41,8 +43,34 @@ CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 setLogY         = True
-#expOnly         = True 
-quantiles       = ["down2","down1","central","up1","up2","obs"]
+method          = "HybridNew"
+#method          = "AsymptoticLimits"
+quantiles       = [
+    BaseObject("down2",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.025.root",
+        ),
+    BaseObject("down1",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.160.root",
+        ),
+    BaseObject("central",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.500.root",
+        ),
+    BaseObject("up1",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.840.root",
+        ),
+    BaseObject("up2",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.975.root",
+        ),
+    BaseObject("obs",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.root",
+        ),
+    ]
 varName         = "limit"
 plot            = "BrHXX_Br2Xll"
 #maxFactor       = 1E3
@@ -61,9 +89,10 @@ skipBadFiles    = True
 # ________________________________________________________________ ||
 outDict = OrderedDict()
 for quantile in quantiles:
-    outDict[quantile] = OrderedDict()
+    outDict[quantile.name] = OrderedDict()
 for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
     print "Reading directory "+cardDir
+<<<<<<< HEAD
     try:
         inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
         tree = inputFile.Get("limit")
@@ -74,6 +103,24 @@ for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
             outDict[quantiles[i]][window_value] = getattr(entry,varName)
     except TypeError:
         if skipBadFiles: continue
+=======
+    window_name = cardDir.split("/")[-2]
+    window_value = float(window_name.split("_")[1].replace("MZD",""))
+    if window_value > higgs_boson.mass/2.: continue
+    for i,quan in enumerate(quantiles):
+        if method == "AsymptoticLimits":
+            inputFile = ROOT.TFile(cardDir+quan.asymp_file_name,"READ")
+            tree = inputFile.Get("limit")
+            tree.GetEntry(i)
+            outDict[quan.name][window_value] = getattr(tree,varName)
+            inputFile.Close()
+        elif method == "HybridNew":
+            inputFile = ROOT.TFile(cardDir+quan.hybridnew_file_name,"READ")
+            tree = inputFile.Get("limit")
+            tree.GetEntry(0)
+            outDict[quan.name][window_value] = getattr(tree,varName)
+            inputFile.Close()
+>>>>>>> origin/master
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -125,7 +172,7 @@ CMS_lumi.CMS_lumi(c,4,0)
 window_values = outDict["central"].keys()
 window_values.sort()
 frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-frameMax = max([calculate(outDict[quan][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):
