@@ -16,8 +16,12 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-03_SR2D_RunII/ExpObsLimit.pdf" 
 #selectStr = ""
 
-inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII/"
-outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
+#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII/"
+#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
+#selectStr = ""
+
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
+outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||
@@ -41,6 +45,7 @@ y_min           = 1E-6
 maxFactor       = 100
 x_label         = "m_{Z_{d}}"
 drawVetoBox     = True
+massCut         = 60.2
 
 # ________________________________________________________________ ||
 # Read limit from directory
@@ -56,7 +61,7 @@ for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
     #window_value = int(window_name.split("_")[1])
     #window_value = int(window_name.split("_")[1].replace("M",""))
     window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value > higgs_boson.mass/2.: continue
+    if window_value > massCut: continue
     for i,entry in enumerate(tree):
         outDict[quantiles[i]][window_value] = getattr(entry,varName)
     #if expOnly:

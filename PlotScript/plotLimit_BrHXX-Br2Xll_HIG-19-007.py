@@ -43,8 +43,8 @@ CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 setLogY         = True
-method          = "HybridNew"
-#method          = "AsymptoticLimits"
+#method          = "HybridNew"
+method          = "AsymptoticLimits"
 quantiles       = [
     BaseObject("down2",
         asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
@@ -82,7 +82,7 @@ drawZdCurve     = True
 drawLegend      = True
 kappa_on_graph  = 1E-4
 leg_pos         = [0.65,0.78,0.89,0.90]
-skipBadFiles    = True
+massCut         = 60.2
 
 # ________________________________________________________________ ||
 # Read limit from directory
@@ -92,21 +92,9 @@ for quantile in quantiles:
     outDict[quantile.name] = OrderedDict()
 for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
     print "Reading directory "+cardDir
-<<<<<<< HEAD
-    try:
-        inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
-        tree = inputFile.Get("limit")
-        window_name = cardDir.split("/")[-2]
-        window_value = float(window_name.split("_")[1].replace("MZD",""))
-        if window_value > higgs_boson.mass/2.: continue
-        for i,entry in enumerate(tree):
-            outDict[quantiles[i]][window_value] = getattr(entry,varName)
-    except TypeError:
-        if skipBadFiles: continue
-=======
     window_name = cardDir.split("/")[-2]
     window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value > higgs_boson.mass/2.: continue
+    if window_value > massCut: continue
     for i,quan in enumerate(quantiles):
         if method == "AsymptoticLimits":
             inputFile = ROOT.TFile(cardDir+quan.asymp_file_name,"READ")
@@ -120,7 +108,6 @@ for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
             tree.GetEntry(0)
             outDict[quan.name][window_value] = getattr(tree,varName)
             inputFile.Close()
->>>>>>> origin/master
 
 # ________________________________________________________________ ||
 # Draw limit with outDict

@@ -49,6 +49,7 @@ y_min           = 1E-9
 maxFactor       = 100
 x_label         = "m_{X}"
 drawVetoBox     = True
+massCut         = 60.2
 
 # ________________________________________________________________ ||
 # Read limit from directory
@@ -64,7 +65,7 @@ for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
     #window_value = int(window_name.split("_")[1])
     #window_value = int(window_name.split("_")[1].replace("M",""))
     window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value > higgs_boson.mass/2.: continue
+    if window_value > massCut: continue
     for i,entry in enumerate(tree):
         outDict[quantiles[i]][window_value] = getattr(entry,varName)
     #if expOnly:

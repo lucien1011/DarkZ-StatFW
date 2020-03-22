@@ -8,11 +8,11 @@ from Utilities.mkdir_p import mkdir_p
 #inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-03_SR2D_RunII/"
 #taskName        = "2020-03-06_SR2D_RunII"
 
-inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-15_SR2D_RunII/"
-taskName        = "2020-03-15_SR2D_RunII"
+inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII/"
+taskName        = "2020-03-17_SR2D_RunII"
 
-mass_points     = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
-#mass_points     = [4.20*1.005**i for i in range(541)]
+#mass_points     = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
+mass_points     = [4.20*1.005**i for i in range(541)]
 crabTaskDir     = "crabTaskDir/"
 dry_run         = False
 method          = "HybridNew"
