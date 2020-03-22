@@ -11,20 +11,22 @@ from Utilities.mkdir_p import mkdir_p
 inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII/"
 taskName        = "2020-03-17_SR2D_RunII"
 
+# ____________________________________________________________________________________________________________________________________________ ||
 #mass_points     = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
 mass_points     = [4.20*1.005**i for i in range(541)]
 crabTaskDir     = "crabTaskDir/"
 dry_run         = False
 method          = "HybridNew"
 option          = ""
+crabUserName    = "klo"
 
 # ____________________________________________________________________________________________________________________________________________ ||
 shell_script_template = """
 #!/bin/sh
-set -x
-set -e
-ulimit -s unlimited
-ulimit -c 0
+#set -x
+#set -e
+#ulimit -s unlimited
+#ulimit -c 0
 function error_exit
 {
   if [ $1 -ne 0 ]; then
@@ -95,7 +97,8 @@ for m in mass_points:
             Data_totalUnits = 1,
             Data_publication = False,
             Data_outputDatasetTag = '',
-            Data_outLFNDirBase = '\'/store/user/%s/HiggsCombine/\' % (getUsernameFromSiteDB()) + taskName + \'/{modelName}/\''.format(modelName=modelName,),
+            #Data_outLFNDirBase = '\'/store/user/%s/HiggsCombine/\' % (getUsernameFromSiteDB()) + taskName + \'/{modelName}/\''.format(modelName=modelName,),
+            Data_outLFNDirBase = '\'/store/user/{userName}/HiggsCombine/\' + taskName + \'/{modelName}/\''.format(userName=crabUserName,modelName=modelName,),
             Site_storageSite = 'T2_US_Florida',
             )
     execConfig = CrabConfig(
