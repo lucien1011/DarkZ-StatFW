@@ -19,13 +19,16 @@ parser.add_argument("--verbose",action="store_true")
 parser.add_argument("--crab_stdout",action="store_true")
 parser.add_argument("--purge",action="store_true")
 parser.add_argument("--resubmit",action="store_true")
+parser.add_argument("--inverse",action="store_true")
 
 option = parser.parse_args()
 
 if not option.crab_stdout:
     setConsoleLogLevel(LOGLEVEL_MUTE)
 
-for crabDir in glob.glob(option.pattern):
+selectDir = glob.glob(option.pattern)
+if option.inverse: selectDir = reversed(selectDir)
+for crabDir in selectDir:
     if option.verbose:
         print "*"*100
         print "Running on directory "+crabDir
