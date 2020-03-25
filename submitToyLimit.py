@@ -8,8 +8,8 @@ from Utilities.mkdir_p import mkdir_p
 #inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-03_SR2D_RunII/"
 #taskName        = "2020-03-06_SR2D_RunII"
 
-#inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII/"
-#taskName        = "2020-03-17_SR2D_RunII"
+inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII/"
+taskName        = "2020-03-17_SR2D_RunII_LHCLimit"
 
 #inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
 #taskName        = "2020-03-03_CutAndCount_m4lSR-HZZd_RunII"
@@ -17,8 +17,8 @@ from Utilities.mkdir_p import mkdir_p
 #inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII_Mu/"
 #taskName        = "2020-03-17_SR2D_RunII_Mu"
 
-inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII_El/"
-taskName        = "2020-03-17_SR2D_RunII_El"
+#inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII_El/"
+#taskName        = "2020-03-17_SR2D_RunII_El"
 
 # ____________________________________________________________________________________________________________________________________________ ||
 #mass_points     = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
@@ -27,8 +27,14 @@ mass_points     = [4.20*1.005**i for i in range(541)]
 crabTaskDir     = "crabTaskDir/"
 dry_run         = False
 method          = "HybridNew"
-option          = ""
+scan_option     = "--LHCmode=LHC-limits --clsAcc 0 -T 1000 --saveHybridResult -s -1"
+compute_option  = "--LHCmode LHC-limits -T 1000 --readHybridResults --grid gridd.root"
 crabUserName    = "klo"
+maxMemoryMB     = 4000
+exec_dir        = "./"
+#exec_dir        = "$CMSSW_BASE/src/CombineHarvester/CombineTools/scripts/"
+useHarvester    = False
+points_to_scan  = [0.1+0.25*i for i in range(21)]
 
 # ____________________________________________________________________________________________________________________________________________ ||
 shell_script_template = """
@@ -82,15 +88,18 @@ for m in mass_points:
     mkdir_p(crabDir)
     pwdPath = os.environ['PWD']
     wsFilePath = os.path.join(inputDir,modelName,modelName+".root")
-    optionList = option.split()
     combine_cmd_list = []
     wsFilePathRoot = wsFilePath.replace("/cms/data","root://cms-xrd-global.cern.ch/")
     combine_cmd_list.append('./copyRemoteWorkspace.sh %s ./%s ' % (wsFilePathRoot, os.path.basename(wsFilePathRoot)))
-    combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=optionList,verbose=True,method=method)
-    combine_cmd_list.append("./"+api.make_cmd(combineOption)+" >> combine_log.txt")
+    for point_to_scan in points_to_scan:
+        combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=scan_option.split()+["--singlePoint=%s"%point_to_scan,"-n","FullCLs.POINT.%s"%point_to_scan,],verbose=True,method=method,useHarvester=useHarvester)
+        combine_cmd_list.append(exec_dir+api.make_cmd(combineOption)+" >> combine_log.txt")
+    combine_cmd_list.append("hadd gridd.root higgsCombineFullCLs.POINT.*.root")
+    combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=compute_option.split(),verbose=True,method=method)
+    combine_cmd_list.append(exec_dir+api.make_cmd(combineOption)+" >> combine_log.txt")
     for quantile in [0.500,0.840,0.160,0.975,0.025]:
-        combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=optionList+["--expectedFromGrid="+str(quantile)],verbose=True,method=method)
-        combine_cmd_list.append("./"+api.make_cmd(combineOption)+" >> combine_log.txt")
+        combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=compute_option.split()+["--expectedFromGrid="+str(quantile)],verbose=True,method=method)
+        combine_cmd_list.append(exec_dir+api.make_cmd(combineOption)+" >> combine_log.txt")
     combine_cmd = "\n".join(combine_cmd_list)
     worker = CrabWorker()
     crabConfig = CrabConfig(
@@ -100,8 +109,9 @@ for m in mass_points:
             JobType_plugName = 'PrivateMC',
             JobType_psetName = 'os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/do_nothing_cfg.py\'',
             JobType_scriptExe = 'combine_crab.sh',
-            JobType_inputFiles = '[os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/FrameworkJobReport.xml\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/copyRemoteWorkspace.sh\', os.environ[\'CMSSW_BASE\']+\'/bin/\'+os.environ[\'SCRAM_ARCH\']+\'/combine\',]',
+            JobType_inputFiles = '[os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/FrameworkJobReport.xml\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/copyRemoteWorkspace.sh\', os.environ[\'CMSSW_BASE\']+\'/bin/\'+os.environ[\'SCRAM_ARCH\']+\'/combine\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/combineTool.py\',]',
             JobType_outputFiles = '[\'combine_output.tar\',\'combine_log.txt\',]',
+            JobType_maxMemoryMB = str(maxMemoryMB),
             Data_outputPrimaryDataset = 'Combine',
             Data_unitsPerJob = 1,
             Data_totalUnits = 1,

@@ -20,6 +20,7 @@ config.JobType.psetName             = {JobType_psetName}
 config.JobType.scriptExe            = '{JobType_scriptExe}'
 config.JobType.inputFiles           = {JobType_inputFiles}
 config.JobType.outputFiles          = {JobType_outputFiles}
+config.JobType.maxMemoryMB          = {JobType_maxMemoryMB}
 
 config.section_('Data')
 config.Data.outputPrimaryDataset    = '{Data_outputPrimaryDataset}'
@@ -54,6 +55,7 @@ class CrabWorker(Worker):
                 JobType_scriptExe = crabConfig.JobType_scriptExe,
                 JobType_inputFiles = crabConfig.JobType_inputFiles,
                 JobType_outputFiles = crabConfig.JobType_outputFiles,
+                JobType_maxMemoryMB = crabConfig.JobType_maxMemoryMB,
                 Data_outputPrimaryDataset = crabConfig.Data_outputPrimaryDataset,
                 Data_unitsPerJob = crabConfig.Data_unitsPerJob,
                 Data_totalUnits = crabConfig.Data_totalUnits,
