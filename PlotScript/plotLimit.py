@@ -15,6 +15,7 @@ parser.add_argument("--inputDir",action="store")
 parser.add_argument("--outputPath",action="store")
 parser.add_argument("--selectStr",action="store",default="")
 parser.add_argument("--poi",action="store",default="")
+parser.add_argument("--method",action="store",default="AsymptoticLimits")
 
 option = parser.parse_args()
 
@@ -32,7 +33,33 @@ CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
 tdrstyle.setTDRStyle()
 
 setLogY         = True
-quantiles       = ["down2","down1","central","up1","up2","obs"]
+method          = option.method
+quantiles       = [
+    BaseObject("down2",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.025.root",
+        ),
+    BaseObject("down1",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.160.root",
+        ),
+    BaseObject("central",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.500.root",
+        ),
+    BaseObject("up1",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.840.root",
+        ),
+    BaseObject("up2",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.975.root",
+        ),
+    BaseObject("obs",
+        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
+        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.root",
+        ),
+    ]
 varName         = "limit"
 plots           = ["BrHZZd_Interpolation"] if not option.poi else option.poi.split(",")
 y_min           = 1E-3
@@ -46,16 +73,27 @@ drawVetoBox     = True
 # ________________________________________________________________ ||
 outDict = OrderedDict()
 for quantile in quantiles:
-    outDict[quantile] = OrderedDict()
+    outDict[quantile.name] = OrderedDict()
 for cardDir in glob.glob(inputDir+"*"+option.selectStr+"*/"):
+    print "*"*100
     print "Reading directory "+cardDir
-    inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
-    tree = inputFile.Get("limit")
     window_name = cardDir.split("/")[-2]
     window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value > higgs_boson.mass/2.: continue
-    for i,entry in enumerate(tree):
-        outDict[quantiles[i]][window_value] = getattr(entry,varName)
+    #if window_value > massCut: continue
+    for i,quan in enumerate(quantiles):
+        if method == "AsymptoticLimits":
+            inputFile = ROOT.TFile(cardDir+quan.asymp_file_name,"READ")
+            tree = inputFile.Get("limit")
+            tree.GetEntry(i)
+            outDict[quan.name][window_value] = getattr(tree,varName)
+            inputFile.Close()
+        elif method == "HybridNew":
+            inputFile = ROOT.TFile(cardDir+quan.hybridnew_file_name,"READ")
+            tree = inputFile.Get("limit")
+            tree.GetEntry(0)
+            outDict[quan.name][window_value] = getattr(tree,varName)
+            inputFile.Close()
+    print "Limit for "+",".join(outDict.keys())+": ",",".join([str(outDict[k][window_value]) for k in outDict.keys()])
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -105,7 +143,7 @@ for plot in plots:
     window_values = outDict["central"].keys()
     window_values.sort()
     frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-    frameMax = max([calculate(outDict[quan][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+    frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
     frame.SetMaximum(frameMax)
     if setLogY: frame.SetMinimum(y_min)
     for i,window_value in enumerate(window_values):
