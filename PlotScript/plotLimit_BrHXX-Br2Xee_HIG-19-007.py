@@ -1,11 +1,4 @@
-import ROOT,glob,os,subprocess,array,math
-from collections import OrderedDict
-import CMS_lumi 
-import tdrstyle 
-
-from Physics.ALP_XS import *
-from Physics.Zd_XS import * 
-from PlotScript.limitUtils import y_label_dict,calculate
+from PlotScript.plotLimitUtils import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
@@ -44,33 +37,6 @@ setLogY         = True
 #expOnly         = True 
 method          = "HybridNew"
 #method          = "AsymptoticLimits"
-quantiles       = [
-    BaseObject("down2",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.025.root",
-        ),
-    BaseObject("down1",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.160.root",
-        ),
-    BaseObject("central",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.500.root",
-        ),
-    BaseObject("up1",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.840.root",
-        ),
-    BaseObject("up2",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.975.root",
-        ),
-    BaseObject("obs",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.root",
-        ),
-    ]
-varName         = "limit"
 plot            = "BrHXX_Br2Xee"
 #maxFactor       = 1E3
 y_min           = 1E-9
@@ -79,31 +45,13 @@ x_label         = "m_{X}"
 drawVetoBox     = True
 drawLegend      = True
 massCut         = 60.2
+lowBoxCut       = 8.0
+highBoxCut      = 10.5
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = OrderedDict()
-for quantile in quantiles:
-    outDict[quantile.name] = OrderedDict()
-for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
-    print "Reading directory "+cardDir
-    window_name = cardDir.split("/")[-2]
-    window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value > massCut: continue
-    for i,quan in enumerate(quantiles):
-        if method == "AsymptoticLimits":
-            inputFile = ROOT.TFile(cardDir+quan.asymp_file_name,"READ")
-            tree = inputFile.Get("limit")
-            tree.GetEntry(i)
-            outDict[quan.name][window_value] = getattr(tree,varName)
-            inputFile.Close()
-        elif method == "HybridNew":
-            inputFile = ROOT.TFile(cardDir+quan.hybridnew_file_name,"READ")
-            tree = inputFile.Get("limit")
-            tree.GetEntry(0)
-            outDict[quan.name][window_value] = getattr(tree,varName)
-            inputFile.Close()
+outDict = makeLimitDict(inputDir,selectStr,method,massCut)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -197,7 +145,7 @@ if setLogY:
     c.SetLogy()
 
 if drawVetoBox:
-    box = ROOT.TBox(8.5,0.,11.,frameMax)
+    box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)
     box.SetFillColor(ROOT.kGray)
     box.Draw('same')
 
