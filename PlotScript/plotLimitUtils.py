@@ -49,8 +49,10 @@ quantiles       = [
         ),
     ]
 varName         = "limit"
+lowBoxCut       = 8.0
+highBoxCut      = 11.5
 
-def makeLimitDict(inputDir,selectStr,method,massCut):
+def makeLimitDict(inputDir,selectStr,method,massCutFunc):
     outDict = OrderedDict()
     for quantile in quantiles:
         outDict[quantile.name] = OrderedDict()
@@ -58,7 +60,7 @@ def makeLimitDict(inputDir,selectStr,method,massCut):
         print "Reading directory "+cardDir
         window_name = cardDir.split("/")[-2]
         window_value = float(window_name.split("_")[1].replace("MZD",""))
-        if window_value > massCut: continue
+        if not massCutFunc(window_value): continue
         for i,quan in enumerate(quantiles):
             if method == "AsymptoticLimits":
                 inputFile = ROOT.TFile(cardDir+quan.asymp_file_name,"READ")

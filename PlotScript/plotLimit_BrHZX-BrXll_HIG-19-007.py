@@ -1,11 +1,4 @@
-import ROOT,glob,os,subprocess,array,math
-from collections import OrderedDict
-import CMS_lumi 
-import tdrstyle 
-
-from Physics.ALP_XS import *
-from Physics.Zd_XS import * 
-from PlotScript.limitUtils import y_label_dict,calculate
+from PlotScript.plotLimitUtils import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
@@ -24,17 +17,6 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/"
 outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
 selectStr = ""
-
-# ________________________________________________________________ ||
-# CMS style
-# ________________________________________________________________ ||
-CMS_lumi.cmsText = "CMS"
-CMS_lumi.extraText = ""
-ROOT.TGaxis.SetMaxDigits(8)
-CMS_lumi.cmsTextSize = 0.65
-CMS_lumi.outOfFrame = True
-CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
-tdrstyle.setTDRStyle()
 
 setLogY         = True
 method          = "HybridNew"
@@ -82,32 +64,12 @@ drawZdCurve     = True
 drawLegend      = True
 esp_on_graph    = 0.05
 leg_pos         = [0.65,0.78,0.89,0.90]
-massCut         = 4.2
+massCutFunc     = lambda x: x > 4.2
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = OrderedDict()
-for quantile in quantiles:
-    outDict[quantile.name] = OrderedDict()
-for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
-    print "Reading directory "+cardDir
-    window_name = cardDir.split("/")[-2]
-    window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value < massCut: continue
-    for i,quan in enumerate(quantiles):
-        if method == "AsymptoticLimits":
-            inputFile = ROOT.TFile(cardDir+quan.asymp_file_name,"READ")
-            tree = inputFile.Get("limit")
-            tree.GetEntry(i)
-            outDict[quan.name][window_value] = getattr(tree,varName)
-            inputFile.Close()
-        elif method == "HybridNew":
-            inputFile = ROOT.TFile(cardDir+quan.hybridnew_file_name,"READ")
-            tree = inputFile.Get("limit")
-            tree.GetEntry(0)
-            outDict[quan.name][window_value] = getattr(tree,varName)
-            inputFile.Close()
+outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -222,7 +184,7 @@ if setLogY:
     c.SetLogy()
 
 if drawVetoBox:
-    box = ROOT.TBox(8.5,0.,11.,frameMax)
+    box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)
     box.SetFillColor(ROOT.kGray)
     box.Draw('same')
 

@@ -22,17 +22,6 @@ inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII
 outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_El_LHCLimit_v2/ExpObsLimit.pdf" 
 selectStr = ""
 
-# ________________________________________________________________ ||
-# CMS style
-# ________________________________________________________________ ||
-CMS_lumi.cmsText = "CMS"
-CMS_lumi.extraText = ""
-ROOT.TGaxis.SetMaxDigits(8)
-CMS_lumi.cmsTextSize = 0.65
-CMS_lumi.outOfFrame = True
-CMS_lumi.lumi_13TeV = "136.1 fb^{-1}"
-tdrstyle.setTDRStyle()
-
 setLogY         = True
 #expOnly         = True 
 method          = "HybridNew"
@@ -44,14 +33,12 @@ maxFactor       = 100
 x_label         = "m_{X}"
 drawVetoBox     = True
 drawLegend      = True
-massCut         = 60.2
-lowBoxCut       = 8.0
-highBoxCut      = 10.5
+massCutFunc     = lambda x: x < 60.2
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCut)
+outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict

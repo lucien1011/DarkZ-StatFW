@@ -26,9 +26,9 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf"
 #selectStr = ""
 
-inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit/"
-outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit/ExpObsLimit.pdf"
-selectStr = ""
+#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit/"
+#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit/ExpObsLimit.pdf"
+#selectStr = ""
 
 inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
 outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
@@ -47,14 +47,12 @@ drawZdCurve     = True
 drawLegend      = True
 kappa_on_graph  = 1E-4
 leg_pos         = [0.65,0.78,0.89,0.90]
-massCut         = 60.2
-lowBoxCut       = 8.0
-highBoxCut      = 10.5
+massCutFunc     = lambda x: x < 60.2
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCut)
+outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
