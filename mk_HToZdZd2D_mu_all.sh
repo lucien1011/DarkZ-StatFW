@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # ________________________________________________________________________________________________________________________ ||
-mkDC=true
-mkWS=true
-mkLimit=true
+mkDC=false
+mkWS=false
+mkLimit=false
 mkToyLimit=false
-mkSignif=false
+mkSignif=true
 mkFit=false
 mkImpact=false
 
@@ -64,7 +64,8 @@ fi
 
 # ________________________________________________________________________________________________________________________ ||
 if ${mkSignif} ; then
-    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method Significance
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "-t -1 --expectSignal=1" --method Significance --tag "expected" --run_in_wsdir
+    python runCombineTask.py --inputDir ${outputDir} --selectStr "Zd_MZD" --option "" --method Significance --tag "observed" --run_in_wsdir
 fi
 
 # ________________________________________________________________________________________________________________________ ||

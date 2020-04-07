@@ -12,8 +12,11 @@
 #inputDir=DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/
 #targetDir=/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII/
 
-inputDir=DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/
-targetDir=/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/
+#inputDir=DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/
+#targetDir=/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/
+
+inputDir=DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_El/
+targetDir=/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII_El/
 
 for f in $(ls ${inputDir}) ; 
 do 
