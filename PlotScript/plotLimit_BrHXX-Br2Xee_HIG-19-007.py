@@ -1,11 +1,4 @@
-import ROOT,glob,os,subprocess,array,math
-from collections import OrderedDict
-import CMS_lumi 
-import tdrstyle 
-
-from Physics.ALP_XS import *
-from Physics.Zd_XS import * 
-from PlotScript.limitUtils import y_label_dict,calculate
+from PlotScript.plotLimitUtils import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
@@ -21,8 +14,12 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
 #selectStr = ""
 
-inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII_El/"
-outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
+#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII_El/"
+#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
+#selectStr = ""
+
+inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_El_LHCLimit_v2/"
+outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_El_LHCLimit_v2/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||
@@ -38,8 +35,8 @@ tdrstyle.setTDRStyle()
 
 setLogY         = True
 #expOnly         = True 
-quantiles       = ["down2","down1","central","up1","up2","obs"]
-varName         = "limit"
+method          = "HybridNew"
+#method          = "AsymptoticLimits"
 plot            = "BrHXX_Br2Xee"
 #maxFactor       = 1E3
 y_min           = 1E-9
@@ -48,22 +45,13 @@ x_label         = "m_{X}"
 drawVetoBox     = True
 drawLegend      = True
 massCut         = 60.2
+lowBoxCut       = 8.0
+highBoxCut      = 10.5
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = OrderedDict()
-for quantile in quantiles:
-    outDict[quantile] = OrderedDict()
-for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
-    print "Reading directory "+cardDir
-    inputFile = ROOT.TFile(cardDir+"higgsCombineTest.AsymptoticLimits.mH120.root","READ")
-    tree = inputFile.Get("limit")
-    window_name = cardDir.split("/")[-2]
-    window_value = float(window_name.split("_")[1].replace("MZD",""))
-    if window_value > massCut: continue
-    for i,entry in enumerate(tree):
-        outDict[quantiles[i]][window_value] = getattr(entry,varName)
+outDict = makeLimitDict(inputDir,selectStr,method,massCut)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -112,7 +100,7 @@ CMS_lumi.CMS_lumi(c,4,0)
 window_values = outDict["central"].keys()
 window_values.sort()
 frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-frameMax = max([calculate(outDict[quan][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):
@@ -157,7 +145,7 @@ if setLogY:
     c.SetLogy()
 
 if drawVetoBox:
-    box = ROOT.TBox(8.5,0.,11.,frameMax)
+    box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)
     box.SetFillColor(ROOT.kGray)
     box.Draw('same')
 
