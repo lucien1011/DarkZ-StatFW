@@ -11,27 +11,39 @@ from StatFW.BaseObject import BaseObject
 #taskName        = "2020-03-06_SR2D_RunII"
 
 #inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII/"
-#taskName        = "2020-03-17_SR2D_RunII_LHCLimit"
-
-inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
-taskName        = "2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2"
-asymLimitDir    = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
-
-#inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII_Mu/"
-#taskName        = "2020-03-17_SR2D_RunII_Mu"
+#taskName        = "2020-03-17_SR2D_RunII_LHCLimit_v2"
+#taskName        = "2020-03-17_SR2D_RunII_LHCLimit_v2_ext1"
+#asymLimitDir    = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
 
 #inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII_El/"
-#taskName        = "2020-03-17_SR2D_RunII_El"
+#taskName        = "2020-03-17_SR2D_RunII_El_LHCLimit_v2"
+#asymLimitDir    = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII_El/"
+
+#inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/XX_2020-03-17_SR2D_RunII_Mu/"
+#taskName        = "2020-03-17_SR2D_RunII_Mu_LHCLimit_v2"
+#asymLimitDir    = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII_Mu/"
+
+#inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
+#taskName        = "2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2"
+#asymLimitDir    = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
+
+#inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/"
+#taskName        = "2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu_LHCLimit_v2"
+#asymLimitDir    = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/"
+
+inputDir        = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII_El/"
+taskName        = "2020-03-03_CutAndCount_m4lSR-HZZd_RunII_El_LHCLimit_v2"
+asymLimitDir    = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_El/"
 
 # ____________________________________________________________________________________________________________________________________________ ||
 #mass_points     = [4,5,6,7,8,9,10,15,20,25,30,35,40,45,50,55,60]
-mass_points     = [4.20*1.005**i for i in range(541)]
-#mass_points     = [4.04*1.005**i for i in range(434)]
+#mass_points     = [4.20*1.005**i for i in range(541)]
+mass_points     = [4.04*1.005**i for i in range(434)]
 crabTaskDir     = "crabTaskDir/"
 dry_run         = False
 method          = "HybridNew"
-scan_option     = "--LHCmode=LHC-limits --clsAcc 0 -T 1000 --saveHybridResult -s -1"
-compute_option  = "--LHCmode LHC-limits -T 1000 --readHybridResults --grid gridd.root"
+scan_option     = "--LHCmode=LHC-limits --clsAcc 0 -T 3000 --saveHybridResult -s -1 --rMax 200"
+compute_option  = "--LHCmode LHC-limits -T 3000 --readHybridResults --grid gridd.root"
 crabUserName    = "klo"
 maxMemoryMB     = 4000
 exec_dir        = "./"
@@ -126,6 +138,7 @@ ls -lrt
 ls -lrt
 
 tar -cf combine_output.tar *.root
+tar -cf combine_pdf.tar *.pdf
 rm higgsCombine*.root
 """
 
@@ -161,7 +174,7 @@ for m in mass_points:
     combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=compute_option.split(),verbose=True,method=method)
     combine_cmd_list.append(exec_dir+api.make_cmd(combineOption)+" >> combine_log.txt")
     for quantile in [0.500,0.840,0.160,0.975,0.025]:
-        combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=compute_option.split()+["--expectedFromGrid="+str(quantile)],verbose=True,method=method)
+        combineOption = CombineOption(crabDir,os.path.basename(wsFilePath),option=compute_option.split()+["--expectedFromGrid="+str(quantile),"--plot=cls_fromgrid_exp"+str(quantile)+".pdf"],verbose=True,method=method)
         combine_cmd_list.append(exec_dir+api.make_cmd(combineOption)+" >> combine_log.txt")
     combine_cmd = "\n".join(combine_cmd_list)
     worker = CrabWorker()
@@ -173,7 +186,7 @@ for m in mass_points:
             JobType_psetName = 'os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/do_nothing_cfg.py\'',
             JobType_scriptExe = 'combine_crab.sh',
             JobType_inputFiles = '[os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/FrameworkJobReport.xml\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/copyRemoteWorkspace.sh\', os.environ[\'CMSSW_BASE\']+\'/bin/\'+os.environ[\'SCRAM_ARCH\']+\'/combine\', os.environ[\'CMSSW_BASE\']+\'/src/CombineHarvester/CombineTools/scripts/combineTool.py\',]',
-            JobType_outputFiles = '[\'combine_output.tar\',\'combine_log.txt\',]',
+            JobType_outputFiles = '[\'combine_output.tar\',\'combine_log.txt\', \'combine_pdf.tar\']',
             JobType_maxMemoryMB = str(maxMemoryMB),
             Data_outputPrimaryDataset = 'Combine',
             Data_unitsPerJob = 1,
