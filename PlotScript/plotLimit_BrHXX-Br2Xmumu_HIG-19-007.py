@@ -23,7 +23,7 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #selectStr = ""
 
 inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_Mu_LHCLimit_v2/"
-outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_Mu_LHCLimit_v2/ExpObsLimit.pdf" 
+outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf" 
 selectStr = ""
 
 setLogY         = True
@@ -64,11 +64,12 @@ maxFactor       = 100
 x_label         = "m_{X}"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 60.2
+smoothing       = True
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc)
+outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -122,21 +123,23 @@ frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) fo
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):
-    yellow.SetPoint( i, window_value,calculate(outDict["up2"][window_value], window_value, plot) )
-    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"][window_value], window_value, plot) )
-    green.SetPoint( i, window_value,calculate(outDict["up1"][window_value], window_value, plot) )
-    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"][window_value], window_value, plot) )
+    postfix = "" if not smoothing else "_smooth"
+    yellow.SetPoint( i, window_value,calculate(outDict["up2"+postfix][window_value], window_value, plot) )
+    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"+postfix][window_value], window_value, plot) )
+    green.SetPoint( i, window_value,calculate(outDict["up1"+postfix][window_value], window_value, plot) )
+    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"+postfix][window_value], window_value, plot) )
     median.SetPoint( i, window_value,calculate(outDict["central"][window_value], window_value, plot) )
     black.SetPoint( i, window_value,calculate(outDict["obs"][window_value], window_value, plot) )
+
 yellow.SetFillColor(ROOT.kOrange)
 yellow.SetLineColor(ROOT.kOrange)
 yellow.SetFillStyle(1001)
-yellow.Draw('F')
+yellow.Draw('cF')
 
 green.SetFillColor(ROOT.kGreen+1)
 green.SetLineColor(ROOT.kGreen+1)
 green.SetFillStyle(1001)
-green.Draw('Fsame')
+green.Draw('cFsame')
 
 median.SetLineColor(1)
 median.SetLineWidth(2)
