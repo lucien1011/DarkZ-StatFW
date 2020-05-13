@@ -57,6 +57,7 @@ def makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=False):
     for quantile in quantiles:
         outDict[quantile.name] = OrderedDict()
     for cardDir in glob.glob(inputDir+"*"+selectStr+"*/"):
+        if not os.path.isdir(cardDir): continue
         print "Reading directory "+cardDir
         window_name = cardDir.split("/")[-2]
         window_value = float(window_name.split("_")[1].replace("MZD",""))

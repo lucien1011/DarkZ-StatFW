@@ -24,8 +24,8 @@ selectStr = ""
 
 setLogY         = True
 #expOnly         = True 
-method          = "HybridNew"
-#method          = "AsymptoticLimits"
+#method          = "HybridNew"
+method          = "AsymptoticLimits"
 plot            = "BrHXX_Br2Xee"
 #maxFactor       = 1E3
 y_min           = 1E-9

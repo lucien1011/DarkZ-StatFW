@@ -14,13 +14,17 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit/ExpObsLimit.pdf"
 #selectStr = ""
 
-inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/"
+#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/"
+#outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#selectStr = ""
+
+inputDir = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
 outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
 selectStr = ""
 
 setLogY         = True
-method          = "HybridNew"
-#method          = "AsymptoticLimits"
+#method          = "HybridNew"
+method          = "AsymptoticLimits"
 quantiles       = [
     BaseObject("down2",
         asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
