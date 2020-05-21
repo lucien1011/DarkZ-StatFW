@@ -44,6 +44,10 @@ x_label         = "m_{X} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
+graphs          = [
+        BaseObject("g1",window_func=lambda x: x < lowBoxCut),
+        BaseObject("g2",window_func=lambda x: x > highBoxCut),
+        ]
 
 # ________________________________________________________________ ||
 # Read limit from directory
@@ -101,34 +105,72 @@ frame.GetXaxis().SetLimits(min(window_values),max(window_values))
 frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
-for i,window_value in enumerate(window_values):
+
+for g in graphs:
     postfix = "" if not smoothing else "_smooth"
-    yellow.SetPoint( i, window_value,calculate(outDict["up2"+postfix][window_value], window_value, plot) )
-    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"+postfix][window_value], window_value, plot) )
-    green.SetPoint( i, window_value,calculate(outDict["up1"+postfix][window_value], window_value, plot) )
-    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"+postfix][window_value], window_value, plot) )
-    median.SetPoint( i, window_value,calculate(outDict["central"+postfix][window_value], window_value, plot) )
-    black.SetPoint( i, window_value,calculate(outDict["obs"+postfix][window_value], window_value, plot) )
+    nPoints = len([w for w in window_values if g.window_func(w)])
+    black_xs = array.array("d",[window_value for i,window_value in enumerate(window_values) if g.window_func(window_value)])
+    black_ys = array.array("d",[calculate(outDict["obs"+postfix][window_value],window_value,plot) for i,window_value in enumerate(window_values) if g.window_func(window_value)])
+    median_xs = array.array("d",[window_value for i,window_value in enumerate(window_values) if g.window_func(window_value)])
+    median_ys = array.array("d",[calculate(outDict["central"+postfix][window_value],window_value,plot) for i,window_value in enumerate(window_values) if g.window_func(window_value)])
 
-yellow.SetFillColor(ROOT.kOrange)
-yellow.SetLineColor(ROOT.kOrange)
-yellow.SetFillStyle(1001)
-yellow.Draw('cF')
+    yellow_ns_list = []
+    yellow_xs_list = []
+    yellow_ys_list = []
+    for i,window_value in enumerate(window_values):
+        if not g.window_func(window_value): continue
+        yellow_ns_list.append(i)
+        yellow_xs_list.append(window_value)
+        yellow_ys_list.append(calculate(outDict["up2"+postfix][window_value], window_value, plot))
+    for i,window_value in enumerate(reversed(window_values)):
+        if not g.window_func(window_value): continue
+        yellow_xs_list.append(window_value)
+        yellow_ys_list.append(calculate(outDict["down2"+postfix][window_value], window_value, plot))
 
-green.SetFillColor(ROOT.kGreen+1)
-green.SetLineColor(ROOT.kGreen+1)
-green.SetFillStyle(1001)
-green.Draw('cFsame')
+    green_ns_list = []
+    green_xs_list = []
+    green_ys_list = []
+    for i,window_value in enumerate(window_values):
+        if not g.window_func(window_value): continue
+        green_ns_list.append(i)
+        green_xs_list.append(window_value)
+        green_ys_list.append(calculate(outDict["up1"+postfix][window_value], window_value, plot))
+    for i,window_value in enumerate(reversed(window_values)):
+        if not g.window_func(window_value): continue
+        green_xs_list.append(window_value)
+        green_ys_list.append(calculate(outDict["down1"+postfix][window_value], window_value, plot))
 
-median.SetLineColor(1)
-median.SetLineWidth(2)
-median.SetLineStyle(2)
-median.Draw('Lsame')
+    yellow_xs = array.array("d",yellow_xs_list)
+    yellow_ys = array.array("d",yellow_ys_list)
+    green_xs = array.array("d",green_xs_list)
+    green_ys = array.array("d",green_ys_list)
 
-black.SetLineColor(1)
-black.SetLineWidth(2)
-black.SetLineStyle(1)
-black.Draw('Lsame')
+    g.yellow = ROOT.TGraph(2*nPoints,yellow_xs,yellow_ys)
+    g.green = ROOT.TGraph(2*nPoints,green_xs,green_ys)
+    g.median = ROOT.TGraph(nPoints,median_xs,median_ys)
+    g.black = ROOT.TGraph(nPoints,black_xs,black_ys)
+
+for g in graphs:
+
+    g.yellow.SetFillColor(ROOT.kOrange)
+    g.yellow.SetLineColor(ROOT.kOrange)
+    g.yellow.SetFillStyle(1001)
+    g.yellow.Draw('F')
+    
+    g.green.SetFillColor(ROOT.kGreen+1)
+    g.green.SetLineColor(ROOT.kGreen+1)
+    g.green.SetFillStyle(1001)
+    g.green.Draw('Fsame')
+
+    g.median.SetLineColor(1)
+    g.median.SetLineWidth(2)
+    g.median.SetLineStyle(2)
+    g.median.Draw('Lsame')
+
+    g.black.SetLineColor(1)
+    g.black.SetLineWidth(2)
+    g.black.SetLineStyle(1)
+    g.black.Draw("Lsame")
 
 if setLogY:
     c.SetLogy()

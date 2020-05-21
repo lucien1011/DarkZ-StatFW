@@ -15,7 +15,7 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 # CMS style
 # ________________________________________________________________ ||
 CMS_lumi.cmsText = "CMS"
-CMS_lumi.extraText = ""
+CMS_lumi.extraText = "Preliminary"
 ROOT.TGaxis.SetMaxDigits(8)
 CMS_lumi.cmsTextSize = 0.65
 CMS_lumi.outOfFrame = True
@@ -123,7 +123,7 @@ def makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=False,dcDir=No
         median_smooth = ROOT.TGraphSmooth()
         median = median_smooth.SmoothKern(median,"normal",2.0)
         observe_smooth = ROOT.TGraphSmooth()
-        observe = observe_smooth.SmoothKern(observe,"normal",0.6)    
+        observe = observe_smooth.SmoothKern(observe)    
         for q in ["up2","down2","up1","down1","obs","central"]:
             outDict[q+"_smooth"] = {}
         for i,window_value in enumerate(window_values):

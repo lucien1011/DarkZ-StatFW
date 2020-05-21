@@ -10,8 +10,12 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu_LHCLimit_v2/ExpObsLimit.pdf" 
 #selectStr = ""
 
-inputDir = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/"
-outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#inputDir = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/"
+#outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#selectStr = ""
+
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/"
+outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_PAS/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||
@@ -20,38 +24,12 @@ selectStr = ""
 setLogY         = True
 #method          = "HybridNew"
 method          = "AsymptoticLimits"
-quantiles       = [
-    BaseObject("down2",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.025.root",
-        ),
-    BaseObject("down1",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.160.root",
-        ),
-    BaseObject("central",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.500.root",
-        ),
-    BaseObject("up1",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.840.root",
-        ),
-    BaseObject("up2",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.975.root",
-        ),
-    BaseObject("obs",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.root",
-        ),
-    ]
 varName         = "limit"
 plot            = "BrHZX_BrXMuMu"
-#maxFactor       = 1E3
-y_min           = 1E-6
-maxFactor       = 100
-x_label         = "m_{X}"
+y_min           = 5E-5
+maxFactor       = 10
+max_force       = 1E-2
+x_label         = "m_{X} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 35.0
 
@@ -108,7 +86,7 @@ CMS_lumi.CMS_lumi(c,4,0)
 window_values = outDict["central"].keys()
 window_values.sort()
 frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in outDict[quan.name].keys() ])*maxFactor if not max_force else max_force
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):

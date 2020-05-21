@@ -12,7 +12,7 @@ cmsTextFont   = 61
 writeExtraText = True
 extraText   = "Preliminary"
 extraTextFont = 52
-extraTextOffset = 0.4
+extraTextOffset = 0.2
  
 lumiTextSize     = 0.6
 lumiTextOffset   = 0.2
@@ -20,7 +20,7 @@ lumiTextOffset   = 0.2
 cmsTextSize      = 0.75
 cmsTextOffset    = 0.1
  
-relPosX    = 0.045
+relPosX    = 0.105
 relPosY    = 0.035
 relExtraDY = 1.2
  

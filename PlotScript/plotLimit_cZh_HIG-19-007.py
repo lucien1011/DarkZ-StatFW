@@ -10,56 +10,26 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
 #selectStr = ""
 
-inputDir = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
-outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#inputDir = "/cms/data/store/user/klo/HiggsCombineWorkspace/HIG-19-007/ZX_2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
+#outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#selectStr = ""
+
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
+outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_PAS/ExpObsLimit.pdf" 
 selectStr = ""
 
 # ________________________________________________________________ ||
 # CMS style
 # ________________________________________________________________ ||
-CMS_lumi.cmsText = "CMS"
-CMS_lumi.extraText = ""
-ROOT.TGaxis.SetMaxDigits(8)
-CMS_lumi.cmsTextSize = 0.65
-CMS_lumi.outOfFrame = True
-CMS_lumi.lumi_13TeV = "137 fb^{-1}"
-tdrstyle.setTDRStyle()
-
 setLogY         = True
 #method          = "HybridNew"
 method          = "AsymptoticLimits"
-quantiles       = [
-    BaseObject("down2",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.025.root",
-        ),
-    BaseObject("down1",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.160.root",
-        ),
-    BaseObject("central",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.500.root",
-        ),
-    BaseObject("up1",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.840.root",
-        ),
-    BaseObject("up2",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.quant0.975.root",
-        ),
-    BaseObject("obs",
-        asymp_file_name="higgsCombineTest.AsymptoticLimits.mH120.root",
-        hybridnew_file_name="higgsCombineTest.HybridNew.mH120.root",
-        ),
-    ]
 varName         = "limit"
 plot            = "c_zh_div_Lambda_Interpolation"
 #maxFactor       = 1E3
 y_min           = 1E-3
 maxFactor       = 1.2
-x_label         = "m_{a}"
+x_label         = "m_{a} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x > 4.2
 

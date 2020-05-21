@@ -54,6 +54,10 @@ kappa_on_graph  = 2E-4
 leg_pos         = [0.65,0.78,0.89,0.90]
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
+graphs          = [
+        BaseObject("g1",window_func=lambda x: x < lowBoxCut),
+        BaseObject("g2",window_func=lambda x: x > highBoxCut),
+        ]
 
 # ________________________________________________________________ ||
 # Read limit from directory
@@ -113,62 +117,123 @@ frame.GetXaxis().SetLimits(min(window_values),max(window_values))
 frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in outDict[quan.name].keys() ])*maxFactor if not max_force else max_force
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
-for i,window_value in enumerate(window_values):
+
+for g in graphs:
     postfix = "" if not smoothing else "_smooth"
-    yellow.SetPoint( i, window_value,calculate(outDict["up2"+postfix][window_value], window_value, plot) )
-    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"+postfix][window_value], window_value, plot) )
-    green.SetPoint( i, window_value,calculate(outDict["up1"+postfix][window_value], window_value, plot) )
-    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"+postfix][window_value], window_value, plot) )
-    median.SetPoint( i, window_value,calculate(outDict["central"+postfix][window_value], window_value, plot) )
-    black.SetPoint( i, window_value,calculate(outDict["obs"+postfix][window_value], window_value, plot) )
+    nPoints = len([w for w in window_values if g.window_func(w)])
+    black_xs = array.array("d",[window_value for i,window_value in enumerate(window_values) if g.window_func(window_value)])
+    black_ys = array.array("d",[calculate(outDict["obs"+postfix][window_value],window_value,plot) for i,window_value in enumerate(window_values) if g.window_func(window_value)])
+    median_xs = array.array("d",[window_value for i,window_value in enumerate(window_values) if g.window_func(window_value)])
+    median_ys = array.array("d",[calculate(outDict["central"+postfix][window_value],window_value,plot) for i,window_value in enumerate(window_values) if g.window_func(window_value)])
+
+    yellow_ns_list = []
+    yellow_xs_list = []
+    yellow_ys_list = []
+    for i,window_value in enumerate(window_values):
+        if not g.window_func(window_value): continue
+        yellow_ns_list.append(i)
+        yellow_xs_list.append(window_value)
+        yellow_ys_list.append(calculate(outDict["up2"+postfix][window_value], window_value, plot))
+    for i,window_value in enumerate(reversed(window_values)):
+        if not g.window_func(window_value): continue
+        yellow_xs_list.append(window_value)
+        yellow_ys_list.append(calculate(outDict["down2"+postfix][window_value], window_value, plot))
+
+    green_ns_list = []
+    green_xs_list = []
+    green_ys_list = []
+    for i,window_value in enumerate(window_values):
+        if not g.window_func(window_value): continue
+        green_ns_list.append(i)
+        green_xs_list.append(window_value)
+        green_ys_list.append(calculate(outDict["up1"+postfix][window_value], window_value, plot))
+    for i,window_value in enumerate(reversed(window_values)):
+        if not g.window_func(window_value): continue
+        green_xs_list.append(window_value)
+        green_ys_list.append(calculate(outDict["down1"+postfix][window_value], window_value, plot))
+
+    yellow_xs = array.array("d",yellow_xs_list)
+    yellow_ys = array.array("d",yellow_ys_list)
+    green_xs = array.array("d",green_xs_list)
+    green_ys = array.array("d",green_ys_list)
+
+    g.yellow = ROOT.TGraph(2*nPoints,yellow_xs,yellow_ys)
+    g.green = ROOT.TGraph(2*nPoints,green_xs,green_ys)
+    g.median = ROOT.TGraph(nPoints,median_xs,median_ys)
+    g.black = ROOT.TGraph(nPoints,black_xs,black_ys)
+
+    zd_x_list = []
+    zd_y_list = []
+    zd_unc_x_list = []
+    zd_unc_y_list = []
     if drawZdCurve:
-        zdBr = kappa_on_graph**2*reader.interpolate(window_value,"Br_HToZdZdTo4l")
-        zdUnc = 0.2 if window_value < 12. else 0.1
-        zdGraph.SetPoint(i,window_value,zdBr)
-        zdUncGraph.SetPoint(i,window_value,zdBr*(1.+zdUnc))
-        zdUncGraph.SetPoint(2*nPoints-1-i,window_value,zdBr*(1.-zdUnc))
+        for i,window_value in enumerate(window_values):
+            if not g.window_func(window_value): continue
+            zdBr = kappa_on_graph**2*reader.interpolate(window_value,"Br_HToZdZdTo4l")
+            zdUnc = 0.2 if window_value < 12. else 0.1
+            zdBrUp= zdBr*(1.+zdUnc)
+            zd_x_list.append(window_value)
+            zd_unc_x_list.append(window_value)
+            zd_y_list.append(zdBr)
+            zd_unc_y_list.append(zdBrUp)
+        for i,window_value in enumerate(reversed(window_values)):
+            if not g.window_func(window_value): continue
+            zdBr = kappa_on_graph**2*reader.interpolate(window_value,"Br_HToZdZdTo4l")
+            zdUnc = 0.2 if window_value < 12. else 0.1
+            zdBrDown= zdBr*(1.-zdUnc)
+            zd_unc_x_list.append(window_value)
+            zd_unc_y_list.append(zdBrDown)
+
+        zdBr_xs = array.array("d",zd_x_list)
+        zdBr_ys = array.array("d",zd_y_list)
+        zdUnc_xs = array.array("d",zd_unc_x_list)
+        zdUnc_ys = array.array("d",zd_unc_y_list)
+        g.zdBr = ROOT.TGraph(nPoints,zdBr_xs,zdBr_ys)
+        g.zdUnc = ROOT.TGraph(2*nPoints,zdUnc_xs,zdUnc_ys)
+
+for g in graphs:
+
+    g.yellow.SetFillColor(ROOT.kOrange)
+    g.yellow.SetLineColor(ROOT.kOrange)
+    g.yellow.SetFillStyle(1001)
+    g.yellow.Draw('F')
+    
+    g.green.SetFillColor(ROOT.kGreen+1)
+    g.green.SetLineColor(ROOT.kGreen+1)
+    g.green.SetFillStyle(1001)
+    g.green.Draw('Fsame')
+
+    if drawZdCurve:
+        g.zdBr.SetLineColor(ROOT.kRed)
+        g.zdBr.SetLineWidth(4)
+        g.zdBr.SetLineStyle(1)
+        g.zdUnc.SetFillColor(ROOT.kRed)
+        g.zdUnc.SetLineColor(ROOT.kRed)
+        g.zdUnc.SetFillStyle(1001)
+        zdBr_graph = g.zdUnc.Clone()
+        g.zdBr.Draw('Lsame')
+        g.zdUnc.Draw('Fsame')
+
+    g.median.SetLineColor(1)
+    g.median.SetLineWidth(2)
+    g.median.SetLineStyle(2)
+    g.median.Draw('Lsame')
+
+    g.black.SetLineColor(1)
+    g.black.SetLineWidth(2)
+    g.black.SetLineStyle(1)
+    g.black.Draw("Lsame")
 
 if drawLegend:
-    leg = ROOT.TLegend(*leg_pos)
+    leg = ROOT.TLegend(0.50,0.65,0.89,0.87)
     leg.SetBorderSize(0)
     leg.SetFillColor(0)
-    leg.AddEntry(median,"Expected exclusion","l")
-    leg.AddEntry(black,"Observed exclusion","l")
+    leg.AddEntry(g.median,"Expected exclusion","l")
+    leg.AddEntry(g.black,"Observed exclusion","l",)
     if drawZdCurve:
-        leg.AddEntry(zdGraph,y_label_dict[plot].replace("X","Z_{d}")+", #kappa = "+str(kappa_on_graph),"l")
-
-yellow.SetFillColor(ROOT.kOrange)
-yellow.SetLineColor(ROOT.kOrange)
-yellow.SetFillStyle(1001)
-yellow.Draw('F')
-
-green.SetFillColor(ROOT.kGreen+1)
-green.SetLineColor(ROOT.kGreen+1)
-green.SetFillStyle(1001)
-green.Draw('Fsame')
-
-if drawZdCurve:
-    zdGraph.SetLineColor(ROOT.kRed)
-    zdGraph.SetLineWidth(4)
-    zdGraph.SetLineStyle(1)
-    zdUncGraph.SetFillColor(ROOT.kRed)
-    zdUncGraph.SetLineColor(ROOT.kRed)
-    zdUncGraph.SetFillStyle(1001)
-    zdGraph.Draw('Lsame')
-    zdUncGraph.Draw('Fsame')
-
-median.SetLineColor(1)
-median.SetLineWidth(2)
-median.SetLineStyle(2)
-median.Draw('Lsame')
-
-black.SetLineColor(1)
-black.SetLineWidth(2)
-black.SetLineStyle(1)
-black.Draw('Lsame')
-
-if drawLegend:
+        leg.AddEntry(g.zdBr,y_label_dict[plot].replace("X","Z_{d}")+", #kappa = "+str(kappa_on_graph),"l")
     leg.Draw("Lsame")
+    ROOT.gPad.Update()
 
 if setLogY:
     c.SetLogy()

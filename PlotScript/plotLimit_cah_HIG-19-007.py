@@ -22,9 +22,14 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit/ExpObsLimit.pdf"
 #selectStr = ""
 
-inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
+#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#selectStr = ""
+
+inputDir = "/raid/raid7/lucien/UFTier2/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
+outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
 selectStr = ""
+dcDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
 
 # ________________________________________________________________ ||
 # CMS style
@@ -37,7 +42,7 @@ plot            = "c_ah_div_Lambda_Interpolation"
 #maxFactor       = 1E3
 y_min           = 1E-3
 maxFactor       = 1.2
-x_label         = "m_{a}"
+x_label         = "m_{a} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
@@ -45,7 +50,7 @@ smoothing       = True
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing)
+outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing,dcDir=dcDir,)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
