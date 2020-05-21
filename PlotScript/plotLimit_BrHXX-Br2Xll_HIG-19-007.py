@@ -30,22 +30,27 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit/ExpObsLimit.pdf"
 #selectStr = ""
 
-inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
+#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
+#selectStr = ""
+
+inputDir = "/raid/raid7/lucien/UFTier2/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
+outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
 selectStr = ""
+dcDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
 
 setLogY         = True
 method          = "HybridNew"
 #method          = "AsymptoticLimits"
 plot            = "BrHXX_Br2Xll"
-#maxFactor       = 1E3
-y_min           = 1E-9
-maxFactor       = 100
-x_label         = "m_{X}"
+y_min           = 2E-7
+maxFactor       = 10
+max_force       = 5E-5
+x_label         = "m_{X} [GeV]"
 drawVetoBox     = True
 drawZdCurve     = True
 drawLegend      = True
-kappa_on_graph  = 1E-4
+kappa_on_graph  = 2E-4
 leg_pos         = [0.65,0.78,0.89,0.90]
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
@@ -53,7 +58,7 @@ smoothing       = True
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing)
+outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing,dcDir=dcDir,)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -105,7 +110,7 @@ CMS_lumi.CMS_lumi(c,4,0)
 window_values = outDict["central"].keys()
 window_values.sort()
 frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in outDict[quan.name].keys() ])*maxFactor if not max_force else max_force
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):
@@ -114,8 +119,8 @@ for i,window_value in enumerate(window_values):
     yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"+postfix][window_value], window_value, plot) )
     green.SetPoint( i, window_value,calculate(outDict["up1"+postfix][window_value], window_value, plot) )
     green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"+postfix][window_value], window_value, plot) )
-    median.SetPoint( i, window_value,calculate(outDict["central"][window_value], window_value, plot) )
-    black.SetPoint( i, window_value,calculate(outDict["obs"][window_value], window_value, plot) )
+    median.SetPoint( i, window_value,calculate(outDict["central"+postfix][window_value], window_value, plot) )
+    black.SetPoint( i, window_value,calculate(outDict["obs"+postfix][window_value], window_value, plot) )
     if drawZdCurve:
         zdBr = kappa_on_graph**2*reader.interpolate(window_value,"Br_HToZdZdTo4l")
         zdUnc = 0.2 if window_value < 12. else 0.1
