@@ -40,7 +40,7 @@ drawVetoBox     = True
 drawZdCurve     = True
 drawLegend      = True
 esp_on_graph    = 0.05
-leg_pos         = [0.50,0.65,0.95,0.87]
+leg_pos         = [0.35,0.65,0.95,0.87]
 massCutFunc     = lambda x: x > 4.2
 
 # ________________________________________________________________ ||
@@ -79,9 +79,10 @@ frame = c.DrawFrame(1.4,0.001, 4.1, 10)
 frame.GetYaxis().CenterTitle()
 frame.GetYaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetTitleSize(0.05)
-frame.GetXaxis().SetLabelSize(0.04)
-frame.GetYaxis().SetLabelSize(0.04)
+frame.GetXaxis().SetLabelSize(0.05)
+frame.GetYaxis().SetLabelSize(0.05)
 frame.GetYaxis().SetTitleOffset(1.2)
+frame.GetXaxis().SetTitleOffset(1.0)
 frame.GetXaxis().SetNdivisions(508)
 frame.GetYaxis().CenterTitle(True)
 frame.GetYaxis().SetTitle(y_label_dict[plot])
@@ -119,11 +120,11 @@ if drawLegend:
     leg = ROOT.TLegend(*leg_pos)
     leg.SetBorderSize(0)
     leg.SetFillColor(0)
-    leg.SetTextSize(0.03)
+    leg.SetTextSize(0.05)
     leg.AddEntry(median,"Expected exclusion","l")
     leg.AddEntry(black,"Observed exclusion","l")
     if drawZdCurve:
-        leg.AddEntry(zdGraph,y_label_dict[plot].replace("X","Z_{d}")+", #varepsilon = "+str(esp_on_graph),"l")
+        leg.AddEntry(zdGraph,y_label_dict[plot.replace("Br","")]+", #varepsilon = "+str(esp_on_graph),"l")
 
 yellow.SetFillColor(ROOT.kOrange)
 yellow.SetLineColor(ROOT.kOrange)
