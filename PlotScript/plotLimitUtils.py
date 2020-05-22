@@ -143,3 +143,10 @@ def makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=False,dcDir=No
             outDict["down1_smooth"][window_value] = green_down.Eval(window_value)
 
     return outDict
+
+def redrawBorder():
+   ROOT.gPad.Update()
+   ROOT.gPad.RedrawAxis()
+   l = ROOT.TLine()
+   l.DrawLine(ROOT.gPad.GetUxmin(), ROOT.gPad.GetUymax(), ROOT.gPad.GetUxmax(), ROOT.gPad.GetUymax())
+   l.DrawLine(ROOT.gPad.GetUxmax(), ROOT.gPadGetUymin(), ROOT.gPad.GetUxmax(), ROOT.gPad.GetUymax())

@@ -43,15 +43,15 @@ setLogY         = True
 method          = "HybridNew"
 #method          = "AsymptoticLimits"
 plot            = "BrHXX_Br2Xll"
-y_min           = 2E-7
+y_min           = 4E-7
 maxFactor       = 10
-max_force       = 5E-5
+max_force       = 4E-5
 x_label         = "m_{X} [GeV]"
 drawVetoBox     = True
 drawZdCurve     = True
 drawLegend      = True
 kappa_on_graph  = 2E-4
-leg_pos         = [0.65,0.78,0.89,0.90]
+leg_pos         = [0.40,0.65,0.95,0.87]
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
 graphs          = [
@@ -96,7 +96,7 @@ frame.GetYaxis().CenterTitle()
 frame.GetYaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetLabelSize(0.04)
-frame.GetYaxis().SetLabelSize(0.03)
+frame.GetYaxis().SetLabelSize(0.04)
 frame.GetYaxis().SetTitleOffset(1.2)
 frame.GetXaxis().SetNdivisions(508)
 frame.GetYaxis().CenterTitle(True)
@@ -225,9 +225,10 @@ for g in graphs:
     g.black.Draw("Lsame")
 
 if drawLegend:
-    leg = ROOT.TLegend(0.50,0.65,0.89,0.87)
+    leg = ROOT.TLegend(*leg_pos)
     leg.SetBorderSize(0)
     leg.SetFillColor(0)
+    leg.SetTextSize(0.03)
     leg.AddEntry(g.median,"Expected exclusion","l")
     leg.AddEntry(g.black,"Observed exclusion","l",)
     if drawZdCurve:
@@ -237,6 +238,9 @@ if drawLegend:
 
 if setLogY:
     c.SetLogy()
+
+ROOT.gPad.RedrawAxis()
+ROOT.gPad.RedrawAxis("G")
 
 if drawVetoBox:
     box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)

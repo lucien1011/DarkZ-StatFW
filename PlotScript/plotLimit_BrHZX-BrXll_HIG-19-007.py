@@ -22,16 +22,16 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 #outputPath = "/home/kinho.lo/public_html/Higgs/DarkZ/Limit/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_LHCLimit_v2/ExpObsLimit.pdf"
 #selectStr = ""
 
-inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/"
+inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
 outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_PAS/ExpObsLimit.pdf" 
 selectStr = ""
 
 setLogY         = True
 #method          = "HybridNew"
 method          = "AsymptoticLimits"
-y_min           = 5E-6
+y_min           = 1E-5
 maxFactor       = 10
-max_force       = 1E-2
+max_force       = 3E-3
 varName         = "limit"
 plot            = "BrHZX_BrXll"
 x_label         = "m_{X} [GeV]"
@@ -40,7 +40,7 @@ drawVetoBox     = True
 drawZdCurve     = True
 drawLegend      = True
 esp_on_graph    = 0.05
-leg_pos         = [0.50,0.65,0.89,0.87]
+leg_pos         = [0.50,0.65,0.95,0.87]
 massCutFunc     = lambda x: x > 4.2
 
 # ________________________________________________________________ ||
@@ -80,7 +80,7 @@ frame.GetYaxis().CenterTitle()
 frame.GetYaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetLabelSize(0.04)
-frame.GetYaxis().SetLabelSize(0.03)
+frame.GetYaxis().SetLabelSize(0.04)
 frame.GetYaxis().SetTitleOffset(1.2)
 frame.GetXaxis().SetNdivisions(508)
 frame.GetYaxis().CenterTitle(True)
@@ -119,6 +119,7 @@ if drawLegend:
     leg = ROOT.TLegend(*leg_pos)
     leg.SetBorderSize(0)
     leg.SetFillColor(0)
+    leg.SetTextSize(0.03)
     leg.AddEntry(median,"Expected exclusion","l")
     leg.AddEntry(black,"Observed exclusion","l")
     if drawZdCurve:
@@ -156,6 +157,9 @@ black.Draw('Lsame')
 
 if drawLegend:
     leg.Draw("Lsame")
+
+ROOT.gPad.RedrawAxis()
+ROOT.gPad.RedrawAxis("G")
 
 if setLogY:
     c.SetLogy()

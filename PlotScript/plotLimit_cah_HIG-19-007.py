@@ -39,13 +39,15 @@ method          = "HybridNew"
 #method          = "AsymptoticLimits"
 varName         = "limit"
 plot            = "c_ah_div_Lambda_Interpolation"
-#maxFactor       = 1E3
-y_min           = 1E-3
-maxFactor       = 1.2
+y_min           = 5E-3
+maxFactor       = 10
+max_force       = 0.1
 x_label         = "m_{a} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
+leg_pos         = [0.40,0.65,0.75,0.87]
+drawLegend      = True
 
 # ________________________________________________________________ ||
 # Read limit from directory
@@ -84,8 +86,8 @@ frame.GetYaxis().CenterTitle()
 frame.GetYaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetLabelSize(0.04)
-frame.GetYaxis().SetLabelSize(0.03)
-frame.GetYaxis().SetTitleOffset(1.2)
+frame.GetYaxis().SetLabelSize(0.04)
+frame.GetYaxis().SetTitleOffset(1.0)
 frame.GetXaxis().SetNdivisions(508)
 frame.GetYaxis().CenterTitle(True)
 #frame.GetYaxis().SetTitle("95% upper limit on #sigma / #sigma_{SM}")
@@ -100,7 +102,7 @@ CMS_lumi.CMS_lumi(c,4,0)
 window_values = outDict["central"].keys()
 window_values.sort()
 frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in outDict[quan.name].keys() ])*maxFactor if not max_force else max_force
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):
@@ -111,6 +113,15 @@ for i,window_value in enumerate(window_values):
     green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"+postfix][window_value], window_value, plot) )
     median.SetPoint( i, window_value,calculate(outDict["central"][window_value], window_value, plot) )
     black.SetPoint( i, window_value,calculate(outDict["obs"][window_value], window_value, plot) )
+
+if drawLegend:
+    leg = ROOT.TLegend(*leg_pos)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetTextSize(0.03)
+    leg.AddEntry(median,"Expected exclusion","l")
+    leg.AddEntry(black,"Observed exclusion","l")
+
 yellow.SetFillColor(ROOT.kOrange)
 yellow.SetLineColor(ROOT.kOrange)
 yellow.SetFillStyle(1001)
@@ -131,8 +142,14 @@ black.SetLineWidth(2)
 black.SetLineStyle(1)
 black.Draw('Lsame')
 
+if drawLegend:
+    leg.Draw("Lsame")
+
 if setLogY:
     c.SetLogy()
+
+ROOT.gPad.RedrawAxis()
+ROOT.gPad.RedrawAxis("G")
 
 if drawVetoBox:
     box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)

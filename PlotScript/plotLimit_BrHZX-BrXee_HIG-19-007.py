@@ -23,9 +23,9 @@ setLogY         = True
 method          = "AsymptoticLimits"
 varName         = "limit"
 plot            = "BrHZX_BrXee"
-y_min           = 5E-6
+y_min           = 1E-5
 maxFactor       = 10
-max_force       = 1E-2
+max_force       = 3E-3
 x_label         = "m_{X} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 35.0
@@ -115,6 +115,9 @@ black.Draw('Lsame')
 
 if setLogY:
     c.SetLogy()
+
+ROOT.gPad.RedrawAxis()
+ROOT.gPad.RedrawAxis("G")
 
 if drawVetoBox:
     box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)

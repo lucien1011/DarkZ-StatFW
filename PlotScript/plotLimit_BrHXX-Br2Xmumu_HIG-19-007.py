@@ -37,9 +37,9 @@ method          = "HybridNew"
 #method          = "AsymptoticLimits"
 varName         = "limit"
 plot            = "BrHXX_Br2XMuMu"
-y_min           = 2E-7
+y_min           = 4E-7
 maxFactor       = 10
-max_force       = 5E-5
+max_force       = 4E-5
 x_label         = "m_{X} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 60.2
@@ -86,7 +86,7 @@ frame.GetYaxis().CenterTitle()
 frame.GetYaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetLabelSize(0.04)
-frame.GetYaxis().SetLabelSize(0.03)
+frame.GetYaxis().SetLabelSize(0.04)
 frame.GetYaxis().SetTitleOffset(1.2)
 frame.GetXaxis().SetNdivisions(508)
 frame.GetYaxis().CenterTitle(True)
@@ -102,7 +102,7 @@ CMS_lumi.CMS_lumi(c,4,0)
 window_values = outDict["central"].keys()
 window_values.sort()
 frame.GetXaxis().SetLimits(min(window_values),max(window_values))
-frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in window_values ])*maxFactor
+frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) for quan in quantiles for window_value in outDict[quan.name].keys() ])*maxFactor if not max_force else max_force
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 
@@ -174,6 +174,9 @@ for g in graphs:
 
 if setLogY:
     c.SetLogy()
+
+ROOT.gPad.RedrawAxis()
+ROOT.gPad.RedrawAxis("G")
 
 if drawVetoBox:
     box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)
