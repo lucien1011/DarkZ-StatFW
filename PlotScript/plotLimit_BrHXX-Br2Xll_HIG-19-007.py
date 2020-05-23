@@ -1,3 +1,5 @@
+import pickle
+
 from PlotScript.plotLimitUtils import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
@@ -38,6 +40,7 @@ inputDir = "/raid/raid7/lucien/UFTier2/HiggsCombine/2020-03-17_SR2D_RunII_LHCLim
 outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
 selectStr = ""
 dcDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
+picklePath = "pickle/XX/2020-03-17_SR2D_RunII/limit.pkl"
 
 setLogY         = True
 method          = "HybridNew"
@@ -51,7 +54,7 @@ drawVetoBox     = True
 drawZdCurve     = True
 drawLegend      = True
 kappa_on_graph  = 2E-4
-leg_pos         = [0.40,0.65,0.95,0.87]
+leg_pos         = [0.30,0.65,0.95,0.87]
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
 graphs          = [
@@ -63,6 +66,9 @@ graphs          = [
 # Read limit from directory
 # ________________________________________________________________ ||
 outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing,dcDir=dcDir,)
+if not os.path.exists(os.path.dirname(picklePath)):
+    os.makedirs(os.path.dirname(picklePath))
+pickle.dump(outDict,open(picklePath,"w"))
 
 # ________________________________________________________________ ||
 # Draw limit with outDict

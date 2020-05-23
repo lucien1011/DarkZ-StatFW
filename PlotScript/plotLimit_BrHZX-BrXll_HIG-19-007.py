@@ -25,6 +25,7 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/DataCard/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/"
 outputPath = "/home/lucien/public_html/Higgs/DarkZ/StatFW/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_PAS/ExpObsLimit.pdf" 
 selectStr = ""
+picklePath = "pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII//limit.pkl"
 
 setLogY         = True
 #method          = "HybridNew"
@@ -47,6 +48,9 @@ massCutFunc     = lambda x: x > 4.2
 # Read limit from directory
 # ________________________________________________________________ ||
 outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc)
+if not os.path.exists(os.path.dirname(picklePath)):
+    os.makedirs(os.path.dirname(picklePath))
+pickle.dump(outDict,open(picklePath,"w"))
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
