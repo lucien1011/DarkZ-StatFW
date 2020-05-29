@@ -2,34 +2,8 @@ from PlotScript.plotLimitUtils import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW-2/HToZdZd_DataCard/2019-12-17_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-02-26_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-03_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-03_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII/"
-#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf"
-#selectStr = ""
-
-#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
-#selectStr = ""
-
-inputDir = "/raid/raid7/lucien/UFTier2/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
-selectStr = ""
-dcDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
+picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII/limit.pkl"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
 
 setLogY         = True
 method          = "HybridNew"
@@ -44,12 +18,12 @@ drawVetoBox     = True
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
 drawLegend      = True
-leg_pos         = [0.35,0.65,0.80,0.87]
+leg_pos         = [0.25,0.65,0.72,0.87]
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing,dcDir=dcDir,)
+outDict = pickle.load(open(picklePath,"r")) 
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -140,11 +114,11 @@ black.SetLineWidth(2)
 black.SetLineStyle(1)
 black.Draw('Lsame')
 
-if drawLegend:
-    leg.Draw("Lsame")
-
 ROOT.gPad.RedrawAxis()
 ROOT.gPad.RedrawAxis("G")
+
+if drawLegend:
+    leg.Draw("Lsame")
 
 if setLogY:
     c.SetLogy()

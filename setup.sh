@@ -15,6 +15,9 @@ elif [[ $HOSTNAME == *"ufhpc"* ]] ;
 then
     echo "In UF HPG" ; 
     cd /home/kinho.lo/Higgs/CombineArea/CMSSW_8_1_0/src/ ;
+elif [[ $HOSTNAME == *"lucien"* ]] ;
+then
+    continue
 fi
 eval `scramv1 runtime -sh`
 cd -

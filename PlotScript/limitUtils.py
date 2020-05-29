@@ -16,14 +16,14 @@ y_label_dict    = {
                     "c_ah_div_Lambda_Interpolation": "|C^{eff}_{aH}|/#Lambda^{2} [TeV^{-2}]",
                     "xs_ZZd": "Cross section [pb]",
                     "xs_ZdZd": "Cross section [pb]",
-                    "BrHZX_BrXll": "Br(H #rightarrow Z X) #times Br(X #rightarrow ll)",
+                    "BrHZX_BrXll": "#bf{#it{#Beta}}(H #rightarrow Z X) #times #bf{#it{#Beta}}(X #rightarrow ll)",
                     "HZX_Xll": "H #rightarrow Z Z_{D} #rightarrow 4l",
-                    "BrHZX_BrXMuMu": "Br(H #rightarrow Z X) #times Br(X #rightarrow #mu #mu)",
-                    "BrHZX_BrXee": "Br(H #rightarrow Z X) #times Br(X #rightarrow ee)",
-                    "BrHXX_Br2Xll": "Br(H #rightarrow X X) #times Br(X #rightarrow ll)^{2}",
+                    "BrHZX_BrXMuMu": " #bf{#it{#Beta}}(H #rightarrow Z X) #times  #bf{#it{#Beta}}(X #rightarrow #mu #mu)",
+                    "BrHZX_BrXee": " #bf{#it{#Beta}}(H #rightarrow Z X) #times  #bf{#it{#Beta}}(X #rightarrow ee)",
+                    "BrHXX_Br2Xll": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow ll)^{2}",
                     "HXX_2Xll": "H #rightarrow Z_{D} Z_{D} #rightarrow 4l",
-                    "BrHXX_Br2XMuMu": "Br(H #rightarrow X X) #times Br(X #rightarrow #mu #mu)^{2}",
-                    "BrHXX_Br2Xee": "Br(H #rightarrow X X) #times Br(X #rightarrow ee)^{2}",
+                    "BrHXX_Br2XMuMu": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow #mu #mu)^{2}",
+                    "BrHXX_Br2Xee": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow ee)^{2}",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
 
@@ -43,15 +43,15 @@ def calculate(r_value,window_value,what):
     elif what == "BrHZX_BrXll":
         return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/z_2l_br
     elif what == "BrHZX_BrXMuMu":
-        return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(z_2l_br/2.)
+        return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l")/2)/z_2l_br
     elif what == "BrHZX_BrXee":
-        return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/(z_2l_br/2.)
+        return r_value*(epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l")/2)/z_2l_br
     elif what == "BrHXX_Br2Xll":
         return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
     elif what == "BrHXX_Br2XMuMu":
-        return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
+        return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l")/4)
     elif what == "BrHXX_Br2Xee":
-        return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
+        return r_value*(kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l")/4)
     elif what == "epsilon_EpsPOI":
         return r_value
     elif what == "BrH4l":

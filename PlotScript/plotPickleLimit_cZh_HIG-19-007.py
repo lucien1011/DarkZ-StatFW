@@ -2,54 +2,30 @@ from PlotScript.plotLimitUtils import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW-2/HToZdZd_DataCard/2019-12-17_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-02-26_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
+picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/limit.pkl"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/ZX/ExpObsLimit.pdf"
 
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-03_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-03_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII/"
-#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf"
-#selectStr = ""
-
-#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
-#selectStr = ""
-
-inputDir = "/raid/raid7/lucien/UFTier2/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
-selectStr = ""
-dcDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
-
+# ________________________________________________________________ ||
+# CMS style
+# ________________________________________________________________ ||
 setLogY         = True
-method          = "HybridNew"
-#method          = "AsymptoticLimits"
+#method          = "HybridNew"
+method          = "AsymptoticLimits"
 varName         = "limit"
-plot            = "kappa"
-y_min           = 5E-5
+plot            = "c_zh_div_Lambda_Interpolation"
+y_min           = 5E-3
 maxFactor       = 10
-max_force       = 1E-3
-x_label         = "m_{Z_{D}} [GeV]"
+max_force       = 1.0
+x_label         = "m_{a} [GeV]"
 drawVetoBox     = True
-massCutFunc     = lambda x: x < 60.2
-smoothing       = True
-drawLegend      = True
+massCutFunc     = lambda x: x > 4.2
 leg_pos         = [0.35,0.65,0.80,0.87]
+drawLegend      = True
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing,dcDir=dcDir,)
+outDict = pickle.load(open(picklePath,"r")) 
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -85,7 +61,6 @@ frame.GetXaxis().SetTitleSize(0.05)
 frame.GetXaxis().SetLabelSize(0.05)
 frame.GetYaxis().SetLabelSize(0.05)
 frame.GetYaxis().SetTitleOffset(1.2)
-frame.GetXaxis().SetTitleOffset(1.0)
 frame.GetXaxis().SetNdivisions(508)
 frame.GetYaxis().CenterTitle(True)
 #frame.GetYaxis().SetTitle("95% upper limit on #sigma / #sigma_{SM}")
@@ -104,11 +79,10 @@ frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) fo
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):
-    postfix = "" if not smoothing else "_smooth"
-    yellow.SetPoint( i, window_value,calculate(outDict["up2"+postfix][window_value], window_value, plot) )
-    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"+postfix][window_value], window_value, plot) )
-    green.SetPoint( i, window_value,calculate(outDict["up1"+postfix][window_value], window_value, plot) )
-    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"+postfix][window_value], window_value, plot) )
+    yellow.SetPoint( i, window_value,calculate(outDict["up2"][window_value], window_value, plot) )
+    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"][window_value], window_value, plot) )
+    green.SetPoint( i, window_value,calculate(outDict["up1"][window_value], window_value, plot) )
+    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"][window_value], window_value, plot) )
     median.SetPoint( i, window_value,calculate(outDict["central"][window_value], window_value, plot) )
     black.SetPoint( i, window_value,calculate(outDict["obs"][window_value], window_value, plot) )
 
@@ -140,11 +114,11 @@ black.SetLineWidth(2)
 black.SetLineStyle(1)
 black.Draw('Lsame')
 
-if drawLegend:
-    leg.Draw("Lsame")
-
 ROOT.gPad.RedrawAxis()
 ROOT.gPad.RedrawAxis("G")
+
+if drawLegend:
+    leg.Draw("Lsame")
 
 if setLogY:
     c.SetLogy()

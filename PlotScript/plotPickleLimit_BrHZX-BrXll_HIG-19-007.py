@@ -2,54 +2,30 @@ from PlotScript.plotLimitUtils import *
 
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW-2/HToZdZd_DataCard/2019-12-17_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-02-26_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-03_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-03_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-06_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
-#outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII/ExpObsLimit.pdf" 
-#selectStr = ""
-
-#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII/"
-#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-06_SR2D_RunII/ExpObsLimit.pdf"
-#selectStr = ""
-
-#inputDir = "/cms/data/store/user/t2/users/klo/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-#outputPath = "/home/kinho.lo/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
-#selectStr = ""
-
-inputDir = "/raid/raid7/lucien/UFTier2/HiggsCombine/2020-03-17_SR2D_RunII_LHCLimit_v2/"
-outputPath = "/home/lucien/public_html/Higgs/HToZdZd/Limit/2020-03-17_SR2D_RunII_LHCLimit_v2/ExpObsLimit.pdf"
-selectStr = ""
-dcDir = "/home/lucien/AnalysisCode/Higgs/DarkZ-StatFW/HToZdZd_DataCard/2020-03-17_SR2D_RunII/"
+picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/limit.pkl"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/ZX/ExpObsLimit.pdf"
 
 setLogY         = True
-method          = "HybridNew"
-#method          = "AsymptoticLimits"
-varName         = "limit"
-plot            = "kappa"
-y_min           = 5E-5
+#method          = "HybridNew"
+method          = "AsymptoticLimits"
+y_min           = 1E-5
 maxFactor       = 10
-max_force       = 1E-3
-x_label         = "m_{Z_{D}} [GeV]"
+max_force       = 3E-3
+varName         = "limit"
+plot            = "BrHZX_BrXll"
+x_label         = "m_{X} [GeV]"
 drawVetoBox     = True
-massCutFunc     = lambda x: x < 60.2
-smoothing       = True
+drawVetoBox     = True
+drawZdCurve     = True
 drawLegend      = True
-leg_pos         = [0.35,0.65,0.80,0.87]
+esp_on_graph    = 0.05
+leg_pos         = [0.35,0.65,0.85,0.87]
+massCutFunc     = lambda x: x > 4.2
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = makeLimitDict(inputDir,selectStr,method,massCutFunc,smoothing=smoothing,dcDir=dcDir,)
+outDict = pickle.load(open(picklePath,"r")) 
 
 # ________________________________________________________________ ||
 # Draw limit with outDict
@@ -88,7 +64,6 @@ frame.GetYaxis().SetTitleOffset(1.2)
 frame.GetXaxis().SetTitleOffset(1.0)
 frame.GetXaxis().SetNdivisions(508)
 frame.GetYaxis().CenterTitle(True)
-#frame.GetYaxis().SetTitle("95% upper limit on #sigma / #sigma_{SM}")
 frame.GetYaxis().SetTitle(y_label_dict[plot])
 frame.GetXaxis().SetTitle(x_label)
 frame.SetMinimum(0)
@@ -96,6 +71,9 @@ yellow = ROOT.TGraph(2*nPoints)
 green = ROOT.TGraph(2*nPoints)
 median = ROOT.TGraph(nPoints)
 black = ROOT.TGraph(nPoints)
+if drawZdCurve:
+    zdGraph = ROOT.TGraphErrors(nPoints)
+    zdUncGraph = ROOT.TGraphErrors(2*nPoints)
 CMS_lumi.CMS_lumi(c,4,0)
 window_values = outDict["central"].keys()
 window_values.sort()
@@ -104,13 +82,18 @@ frameMax = max([calculate(outDict[quan.name][window_value],window_value,plot) fo
 frame.SetMaximum(frameMax)
 if setLogY: frame.SetMinimum(y_min)
 for i,window_value in enumerate(window_values):
-    postfix = "" if not smoothing else "_smooth"
-    yellow.SetPoint( i, window_value,calculate(outDict["up2"+postfix][window_value], window_value, plot) )
-    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"+postfix][window_value], window_value, plot) )
-    green.SetPoint( i, window_value,calculate(outDict["up1"+postfix][window_value], window_value, plot) )
-    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"+postfix][window_value], window_value, plot) )
+    yellow.SetPoint( i, window_value,calculate(outDict["up2"][window_value], window_value, plot) )
+    yellow.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down2"][window_value], window_value, plot) )
+    green.SetPoint( i, window_value,calculate(outDict["up1"][window_value], window_value, plot) )
+    green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"][window_value], window_value, plot) )
     median.SetPoint( i, window_value,calculate(outDict["central"][window_value], window_value, plot) )
     black.SetPoint( i, window_value,calculate(outDict["obs"][window_value], window_value, plot) )
+    if drawZdCurve:
+        zdBr = esp_on_graph**2*reader.interpolate(window_value,"Br_HToZZdTo4l")/z_2l_br
+        zdUnc = 0.2 if window_value < 12. else 0.1
+        zdGraph.SetPoint(i,window_value,zdBr)
+        zdUncGraph.SetPoint(i,window_value,zdBr*(1.+zdUnc))
+        zdUncGraph.SetPoint(2*nPoints-1-i,window_value,zdBr*(1.-zdUnc))
 
 if drawLegend:
     leg = ROOT.TLegend(*leg_pos)
@@ -119,6 +102,8 @@ if drawLegend:
     leg.SetTextSize(0.05)
     leg.AddEntry(median,"Expected exclusion","l")
     leg.AddEntry(black,"Observed exclusion","l")
+    if drawZdCurve:
+        leg.AddEntry(zdGraph,y_label_dict[plot.replace("Br","")]+", #varepsilon = "+str(esp_on_graph),"l")
 
 yellow.SetFillColor(ROOT.kOrange)
 yellow.SetLineColor(ROOT.kOrange)
@@ -130,6 +115,16 @@ green.SetLineColor(ROOT.kGreen+1)
 green.SetFillStyle(1001)
 green.Draw('Fsame')
 
+if drawZdCurve:
+    zdGraph.SetLineColor(ROOT.kRed)
+    zdGraph.SetLineWidth(4)
+    zdGraph.SetLineStyle(1)
+    zdUncGraph.SetFillColor(ROOT.kRed)
+    zdUncGraph.SetLineColor(ROOT.kRed)
+    zdUncGraph.SetFillStyle(1001)
+    zdGraph.Draw('Lsame')
+    zdUncGraph.Draw('Fsame')
+
 median.SetLineColor(1)
 median.SetLineWidth(2)
 median.SetLineStyle(2)
@@ -140,14 +135,14 @@ black.SetLineWidth(2)
 black.SetLineStyle(1)
 black.Draw('Lsame')
 
-if drawLegend:
-    leg.Draw("Lsame")
-
 ROOT.gPad.RedrawAxis()
 ROOT.gPad.RedrawAxis("G")
 
 if setLogY:
     c.SetLogy()
+
+if drawLegend:
+    leg.Draw("Lsame")
 
 if drawVetoBox:
     box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)
