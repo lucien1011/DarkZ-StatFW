@@ -3,7 +3,8 @@ from PlotScript.plotLimitUtils import *
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII_Mu/limit.pkl"
-outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+#outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/HIG-19-007/Figure/Limit/XX/ExpObsLimit.pdf"
 
 setLogY         = True
 #expOnly         = True 
@@ -15,7 +16,9 @@ y_min           = 4E-7
 maxFactor       = 10
 max_force       = 4E-5
 x_label         = "m_{X} [GeV]"
+leg_pos         = [0.30,0.65,0.90,0.87]
 drawVetoBox     = True
+drawLegend      = True
 massCutFunc     = lambda x: x < 60.2
 smoothing       = True
 graphs          = [
@@ -125,6 +128,14 @@ for g in graphs:
     g.median = ROOT.TGraph(nPoints,median_xs,median_ys)
     g.black = ROOT.TGraph(nPoints,black_xs,black_ys)
 
+if drawLegend:
+    leg = ROOT.TLegend(*leg_pos)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetTextSize(0.05)
+    leg.AddEntry(g.median,"Expected exclusion","l",)
+    leg.AddEntry(g.black,"Observed exclusion","l",)
+
 for g in graphs:
 
     g.yellow.SetFillColor(ROOT.kOrange)
@@ -152,6 +163,9 @@ if setLogY:
 
 ROOT.gPad.RedrawAxis()
 ROOT.gPad.RedrawAxis("G")
+
+if drawLegend:
+    leg.Draw("Lsame")
 
 if drawVetoBox:
     box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)

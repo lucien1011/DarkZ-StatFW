@@ -5,7 +5,7 @@ import math
 higgs_boson = BaseObject(
         "Higgs Boson",
         xs = 48.58,
-        total_width= 6.1E-03,
+        total_width= 4.1E-03,
         mass = 125.18,
         ZZ_br = 2.64E-02,
         llll_br = 0.0002768,
@@ -13,8 +13,9 @@ higgs_boson = BaseObject(
         )
 z_boson = BaseObject(
         "Z boson",
-        mass = 90.,
-        ll_br = 0.0679,
+        mass = 91.1876,
+        #ll_br = 0.0679,
+        ll_br = 0.06729,
         )
 ALP = BaseObject(
         "ALP",
@@ -33,3 +34,9 @@ def Gamma_hToZa_func(c_zh_div_Lambda,m_a):
 
 def Gamma_HToaa_func(c_ah_div_Lambda,m_a):
     return higgs_boson.vev**2*(higgs_boson.mass**3)*c_ah_div_Lambda**2*(1.-2.*(m_a**2)/higgs_boson.mass**2)**2*math.sqrt(1.-4.*(m_a**2)/higgs_boson.mass**2)/32./math.pi
+
+def zh_acc_ratio(mass):
+    return 0.22/31.*mass + 1.-0.22/31.*35.
+
+def ah_acc_ratio(mass):
+    return 0.22/56.*mass + 1.-0.22/56.*60.

@@ -3,7 +3,8 @@ from PlotScript.plotLimitUtils import *
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/limit.pkl"
-outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/ZX/ExpObsLimit.pdf"
+#outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/ZX/ExpObsLimit.pdf"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/DarkZ/HIG-19-007/Figure/Limit/ZX/ExpObsLimit.pdf"
 
 # ________________________________________________________________ ||
 # CMS style
@@ -13,19 +14,23 @@ setLogY         = True
 method          = "AsymptoticLimits"
 varName         = "limit"
 plot            = "c_zh_div_Lambda_Interpolation"
-y_min           = 5E-3
+y_min           = 1E-3
 maxFactor       = 10
 max_force       = 1.0
 x_label         = "m_{a} [GeV]"
 drawVetoBox     = True
-massCutFunc     = lambda x: x > 4.2
+massCutFunc     = lambda x: x > 4.2 and x < 34.
 leg_pos         = [0.35,0.65,0.80,0.87]
 drawLegend      = True
 
 # ________________________________________________________________ ||
 # Read limit from directory
 # ________________________________________________________________ ||
-outDict = pickle.load(open(picklePath,"r")) 
+outDict = pickle.load(open(picklePath,"r"))
+for quan in outDict:
+    for m in outDict[quan]:
+        if not massCutFunc(m):
+            outDict[quan].pop(m,None)
 
 # ________________________________________________________________ ||
 # Draw limit with outDict

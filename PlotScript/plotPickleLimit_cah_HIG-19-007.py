@@ -3,7 +3,8 @@ from PlotScript.plotLimitUtils import *
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII/limit.pkl"
-outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+#outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/DarkZ/HIG-19-007/Figure/Limit/XX/ExpObsLimit.pdf"
 
 # ________________________________________________________________ ||
 # CMS style
@@ -13,9 +14,9 @@ method          = "HybridNew"
 #method          = "AsymptoticLimits"
 varName         = "limit"
 plot            = "c_ah_div_Lambda_Interpolation"
-y_min           = 5E-3
+y_min           = 1E-3
 maxFactor       = 10
-max_force       = 0.1
+max_force       = 0.05
 x_label         = "m_{a} [GeV]"
 drawVetoBox     = True
 massCutFunc     = lambda x: x < 60.2

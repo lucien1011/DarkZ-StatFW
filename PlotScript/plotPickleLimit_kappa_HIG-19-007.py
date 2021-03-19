@@ -3,7 +3,8 @@ from PlotScript.plotLimitUtils import *
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII/limit.pkl"
-outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+#outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/HIG-19-007/Figure/Limit/XX/ExpObsLimit.pdf"
 
 setLogY         = True
 method          = "HybridNew"

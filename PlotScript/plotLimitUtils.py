@@ -15,7 +15,7 @@ ROOT.gROOT.SetBatch(ROOT.kTRUE)
 # CMS style
 # ________________________________________________________________ ||
 CMS_lumi.cmsText = "CMS"
-CMS_lumi.extraText = "Preliminary"
+CMS_lumi.extraText = ""
 ROOT.TGaxis.SetMaxDigits(8)
 CMS_lumi.cmsTextSize = 0.65
 CMS_lumi.outOfFrame = True

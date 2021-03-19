@@ -16,13 +16,13 @@ y_label_dict    = {
                     "c_ah_div_Lambda_Interpolation": "|C^{eff}_{aH}|/#Lambda^{2} [TeV^{-2}]",
                     "xs_ZZd": "Cross section [pb]",
                     "xs_ZdZd": "Cross section [pb]",
-                    "BrHZX_BrXll": "#bf{#it{#Beta}}(H #rightarrow Z X) #times #bf{#it{#Beta}}(X #rightarrow ll)",
+                    "BrHZX_BrXll": "#bf{#it{#Beta}}(H #rightarrow Z X) #times #bf{#it{#Beta}}(X #rightarrow ee or #mu#mu)",
                     "HZX_Xll": "H #rightarrow Z Z_{D} #rightarrow 4l",
-                    "BrHZX_BrXMuMu": " #bf{#it{#Beta}}(H #rightarrow Z X) #times  #bf{#it{#Beta}}(X #rightarrow #mu #mu)",
+                    "BrHZX_BrXMuMu": " #bf{#it{#Beta}}(H #rightarrow Z X) #times  #bf{#it{#Beta}}(X #rightarrow #mu#mu)",
                     "BrHZX_BrXee": " #bf{#it{#Beta}}(H #rightarrow Z X) #times  #bf{#it{#Beta}}(X #rightarrow ee)",
-                    "BrHXX_Br2Xll": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow ll)^{2}",
+                    "BrHXX_Br2Xll": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow ee or #mu#mu)^{2}",
                     "HXX_2Xll": "H #rightarrow Z_{D} Z_{D} #rightarrow 4l",
-                    "BrHXX_Br2XMuMu": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow #mu #mu)^{2}",
+                    "BrHXX_Br2XMuMu": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow #mu#mu)^{2}",
                     "BrHXX_Br2Xee": " #bf{#it{#Beta}}(H #rightarrow X X) #times  #bf{#it{#Beta}}(X #rightarrow ee)^{2}",
                     #"BrH4l": "Br(h #rightarrow ZX #rightarrow 4e)",
                   }
@@ -63,11 +63,15 @@ def calculate(r_value,window_value,what):
     elif what == "xs_ZdZd":
         return r_value*(higgs_boson.xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
     elif what == "c_zh_div_Lambda_Interpolation":
-        ratio_exc = r_value*(higgs_boson.xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))/higgs_boson.xs/z_boson.ll_br/reader.interpolate(window_value,"Br_ZdTo2l")
+        a_ll_br = 1.0
+        sigma_exc = r_value*(higgs_boson.xs*epsilon**2*reader.interpolate(window_value,"Br_HToZZdTo4l"))
+        ratio_exc = sigma_exc/higgs_boson.xs/a_ll_br/z_2l_br/zh_acc_ratio(window_value)
         Gamma_hToZa_exc = ratio_exc*higgs_boson.total_width/(1.-ratio_exc)
         return math.sqrt(Gamma_hToZa_exc*16.*math.pi/higgs_boson.mass**3/lambda_x_y_func((z_boson.mass/higgs_boson.mass)**2,(window_value/higgs_boson.mass)**2)**1.5)*1000
     elif what == "c_ah_div_Lambda_Interpolation":
-        ratio_exc = r_value*(higgs_boson.xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))/higgs_boson.xs/reader.interpolate(window_value,"Br_ZdTo2l")**2
+        a_ll_br = 1.0
+        sigma_exc = r_value*(higgs_boson.xs*kappa**2*reader.interpolate(window_value,"Br_HToZdZdTo4l"))
+        ratio_exc = sigma_exc/higgs_boson.xs/a_ll_br**2/ah_acc_ratio(window_value)
         Gamma_hToaa_exc = ratio_exc*higgs_boson.total_width/(1.-ratio_exc)
         return math.sqrt(Gamma_hToaa_exc*32.*math.pi/higgs_boson.mass**3/higgs_boson.vev**2/(1.-2.*window_value**2/higgs_boson.mass**2)**2/math.sqrt(1.-4.*window_value**2/higgs_boson.mass**2))*1000*1000
     else:

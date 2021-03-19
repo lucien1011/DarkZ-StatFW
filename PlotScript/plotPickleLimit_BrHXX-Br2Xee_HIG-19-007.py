@@ -6,7 +6,9 @@ from StatFW.BaseObject import BaseObject
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII_El/limit.pkl"
-outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+#outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/XX/ExpObsLimit.pdf"
+#outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/HIG-19-007/Figure/Limit/XX/ExpObsLimit.pdf"
+outputPath = "test.pdf"
 
 setLogY         = True
 method          = "HybridNew"
@@ -16,6 +18,7 @@ y_min           = 4E-7
 maxFactor       = 10
 max_force       = 4E-5
 x_label         = "m_{X} [GeV]"
+leg_pos         = [0.30,0.65,0.90,0.87]
 drawVetoBox     = True
 drawLegend      = True
 massCutFunc     = lambda x: x < 60.2
@@ -121,12 +124,12 @@ for g in graphs:
     g.black = ROOT.TGraph(nPoints,black_xs,black_ys)
 
 if drawLegend:
-    leg = ROOT.TLegend()
+    leg = ROOT.TLegend(*leg_pos)
     leg.SetBorderSize(0)
     leg.SetFillColor(0)
-    leg.SetTextSize(0.03)
-    #leg.AddEntry(median,"Expected exclusion")
-    #leg.AddEntry(black,"Observed exclusion")
+    leg.SetTextSize(0.05)
+    leg.AddEntry(g.median,"Expected exclusion","l",)
+    leg.AddEntry(g.black,"Observed exclusion","l",)
 
 for g in graphs:
 
@@ -150,11 +153,11 @@ for g in graphs:
     g.black.SetLineStyle(1)
     g.black.Draw("Lsame")
 
-if drawLegend:
-    leg.Draw("Lsame")
-
 ROOT.gPad.RedrawAxis()
 ROOT.gPad.RedrawAxis("G")
+
+if drawLegend:
+    leg.Draw("Lsame")
 
 if setLogY:
     c.SetLogy()

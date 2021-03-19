@@ -3,7 +3,8 @@ from PlotScript.plotLimitUtils import *
 ROOT.gROOT.SetBatch(ROOT.kTRUE)
 
 picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_El/limit.pkl"
-outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/ZX/ExpObsLimit.pdf"
+#outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/PAS/Figure/Limit/ZX/ExpObsLimit.pdf"
+outputPath = "/Users/lucien/GoogleDriveCERN/Research/Higgs/DarkZ/HIG-19-007/Figure/Limit/ZX/ExpObsLimit.pdf"
 
 selectStr = ""
 setLogY         = True
@@ -15,7 +16,9 @@ y_min           = 1E-5
 maxFactor       = 10
 max_force       = 3E-3
 x_label         = "m_{X} [GeV]"
+leg_pos         = [0.35,0.65,0.85,0.87]
 drawVetoBox     = True
+drawLegend      = True
 massCutFunc     = lambda x: x < 35.0
 
 # ________________________________________________________________ ||
@@ -82,6 +85,15 @@ for i,window_value in enumerate(window_values):
     green.SetPoint( 2*nPoints-1-i, window_value,calculate(outDict["down1"][window_value], window_value, plot) )
     median.SetPoint( i, window_value,calculate(outDict["central"][window_value], window_value, plot) )
     black.SetPoint( i, window_value,calculate(outDict["obs"][window_value], window_value, plot) )
+
+if drawLegend:
+    leg = ROOT.TLegend(*leg_pos)
+    leg.SetBorderSize(0)
+    leg.SetFillColor(0)
+    leg.SetTextSize(0.05)
+    leg.AddEntry(median,"Expected exclusion","l",)
+    leg.AddEntry(black,"Observed exclusion","l",)
+
 yellow.SetFillColor(ROOT.kOrange)
 yellow.SetLineColor(ROOT.kOrange)
 yellow.SetFillStyle(1001)
@@ -107,6 +119,9 @@ if setLogY:
 
 ROOT.gPad.RedrawAxis()
 ROOT.gPad.RedrawAxis("G")
+
+if drawLegend:
+    leg.Draw("Lsame")
 
 if drawVetoBox:
     box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)
