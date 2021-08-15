@@ -181,54 +181,45 @@ def draw_limit_with_dict(config,outDict):
     
     yellow_ns_list = []
     yellow_xs_list = []
-    yellow_ys_list = []
+    yellow_up_ys_list = []
+    yellow_down_ys_list = []
     for i,window_value in enumerate(window_values):
         yellow_ns_list.append(i)
         yellow_xs_list.append(window_value)
-        yellow_ys_list.append(calculate(outDict["up2"+postfix][window_value], window_value, plot))
-    for i,window_value in enumerate(reversed(window_values)):
+        yellow_up_ys_list.append(calculate(outDict["up2"+postfix][window_value], window_value, plot))
+    for i,window_value in enumerate(window_values):
         yellow_xs_list.append(window_value)
-        yellow_ys_list.append(calculate(outDict["down2"+postfix][window_value], window_value, plot))
+        yellow_down_ys_list.append(calculate(outDict["down2"+postfix][window_value], window_value, plot))
     
     green_ns_list = []
     green_xs_list = []
-    green_ys_list = []
+    green_up_ys_list = []
+    green_down_ys_list = []
     for i,window_value in enumerate(window_values):
         green_ns_list.append(i)
         green_xs_list.append(window_value)
-        green_ys_list.append(calculate(outDict["up1"+postfix][window_value], window_value, plot))
-    for i,window_value in enumerate(reversed(window_values)):
+        green_up_ys_list.append(calculate(outDict["up1"+postfix][window_value], window_value, plot))
+    for i,window_value in enumerate(window_values):
         green_xs_list.append(window_value)
-        green_ys_list.append(calculate(outDict["down1"+postfix][window_value], window_value, plot))
+        green_down_ys_list.append(calculate(outDict["down1"+postfix][window_value], window_value, plot))
     
     yellow_xs = array.array("d",yellow_xs_list)
-    yellow_ys = array.array("d",yellow_ys_list)
+    yellow_up_ys = array.array("d",yellow_up_ys_list)
+    yellow_down_ys = array.array("d",yellow_down_ys_list)
     green_xs = array.array("d",green_xs_list)
-    green_ys = array.array("d",green_ys_list)
+    green_up_ys = array.array("d",green_up_ys_list)
+    green_down_ys = array.array("d",green_down_ys_list)
     
-    yellow = ROOT.TGraph(2*nPoints,yellow_xs,yellow_ys)
-    green = ROOT.TGraph(2*nPoints,green_xs,green_ys)
+    yellow_up = ROOT.TGraph(nPoints,yellow_xs,yellow_up_ys)
+    yellow_down = ROOT.TGraph(nPoints,yellow_xs,yellow_down_ys)
+    green_up = ROOT.TGraph(nPoints,green_xs,green_up_ys)
+    green_down = ROOT.TGraph(nPoints,green_xs,green_down_ys)
     median = ROOT.TGraph(nPoints,median_xs,median_ys)
     black = ROOT.TGraph(nPoints,black_xs,black_ys)
     
-    if drawLegend:
-        leg = ROOT.TLegend(*leg_pos)
-        leg.SetBorderSize(0)
-        leg.SetFillColor(0)
-        leg.SetTextSize(0.05)
-        leg.AddEntry(median,"Expected exclusion","l",)
-        leg.AddEntry(black,"Observed exclusion","l",)
-    
-    yellow.SetFillColor(ROOT.kOrange)
-    yellow.SetLineColor(ROOT.kOrange)
-    yellow.SetFillStyle(1001)
-    yellow.Draw('F')
-    
-    green.SetFillColor(ROOT.kGreen+1)
-    green.SetLineColor(ROOT.kGreen+1)
-    green.SetFillStyle(1001)
-    green.Draw('Fsame')
-    
+    yellow_up.Draw('L') 
+    green_up.Draw('Lsame')
+
     median.SetLineColor(1)
     median.SetLineWidth(2)
     median.SetLineStyle(2)
@@ -239,20 +230,12 @@ def draw_limit_with_dict(config,outDict):
     black.SetLineStyle(1)
     black.Draw("Lsame")
     
+    green_down.Draw('Lsame')
+    yellow_down.Draw('Lsame') 
+
     ROOT.gPad.RedrawAxis()
     ROOT.gPad.RedrawAxis("G")
-    
-    if drawLegend:
-        leg.Draw("Lsame")
-    
-    if setLogY:
-        c.SetLogy()
-    
-    if drawVetoBox:
-        box = ROOT.TBox(lowBoxCut,0.,highBoxCut,frameMax)
-        box.SetFillColor(ROOT.kGray)
-        box.Draw('same')
-    
+            
     c.SaveAs(outputPath)
 
 def add_limit_to_submission(c,submission):
@@ -267,23 +250,39 @@ def add_limit_to_submission(c,submission):
     graphs = reader.get_graphs()
 
     d = Variable(c.x_var, is_independent=True, is_binned=False, units=c.x_unit)
-    d.values = graphs["Graph3"]['x']
+    d.values = graphs["Graph2"]['x']
 
     obs = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
-    obs.values = graphs["Graph2"]['y']
+    obs.values = graphs["Graph3"]['y']
     obs.add_qualifier("Limit", "Observed")
-    obs.add_qualifier("SQRT(S)", 13, "TeV")
-    obs.add_qualifier("LUMINOSITY", c.lumi, "fb$^{-1}$")
 
     exp = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
-    exp.values = graphs["Graph3"]['y']
+    exp.values = graphs["Graph2"]['y']
     exp.add_qualifier("Limit", "Expected")
-    exp.add_qualifier("SQRT(S)", 13, "TeV")
-    exp.add_qualifier("LUMINOSITY", c.lumi, "fb$^{-1}$")
+
+    up2 = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
+    up2.values = graphs["Graph0"]['y']
+    up2.add_qualifier("Limit", "+2sigma")
+
+    up1 = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
+    up1.values = graphs["Graph1"]['y']
+    up1.add_qualifier("Limit", "+1sigma")
+
+    down1 = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
+    down1.values = graphs["Graph4"]['y']
+    down1.add_qualifier("Limit", "-1sigma")
+
+    down2 = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
+    down2.values = graphs["Graph5"]['y']
+    down2.add_qualifier("Limit", "-2sigma")
 
     table.add_variable(d)
+    table.add_variable(up2)
+    table.add_variable(up1)
     table.add_variable(obs)
     table.add_variable(exp)
+    table.add_variable(down1)
+    table.add_variable(down2)
     submission.add_table(table)
 
 if __name__ == "__main__":
