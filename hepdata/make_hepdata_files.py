@@ -11,29 +11,101 @@ out_name = 'hig19007_hepdata'
 config = [
         BaseObject(
             "BrHXX_Br2Xee",
+            plot = "BrHXX_Br2Xee",
             picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII_El/limit.pkl",
             outputPath = "output/210816_v1/BrHXX_Br2Xee.C",
-            setLogY = True,
             method = "HybridNew",
-            plot = "BrHXX_Br2Xee",
-            y_min = 4E-7,
-            maxFactor = 10,
-            max_force = 4E-5,
-            x_label = "m_{X} [GeV]",
-            leg_pos = [0.30,0.65,0.90,0.87],
-            drawVetoBox = False,
-            drawLegend = True,
-            window_func = lambda x: x < 8.0 or x > 11.5,
             postfix = "_smooth",
-
-            x_var = 'mass',
-            x_unit = 'GeV',
-            y_var='BrHXX_Br2Xee',
-            y_unit='',
-            lumi = 137.,
-            
+            window_func = lambda x: x < 8.0 or x > 11.5,
+            ), 
+        BaseObject(
+            "BrHXX_Br2Xmumu",
+            plot = "BrHXX_Br2XMuMu",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII_Mu/limit.pkl",
+            outputPath = "output/210816_v1/BrHXX_Br2Xmumu.C",
+            method = "HybridNew",
+            postfix = "_smooth",
+            window_func = lambda x: x < 8.0 or x > 11.5,
+            ),
+        BaseObject(
+            "BrHXX_Br2Xll",
+            plot = "BrHXX_Br2Xll",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII/limit.pkl",
+            outputPath = "output/210816_v1/BrHXX_Br2Xll.C",
+            method = "HybridNew",
+            postfix = "_smooth",
+            window_func = lambda x: x < 8.0 or x > 11.5,
+            ),
+        BaseObject(
+            "BrHZX_BrXee",
+            plot = "BrHZX_BrXee",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_El/limit.pkl",
+            outputPath = "output/210816_v1/BrHZX_BrXee.C",
+            method = "AsymptoticLimits",
+            postfix = "",
+            window_func = lambda x: x < 8.0 or x > 11.5,
+            ),
+        BaseObject(
+            "BrHZX_BrXmumu",
+            plot = "BrHZX_BrXMuMu",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII_Mu/limit.pkl",
+            outputPath = "output/210816_v1/BrHZX_BrXmumu.C",
+            method = "AsymptoticLimits",
+            postfix = "",
+            window_func = lambda x: x < 8.0 or x > 11.5,
+            ),
+        BaseObject(
+            "BrHZX_BrXll",
+            plot = "BrHZX_BrXll",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/limit.pkl",
+            outputPath = "output/210816_v1/BrHZX_BrXll.C",
+            method = "AsymptoticLimits",
+            postfix = "",
+            window_func = lambda x: x < 8.0 or x > 11.5,
+            ),
+        BaseObject(
+            "cah",
+            plot = "c_ah_div_Lambda_Interpolation",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII/limit.pkl",
+            outputPath = "output/210816_v1/cah.C",
+            method = "HybridNew",
+            postfix = "_smooth",
+            window_func = lambda x: x < 8.0 or x > 11.5,
+            ),
+        BaseObject(
+            "cZh",
+            plot = "c_zh_div_Lambda_Interpolation",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/ZX/2020-03-03_CutAndCount_m4lSR-HZZd_RunII/limit.pkl",
+            outputPath = "output/210816_v1/cZh.C",
+            method = "AsymptoticLimits",
+            postfix = "",
+            window_func = lambda x: (x < 8.0 or x > 11.5) and x > 4.2 and x < 34.,
+            ),
+        BaseObject(
+            "kappa",
+            plot = "kappa",
+            picklePath = os.environ["BASE_PATH"]+"/pickle/XX/2020-03-17_SR2D_RunII/limit.pkl",
+            outputPath = "output/210816_v1/kappa.C",
+            method = "HybridNew",
+            postfix = "_smooth",
+            window_func = lambda x: x < 8.0 or x > 11.5,
             ),
         ]
+
+for c in config:
+    c.setLogY = True
+    c.y_min = 4E-7
+    c.maxFactor = 10
+    c.max_force = 4E-5
+    c.x_label = "m_{X} [GeV]"
+    c.leg_pos = [0.25,0.65,0.72,0.87]
+    c.drawVetoBox = False
+    c.drawLegend = True
+    c.x_var = 'mass'
+    c.x_unit = 'GeV'
+    c.y_var = c.name
+    c.y_unit = ''
+    c.lumi = 137.
 
 def read_limit_from_pickle(picklePath):
     outDict = pickle.load(open(picklePath,"r")) 
@@ -53,7 +125,7 @@ def draw_limit_with_dict(config,outDict):
     drawVetoBox = config.drawVetoBox
     drawLegend = config.drawLegend
     postfix = config.postfix
-    plot = config.name
+    plot = config.plot
 
     outputDir = os.path.dirname(outputPath)
     if not os.path.exists(outputDir):
@@ -103,7 +175,7 @@ def draw_limit_with_dict(config,outDict):
     
     nPoints = len(window_values)
     black_xs = array.array("d",window_values)
-    black_ys = array.array("d",[calculate(outDict["obs"+postfix][window_value],window_value,plot) for i,window_value in enumerate(window_values)])
+    black_ys = array.array("d",[calculate(outDict["obs"][window_value],window_value,plot) for i,window_value in enumerate(window_values)])
     median_xs = array.array("d",window_values)
     median_ys = array.array("d",[calculate(outDict["central"+postfix][window_value],window_value,plot) for i,window_value in enumerate(window_values)])
     
@@ -188,32 +260,31 @@ def add_limit_to_submission(c,submission):
     from hepdata_lib.c_file_reader import CFileReader
     from hepdata_lib import Variable, Uncertainty
     
-    for c in config:
-        table = Table(c.y_var)
-        table.description = 'Exclusion limit for '+c.y_var
+    table = Table(c.y_var)
+    table.description = 'Exclusion limit for '+c.y_var
 
-        reader = CFileReader(c.outputPath)
-        graphs = reader.get_graphs()
+    reader = CFileReader(c.outputPath)
+    graphs = reader.get_graphs()
 
-        d = Variable(c.x_var, is_independent=True, is_binned=False, units=c.x_unit)
-        d.values = graphs["Graph3"]['x']
+    d = Variable(c.x_var, is_independent=True, is_binned=False, units=c.x_unit)
+    d.values = graphs["Graph3"]['x']
 
-        obs = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
-        obs.values = graphs["Graph2"]['y']
-        obs.add_qualifier("Limit", "Observed")
-        obs.add_qualifier("SQRT(S)", 13, "TeV")
-        obs.add_qualifier("LUMINOSITY", c.lumi, "fb$^{-1}$")
+    obs = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
+    obs.values = graphs["Graph2"]['y']
+    obs.add_qualifier("Limit", "Observed")
+    obs.add_qualifier("SQRT(S)", 13, "TeV")
+    obs.add_qualifier("LUMINOSITY", c.lumi, "fb$^{-1}$")
 
-        exp = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
-        exp.values = graphs["Graph3"]['y']
-        exp.add_qualifier("Limit", "Expected")
-        exp.add_qualifier("SQRT(S)", 13, "TeV")
-        exp.add_qualifier("LUMINOSITY", c.lumi, "fb$^{-1}$")
+    exp = Variable(c.y_var, is_independent=False, is_binned=False, units=c.y_unit)
+    exp.values = graphs["Graph3"]['y']
+    exp.add_qualifier("Limit", "Expected")
+    exp.add_qualifier("SQRT(S)", 13, "TeV")
+    exp.add_qualifier("LUMINOSITY", c.lumi, "fb$^{-1}$")
 
-        table.add_variable(d)
-        table.add_variable(obs)
-        table.add_variable(exp)
-        submission.add_table(table)
+    table.add_variable(d)
+    table.add_variable(obs)
+    table.add_variable(exp)
+    submission.add_table(table)
 
 if __name__ == "__main__":
     submission = Submission()
